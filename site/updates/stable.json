@@ -4,6 +4,20 @@
   "channel": "stable",
   "releases": [
     {
+      "version": "0.9.1",
+      "build": 18,
+      "minimumSystemVersion": "26.0",
+      "architectures": [
+        "arm64"
+      ],
+      "notes": "# ArmKeyKey 0.9.1（build 18）\n\n修正 App 內更新時已退出輸入法，卻因背景重新啟動而導致安裝失敗的問題。\n\n- 安裝程式不再因偵測到 ArmKeyKey 程序而直接失敗，也不會強制殺掉輸入法。\n- 共用安裝由 PackageKit 原子替換整個 App；安裝前備份至 `/Library/ArmKeyKey Installer Backup.*`。個人版維持原有備份遷移，學習資料及設定保留。\n- 「準備安裝」失敗原因改用對話框顯示，不會藏在更新說明上方。\n- 保留 0.9.0 的倉頡五代、傳統注音及智慧注音功能。\n\n請先儲存工作並切換至其他輸入來源。安裝需要管理員授權，完成後所有使用者需登出再登入，才會完整切換到新版本。唔需要反覆喺活動監視器結束背景程序。\n\n如 0.9.0 安裝失敗，請關閉舊 Installer 視窗，重新檢查更新並下載 0.9.1，或直接使用此版本 PKG；舊下載的 0.9.0 安裝包不會自動修正。",
+      "package": {
+        "url": "https://github.com/jr-everstar/ArmKeyKey/releases/download/v0.9.1-build18/ArmKeyKey-0.9.1-build18-mac-arm64.pkg",
+        "size": 28764703,
+        "sha256": "57f12fc8e52a4769182aa06cb24d07f1a741adedc544adf27a798c53ec221b54"
+      }
+    },
+    {
       "version": "0.9.0",
       "build": 17,
       "minimumSystemVersion": "26.0",
