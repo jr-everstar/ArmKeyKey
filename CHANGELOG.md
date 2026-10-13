@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1（build 16）— 安裝修正
+
+- 修正舊個人版／殘留 App 令 PKG preinstall 直接失敗。
+- 自動移至各帳戶 `Library/ArmKeyKey Installer Backup.*` 備份，保留學習資料及設定。
+- App 內更新允許個人安裝交由新版 Installer 遷移。
+- 保留執行中程序及不安全路徑檢查；加入安裝腳本回歸測試。
+- 同步更新網站、穩定更新 feed、發佈套件及 Homebrew tap。
+
 ## 發佈渠道更新 — Homebrew 安裝（App 維持 0.8.0 build 15）
 
 - 新增獨立公開 [Homebrew tap](https://github.com/jr-everstar/homebrew-armkeykey)，一行 `brew install --cask jr-everstar/armkeykey/armkeykey` 安裝。

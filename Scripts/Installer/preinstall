@@ -1,27 +1,38 @@
 #!/bin/bash
 set -euo pipefail
-# Do not overwrite an input method while any user is running it.
+# Never interrupt an active composition or another user's input session.
 if /usr/bin/pgrep -x ArmKeyKey >/dev/null; then
     echo '請先切換至其他輸入法、關閉 ArmKeyKey，並登出其他正在使用 ArmKeyKey 的帳戶，再重試安裝。' >&2
     exit 1
-fi
-# Refuse a second installation; never delete a user's existing app or data.
-for user_home in /Users/*; do
-    if [[ -e "$user_home/Library/Input Methods/ArmKeyKey.app" ]]; then
-        echo "已有個人安裝版本：$user_home/Library/Input Methods/ArmKeyKey.app。請先移走舊 App 再重試；保留 Application Support 中的個人資料。" >&2
-        exit 1
-    fi
-done
-console_user=$(/usr/bin/stat -f %Su /dev/console)
-if [[ "$console_user" != root && "$console_user" != loginwindow ]]; then
-    console_home=$(/usr/bin/dscl . -read "/Users/$console_user" NFSHomeDirectory | /usr/bin/sed 's/^NFSHomeDirectory: //')
-    if [[ -e "$console_home/Library/Input Methods/ArmKeyKey.app" ]]; then
-        echo '目前帳戶已有個人安裝版本。請先移走舊 App，再重試全機安裝。' >&2
-        exit 1
-    fi
 fi
 if [[ -L '/Library/Input Methods' || -L '/Library/Input Methods/ArmKeyKey.app' ]]; then
     echo '安裝位置是符號連結，請先檢查安裝位置。' >&2
     exit 1
 fi
+# Move old personal bundles out of the input-method search path. Keep every
+# backup and all learning/preferences data, even if a later install step fails.
+homes=(/Users/*)
+console_user=$(/usr/bin/stat -f %Su /dev/console)
+if [[ "$console_user" != root && "$console_user" != loginwindow ]]; then
+    console_home=$(/usr/bin/dscl . -read "/Users/$console_user" NFSHomeDirectory | /usr/bin/sed 's/^NFSHomeDirectory: //')
+    homes+=("$console_home")
+fi
+# Validate all sources before moving any; never follow user-controlled symlinks.
+for user_home in "${homes[@]}"; do
+    app="$user_home/Library/Input Methods/ArmKeyKey.app"
+    if [[ ! -e "$app" && ! -L "$app" ]]; then continue; fi
+    if [[ -L "$user_home" || -L "$user_home/Library" || -L "$user_home/Library/Input Methods" || -L "$app" || ! -d "$app" ]]; then
+        echo "個人安裝位置不安全，請手動移走後重試：$app" >&2
+        exit 1
+    fi
+done
+for user_home in "${homes[@]}"; do
+    app="$user_home/Library/Input Methods/ArmKeyKey.app"
+    if [[ ! -e "$app" ]]; then continue; fi
+    backup=$(/usr/bin/mktemp -d "$user_home/Library/ArmKeyKey Installer Backup.XXXXXX")
+    /bin/chmod 700 "$backup"
+    /bin/mv "$app" "$backup/ArmKeyKey.app"
+    /usr/sbin/chown "$(/usr/bin/stat -f '%u:%g' "$user_home")" "$backup"
+    echo "舊個人版已備份至：$backup/ArmKeyKey.app；學習資料及設定保持不變。"
+done
 exit 0

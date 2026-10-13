@@ -18,8 +18,8 @@ Validate an existing signed, notarized and stapled package without changing GitH
 
 ```sh
 python3 Scripts/publish-release.py \
-  --pkg build/distribution/v0.8.0-build15/ArmKeyKey-0.8.0-build15-mac-arm64.pkg \
-  --notes-file Documentation/Releases/0.8.0.md
+  --pkg build/distribution/v0.8.1-build16/ArmKeyKey-0.8.1-build16-mac-arm64.pkg \
+  --notes-file Documentation/Releases/0.8.1.md
 ```
 
 To perform the upload/publication and create the stable-feed PR, add `--publish` to the same command. The package's app version, build and minimum OS must match `Resources/Info.plist`. The tool checks the PKG signature, notarization staple, Gatekeeper assessment, payload app signature/team, architecture, receipt identity and install destination. This validates the package and metadata; it is not proof of a reproducible binary/source match.
@@ -28,7 +28,7 @@ For the complete local build/sign/notarize/package/upload pipeline:
 
 ```sh
 python3 Scripts/publish-release.py --build \
-  --notes-file Documentation/Releases/0.8.0.md --publish
+  --notes-file Documentation/Releases/0.8.1.md --publish
 ```
 
 Set `DEVELOPER_ID_APPLICATION`, `DEVELOPER_ID_INSTALLER` and `NOTARY_PROFILE` in the local shell first; the development Mac's existing settings are recorded in ignored `.local/notarization-settings.txt`. Without `--publish`, `--build` prints the intended steps only and does not build or contact Apple.
@@ -67,7 +67,7 @@ Before setting readiness flags, retain evidence of dictionary rights, both OS te
 
 `Scripts/build-pkg.py <signed-app> <output.pkg>` packages a Developer-ID-signed app. Set `DEVELOPER_ID_INSTALLER` to the installer signing identity. The package is then submitted with `notarytool`, and the accepted ticket is stapled to the PKG. Verify the outer package signature and ticket as well as the extracted app signature before delivery.
 
-The installer requires Apple Silicon and macOS 26+, and installs only to `/Library/Input Methods/ArmKeyKey.app` with administrator authorization. Bundle relocation is disabled. The preinstall script refuses installation while ArmKeyKey is running or when a personal installation exists under `/Users/*` or the current console user's home. It never deletes personal data, terminates processes, or switches input sources. Since version 0.7.2, the package uses the native Installer `RequireLogout` conclusion action, so users are told to save their work and complete logout through Installer. No script forcibly kills loginwindow or applications. Custom home locations for other offline users are not enumerated. Each user logs out/in and adds the input source through Keyboard settings. Remove a previous development input-source entry before adding the new `everstar.inputmethod.armkeykey.mac` entry. Preferences tied to the previous bundle ID are not migrated automatically; learning data in Application Support remains untouched.
+The installer requires Apple Silicon and macOS 26+, and installs only to `/Library/Input Methods/ArmKeyKey.app` with administrator authorization. Bundle relocation is disabled. The preinstall script refuses installation while ArmKeyKey is running. Since 0.8.1, it moves personal copies found under `/Users/*` or the current console user's home into unique `Library/ArmKeyKey Installer Backup.*` directories within those homes, instead of failing the entire installation. Symlinked installation paths are rejected. Backups are retained even if a later installation step fails; restore the backed-up App to the original personal Input Methods directory only after removing any shared installation. It never deletes personal data, terminates processes, or switches input sources. Since version 0.7.2, the package uses the native Installer `RequireLogout` conclusion action, so users are told to save their work and complete logout through Installer. No script forcibly kills loginwindow or applications. Custom home locations for other offline users are not enumerated. Each user logs out/in and adds the input source through Keyboard settings. Remove a previous development input-source entry before adding the new `everstar.inputmethod.armkeykey.mac` entry. Preferences tied to the previous bundle ID are not migrated automatically; learning data in Application Support remains untouched.
 
 The app recognises its shared installation so its setup button does not copy a second instance into the user's Library. Downloaded ZIPs still default to per-user installation when no shared copy exists. The installer is not executed on the developer's live installation as part of packaging; clean-machine install/update/removal acceptance remains a separate check.
 
@@ -99,21 +99,21 @@ Acceptance: no lost/duplicated committed text, stable ordered candidates, correc
 
 ## In-app update handoff
 
-The app downloads only on request, verifies the PKG and embedded app, and asks the user to save work and switch to another input source. A narrowly scoped helper waits for normal parent exit, verifies the package again and opens Apple's Installer. No script kills apps or forces logout. A personal installation requires the guided manual migration; learning data is retained.
+The app downloads only on request, verifies the PKG and embedded app, and asks the user to save work and switch to another input source. A narrowly scoped helper waits for normal parent exit, verifies the package again and opens Apple's Installer. No script kills apps or forces logout. Version 0.8.1 allows the handoff from personal installations; its installer backs up the old App automatically and retains learning data. Older updater versions may still require opening the downloaded PKG manually.
 
-## 0.8.0 publication sequence
+## 0.8.1 publication sequence
 
 1. Merge the maintainer version/documentation release PR and pass CI.
-2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.8.0.md --publish`.
+2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.8.1.md --publish`.
 3. Verify the resulting versioned GitHub Release and package; retain the signed bytes and publication results locally.
 4. Merge the generated stable-feed PR and the website release update. Check the deployed JSON, size/hash and public download link after Pages completes.
 
-The app version is 0.8.0/build 15; the tag is `v0.8.0-build15`. Publication must use the newly built package, never a relabeled older PKG. The source release commit is separate from later feed/site publication commits.
+The app version is 0.8.1/build 16; the tag is `v0.8.1-build16`. Publication must use the newly built package, never a relabeled older PKG. The source release commit is separate from later feed/site publication commits.
 
 
 ## Homebrew
 
-The public [homebrew-armkeykey](https://github.com/jr-everstar/homebrew-armkeykey) repository provides the tap, using the existing 0.8.0 (build 15) package without changing the app version. Homebrew automatically adds it when installing:
+The public [homebrew-armkeykey](https://github.com/jr-everstar/homebrew-armkeykey) repository provides the tap, using the 0.8.1 (build 16) package. Homebrew automatically adds it when installing:
 
 ```sh
 brew install --cask jr-everstar/armkeykey/armkeykey
@@ -121,7 +121,7 @@ brew install --cask jr-everstar/armkeykey/armkeykey
 
 [`Casks/armkeykey.rb`](https://github.com/jr-everstar/homebrew-armkeykey/blob/main/Casks/armkeykey.rb) in that separate repository pins the versioned, signed and notarized PKG and its final SHA-256. It requires arm64 and macOS 26+. Homebrew invokes the macOS command-line installer with administrator authorization; it installs to `/Library/Input Methods/ArmKeyKey.app`, not `/Applications`. This is a project-maintained tap, not a listing in Homebrew's official cask repository.
 
-Before installing or upgrading, save work, switch input sources and quit ArmKeyKey in every logged-in account. The PKG refuses to replace a running input method or coexist with a personal copy. Move an old personal app out of `~/Library/Input Methods` first, retaining learning data. After the command finishes, **log out and back in manually** and add ArmKeyKey in Keyboard settings. Command-line installation does not display the graphical Installer logout button.
+Before installing or upgrading, save work, switch input sources and quit ArmKeyKey in every logged-in account. The PKG refuses to replace a running input method. It automatically moves old personal Apps into `~/Library/ArmKeyKey Installer Backup.*`, retaining learning data and settings. After the command finishes, **log out and back in manually** and add ArmKeyKey in Keyboard settings. Command-line installation does not display the graphical Installer logout button.
 
 ```sh
 brew update
@@ -149,3 +149,7 @@ brew update-reset "$(brew --repository jr-everstar/armkeykey)"
 ```
 
 This resets only this tap's local Git files to the new repository; back up any local cask edits first. It does not uninstall the app or remove learning data.
+
+## 0.8.1 installer regression
+
+The 0.8.0 installation log reported `PKInstallErrorDomain Code=112` from preinstall because a personal App remained. Version 0.8.1 replaces that refusal with recoverable migration. `Tests/InstallerTests.py` exercises fresh/repeated installs, personal and leftover bundles, running-process refusal, custom homes, symlinks and preservation of learning data. The existing 0.8.0 OS/input-engine acceptance is historical; these automated checks do not claim a new manual macOS 26/27 or live logout test. See [0.8.1 validation](Releases/0.8.1-validation.md).

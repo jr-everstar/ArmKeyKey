@@ -64,7 +64,7 @@ struct UpdateFeed: Codable, Sendable {
 }
 
 enum UpdateFailure: LocalizedError {
-    case invalidFeed, download, verification, timedOut, activeInput, personalInstallation
+    case invalidFeed, download, verification, timedOut, activeInput
     var errorDescription: String? {
         switch self {
         case .invalidFeed: return "更新資料格式不正確，請稍後再試。"
@@ -72,7 +72,6 @@ enum UpdateFailure: LocalizedError {
         case .verification: return "安裝包驗證失敗，未啟動安裝。請重新下載。"
         case .timedOut: return "操作逾時，請稍後再試。"
         case .activeInput: return "請先從選單列切換至其他輸入法，再繼續。"
-        case .personalInstallation: return "偵測到個人安裝版。請先切換其他輸入法、退出 ArmKeyKey，移走個人 Input Methods 內的舊 App，再開啟安裝包。請保留 Application Support 中的個人資料。"
         }
     }
 }

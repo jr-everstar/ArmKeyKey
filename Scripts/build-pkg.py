@@ -36,7 +36,7 @@ with tempfile.TemporaryDirectory(prefix='ArmKeyKey-pkg-') as temp:
     (resources/'welcome.html').write_text('''<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><body>
 <h1>安裝 ArmKeyKey</h1><p>適用於 Apple Silicon Mac，macOS 26 或以上。</p>
 <p>安裝到 /Library/Input Methods，供此 Mac 的所有使用者使用，需要管理員密碼。</p>
-<p>如已安裝個人測試版，請先切換至其他輸入法，關閉 ArmKeyKey，將 ~/Library/Input Methods/ArmKeyKey.app 移到垃圾桶。若程序仍在執行，可在「活動監視器」結束 ArmKeyKey 後重試。</p>
+<p>如已安裝個人測試版，請先切換至其他輸入法，關閉 ArmKeyKey，安裝程式會將舊個人版 App 移至該帳戶 Library/ArmKeyKey Installer Backup.* 備份目錄，避免重複安裝，毋須手動刪除。若程序仍在執行，可在「活動監視器」結束 ArmKeyKey 後重試。</p>
 <p>請保留 Application Support/ArmKeyKey 中的個人選字資料。安裝程式不會刪除個人資料。安裝完成後需要登出，請先儲存其他 App 中的工作；macOS 安裝程式會帶你完成登出流程。</p></body></html>''')
     (resources/'conclusion.html').write_text('''<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><body>
 <h1>安裝完成：請登出</h1><p>請按安裝程式的「登出」按鈕，然後重新登入，以更新輸入來源清單。</p>

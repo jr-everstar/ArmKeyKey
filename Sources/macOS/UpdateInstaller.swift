@@ -76,7 +76,6 @@ enum UpdateInstaller {
     }
     @MainActor static func handoff(package: URL, release: UpdateRelease) throws {
         try requireOtherInputSource()
-        guard !FileManager.default.fileExists(atPath: personalInstallation.path) else { throw UpdateFailure.personalInstallation }
         let receipt = package.deletingLastPathComponent().appendingPathComponent("release.json")
         try JSONEncoder().encode(release).write(to: receipt, options: .atomic)
         let helper = Process()
@@ -105,7 +104,6 @@ enum UpdateInstaller {
                 Thread.sleep(forTimeInterval: 0.1)
             }
             try requireOtherInputSource()
-            guard !FileManager.default.fileExists(atPath: personalInstallation.path) else { throw UpdateFailure.personalInstallation }
             try validate(package, release: release)
             let strings = ["/usr/bin/open", "-a", "/System/Library/CoreServices/Installer.app", package.path]
             let pointers = strings.map { strdup($0) }

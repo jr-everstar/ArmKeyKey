@@ -109,7 +109,6 @@ import UserNotifications
         guard !busy, let release, let package else { return }
         do {
             try UpdateInstaller.requireOtherInputSource()
-            guard !FileManager.default.fileExists(atPath: UpdateInstaller.personalInstallation.path) else { throw UpdateFailure.personalInstallation }
             try UpdateInstaller.handoff(package: package, release: release)
         } catch { status = error.localizedDescription }
     }
@@ -162,7 +161,7 @@ struct UpdatesView: View {
                     Button("準備安裝⋯") { confirmInstall = true }.buttonStyle(.borderedProminent).disabled(updater.busy)
                     Button("在 Finder 顯示安裝包") { NSWorkspace.shared.activateFileViewerSelecting([package]) }
                     if FileManager.default.fileExists(atPath: UpdateInstaller.personalInstallation.path) {
-                        Text(UpdateFailure.personalInstallation.localizedDescription).foregroundStyle(.secondary)
+                        Text("安裝程式會自動備份並移走舊個人版 App，保留學習資料及設定。").foregroundStyle(.secondary)
                         Button("顯示個人安裝位置") { NSWorkspace.shared.activateFileViewerSelecting([UpdateInstaller.personalInstallation]) }
                         Button("退出 ArmKeyKey，稍後手動安裝") { updater.quitForManualInstall() }
                     }
