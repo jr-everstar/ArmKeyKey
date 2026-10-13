@@ -1,4 +1,8 @@
-# License audit — 2026-10-13
+# License audit
+
+Current release status: the maintainer confirmed the 0.8.0 review on 2026-10-14; see the final section. The dated history below preserves earlier findings and does not replace the maintainer confirmation.
+
+## Historical audit — 2026-10-13
 
 | Component | Evidence | Status |
 | --- | --- | --- |
@@ -37,3 +41,7 @@ Verified official sources:
 - Pinned tables: https://github.com/openvanilla/openvanilla/tree/a00488634ae723d3a379e158f278966948976ef1/DataTables
 
 `simplex-ext.cin` is byte-identical to the local YahooKeyKey source table, SHA-256 `8d925bfbd524dbc6042a1ce89912aadc17d8aa34109410a22948fd07c2d006e9`. The local Cangjie file is not byte-identical to that pinned OpenVanilla file; neither file nor ordering was replaced. Original table headers are reproduced in the bundled overview, and the complete pinned OpenVanilla project license is stored in `Licenses/OpenVanilla-Upstream-LICENSE.txt` and included in generated notices. No blanket MIT/CC0 data license is inferred.
+
+## Maintainer acceptance for 0.8.0 — 2026-10-14
+
+The maintainer explicitly confirmed completion of dictionary-rights review, privacy/notices approval, macOS 26/27 manual checks and clean installation acceptance. `release-readiness.json` now records that confirmation. See [acceptance record](Releases/0.8.0-acceptance.md). Earlier audit entries above describe the evidence available at those dates; this confirmation does not change upstream license text or claim that automated tooling established historical data rights. No additional legal documents were supplied in this release session. The updater adds no third-party code or dictionary data.

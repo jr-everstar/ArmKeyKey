@@ -2,13 +2,13 @@
 
 ## GitHub update infrastructure
 
-Source repository: https://github.com/jr-everstar/ArmKeyKey . Pages deploys only `site/` through the `Deploy update site` workflow on `main`; pull requests validate the feed without deploying. The stable endpoint is `https://jr-everstar.github.io/ArmKeyKey/updates/stable.json`. No Apple credentials or additional deployment token is needed for Pages.
+Source repository: https://github.com/jr-everstar/ArmKeyKey . Pages deploys only `site/` through the `Deploy ArmKeyKey website` workflow on `main`; pull requests validate the feed without deploying. The stable endpoint is `https://jr-everstar.github.io/ArmKeyKey/updates/stable.json`. No Apple credentials or additional deployment token is needed for Pages.
 
-The version-1 feed identifies the app and stable channel, with a `releases` array. An empty array means no update is offered, not a network error. Each future entry contains `version` (display string), `build` (positive integer), `minimumSystemVersion`, `architectures` (`["arm64"]`), `notes` (plain text), and `package` with a fixed GitHub Release asset `url`, `size` in bytes and lowercase `sha256`. Retain older supported releases when newer versions raise system requirements. The future client selects the highest compatible build newer than itself. Run `python3 Scripts/check-update-feed.py` before publishing feed changes.
+The version-1 feed identifies the app and stable channel, with a `releases` array. An empty array means no update is offered, not a network error. Each future entry contains `version` (display string), `build` (positive integer), `minimumSystemVersion`, `architectures` (`["arm64"]`), `notes` (plain text), and `package` with a fixed GitHub Release asset `url`, `size` in bytes and lowercase `sha256`. Retain older supported releases when newer versions raise system requirements. The client selects the highest compatible build newer than itself. Run `python3 Scripts/check-update-feed.py` before publishing feed changes.
 
 Publish only after the existing release checks pass: sign and notarize the PKG locally, staple and verify it, calculate its final size and checksum, upload it to a versioned GitHub Release, verify the download, then update and deploy the feed. Do not overwrite an already advertised asset or use a moving `latest/download` URL. Feed validation checks metadata shape, not Apple signatures or release readiness. To withdraw an update, remove its feed entry and redeploy; this does not downgrade installed apps. Pages/CDN caches can delay visibility, so check the live endpoint after deployment.
 
-This infrastructure does not add an updater to the current app. The initial feed intentionally offers no release; there is no placeholder download or unpublished package advertised as installable.
+Version 0.8.0 includes the in-app updater. The stable feed is populated only after a signed package is published and its public download verified. An empty feed before publication is valid; no placeholder asset is offered.
 
 ## Local release command
 
@@ -18,8 +18,8 @@ Validate an existing signed, notarized and stapled package without changing GitH
 
 ```sh
 python3 Scripts/publish-release.py \
-  --pkg build/distribution/ArmKeyKey-0.7.2-build14/ArmKeyKey-0.7.2-mac-arm64.pkg \
-  --notes-file .local/release-notes.txt
+  --pkg build/distribution/v0.8.0-build15/ArmKeyKey-0.8.0-build15-mac-arm64.pkg \
+  --notes-file Documentation/Releases/0.8.0.md
 ```
 
 To perform the upload/publication and create the stable-feed PR, add `--publish` to the same command. The package's app version, build and minimum OS must match `Resources/Info.plist`. The tool checks the PKG signature, notarization staple, Gatekeeper assessment, payload app signature/team, architecture, receipt identity and install destination. This validates the package and metadata; it is not proof of a reproducible binary/source match.
@@ -28,7 +28,7 @@ For the complete local build/sign/notarize/package/upload pipeline:
 
 ```sh
 python3 Scripts/publish-release.py --build \
-  --notes-file .local/release-notes.txt --publish
+  --notes-file Documentation/Releases/0.8.0.md --publish
 ```
 
 Set `DEVELOPER_ID_APPLICATION`, `DEVELOPER_ID_INSTALLER` and `NOTARY_PROFILE` in the local shell first; the development Mac's existing settings are recorded in ignored `.local/notarization-settings.txt`. Without `--publish`, `--build` prints the intended steps only and does not build or contact Apple.
@@ -61,13 +61,13 @@ Only an `Accepted` notarization result confirms success. Staple and validate the
 
 Supply `DEVELOPER_ID_APPLICATION`, `NOTARY_PROFILE` (an existing notarytool keychain profile), and optionally `ARMKEYKEY_BUNDLE_ID` (defaults to `everstar.inputmethod.armkeykey.mac`). Credentials are never stored in source. The release script is not run automatically. An Apple Development certificate is not a Developer ID Application certificate.
 
-Before setting readiness flags, retain evidence of dictionary rights, both OS test matrices, a clean install/update/removal pass, and approved privacy/attribution text. Developer ID signing and Apple notarization have been completed for the candidate packages documented below; public release readiness remains a separate check. No updater or remote endpoint is included; users install later signed versions using the documented replacement process.
+Before setting readiness flags, retain evidence of dictionary rights, both OS test matrices, a clean install/update/removal pass, and approved privacy/attribution text. Developer ID signing and Apple notarization have been completed for the candidate packages documented below; public release readiness remains a separate check. Version 0.8.0 adds optional update checks and a user-confirmed Installer handoff; older versions require a manual first upgrade.
 
 ## Signed PKG installer
 
 `Scripts/build-pkg.py <signed-app> <output.pkg>` packages a Developer-ID-signed app. Set `DEVELOPER_ID_INSTALLER` to the installer signing identity. The package is then submitted with `notarytool`, and the accepted ticket is stapled to the PKG. Verify the outer package signature and ticket as well as the extracted app signature before delivery.
 
-The installer requires Apple Silicon and macOS 26+, and installs only to `/Library/Input Methods/ArmKeyKey.app` with administrator authorization. Bundle relocation is disabled. The preinstall script refuses installation while ArmKeyKey is running or when a personal installation exists under `/Users/*` or the current console user's home. It never deletes personal data, terminates processes, or switches input sources. Version 0.7.2 uses the native Installer `RequireLogout` conclusion action, so users are told to save their work and complete logout through Installer. No script forcibly kills loginwindow or applications. Custom home locations for other offline users are not enumerated. Each user logs out/in and adds the input source through Keyboard settings. Remove a previous development input-source entry before adding the new `everstar.inputmethod.armkeykey.mac` entry. Preferences tied to the previous bundle ID are not migrated automatically; learning data in Application Support remains untouched.
+The installer requires Apple Silicon and macOS 26+, and installs only to `/Library/Input Methods/ArmKeyKey.app` with administrator authorization. Bundle relocation is disabled. The preinstall script refuses installation while ArmKeyKey is running or when a personal installation exists under `/Users/*` or the current console user's home. It never deletes personal data, terminates processes, or switches input sources. Since version 0.7.2, the package uses the native Installer `RequireLogout` conclusion action, so users are told to save their work and complete logout through Installer. No script forcibly kills loginwindow or applications. Custom home locations for other offline users are not enumerated. Each user logs out/in and adds the input source through Keyboard settings. Remove a previous development input-source entry before adding the new `everstar.inputmethod.armkeykey.mac` entry. Preferences tied to the previous bundle ID are not migrated automatically; learning data in Application Support remains untouched.
 
 The app recognises its shared installation so its setup button does not copy a second instance into the user's Library. Downloaded ZIPs still default to per-user installation when no shared copy exists. The installer is not executed on the developer's live installation as part of packaging; clean-machine install/update/removal acceptance remains a separate check.
 
@@ -79,7 +79,7 @@ Do not redistribute the 0.7.1 build 13 package: its app identifier omitted `.inp
 
 ## Manual release acceptance
 
-The signed and notarized 0.7.2 build 14 candidate has completed package validation. The manual matrix below remains outstanding, and `release-readiness.json` remains false. Automated controller tests use a mock client and do not verify real InputMethodKit connections. Keep OS/app versions and results with the release evidence before changing readiness flags.
+The maintainer confirmed completion of the release reviews and manual acceptance for 0.8.0 on 2026-10-14; see [acceptance record](Releases/0.8.0-acceptance.md). `release-readiness.json` records that confirmation. The matrix below remains the checklist for future releases. Automated controller tests use a mock client and do not verify real InputMethodKit connections. Keep OS/app versions and results with the release evidence before changing readiness flags.
 
 On **each** macOS version (26 and 27), use a clean test account and complete:
 
@@ -96,3 +96,16 @@ On **each** macOS version (26 and 27), use a clean test account and complete:
 | Storage | Reset and restore with an active input session; learning enabled/disabled per mode |
 
 Acceptance: no lost/duplicated committed text, stable ordered candidates, correct caret anchoring, no stuck candidate panels, working keyboard shortcuts, no crashes, and no keystrokes in application diagnostics. Preserve recordings or written results with OS/app versions.
+
+## In-app update handoff
+
+The app downloads only on request, verifies the PKG and embedded app, and asks the user to save work and switch to another input source. A narrowly scoped helper waits for normal parent exit, verifies the package again and opens Apple's Installer. No script kills apps or forces logout. A personal installation requires the guided manual migration; learning data is retained.
+
+## 0.8.0 publication sequence
+
+1. Merge the maintainer version/documentation release PR and pass CI.
+2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.8.0.md --publish`.
+3. Verify the resulting versioned GitHub Release and package; retain the signed bytes and publication results locally.
+4. Merge the generated stable-feed PR and the website release update. Check the deployed JSON, size/hash and public download link after Pages completes.
+
+The app version is 0.8.0/build 15; the tag is `v0.8.0-build15`. Publication must use the newly built package, never a relabeled older PKG. The source release commit is separate from later feed/site publication commits.

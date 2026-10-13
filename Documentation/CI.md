@@ -1,7 +1,7 @@
 # Continuous integration
 
 `.github/workflows/tests.yml` runs `Scripts/test.sh` on the GitHub-hosted
-`macos-26` Apple Silicon runner. The job is named **Tests** so branch rules
+`macos-26` Apple Silicon runner, followed by a complete app build. The job is named **Tests** so branch rules
 can require a stable check name.
 
 The workflow runs for pull requests targeting `main`, `release`, or
@@ -14,9 +14,9 @@ and needs no repository secrets.
 The existing suite checks imported inputs and notices, reproducible
 dictionaries, engine behavior with sanitizers and legacy differential
 traces, storage, character filtering, phrases, Jyutping, native controller
-behavior, and installation paths. It does not install the input method or
+behavior, installation paths, and offline updater feed/network/policy tests. It does not install the input method or
 publish a release. Native controller tests use AppKit and require a
-graphical session; the first hosted run must confirm runner compatibility.
+graphical session; the soft-update feature PR passed on the hosted runner.
 They do not replace the [manual cross-application release checks](Distribution.md#manual-release-acceptance).
 
 ## Enable required checks
@@ -32,3 +32,5 @@ Configure the required check after its first successful run. GitHub needs
 a successful run from the past seven days to offer a workflow check for
 selection. If enabling a merge queue later, add a `merge_group` trigger
 before requiring this check for queued merges.
+
+Updater fixtures cover version/OS/architecture selection, malformed feeds, daily check policy, notification suppression, URL restrictions, HTTP errors, bounds, cancellation and checksums. CI does not exercise real notification delivery, signed handoff, Installer authorization or logout. Those are covered by maintainer acceptance, separately from automated results. Signing and notarization run locally; Pages deploys `site/` only after changes reach `main`.
