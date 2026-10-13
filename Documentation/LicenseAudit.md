@@ -45,3 +45,9 @@ Verified official sources:
 ## Maintainer acceptance for 0.8.0 — 2026-10-14
 
 The maintainer explicitly confirmed completion of dictionary-rights review, privacy/notices approval, macOS 26/27 manual checks and clean installation acceptance. `release-readiness.json` now records that confirmation. See [acceptance record](Releases/0.8.0-acceptance.md). Earlier audit entries above describe the evidence available at those dates; this confirmation does not change upstream license text or claim that automated tooling established historical data rights. No additional legal documents were supplied in this release session. The updater adds no third-party code or dictionary data.
+
+## 0.9.0 new components
+
+Jackchows Cangjie5_HK is pinned to e4a4242f518ab0d34066bbd8aa44cb0cefd61db2 with its MIT license and named inventors/revisers. McBopomofo is pinned to be6564acad6c4d3265c34a2e1a872d80f9db6068 with its MIT license, individual core notices and data README. The latter explicitly traces BPMFMappings to BSD-licensed libtabe tsi.src; the full inherited notices, including both BSD blocks and the Chih-Hao Tsai credit, are retained. `Scripts/generate-notices.py --check` verifies the bundled forms.
+
+This integration uses only the pinned published data, not Yahoo's separately licensed SinicaCorpus/YahooSearchTerms or CEROD software. The prior maintainer confirmation applies to the original legacy dictionaries; it is not represented as a fresh manual review of new data. Source-license evidence and transformations are recorded in Dependencies and NewInputs-Attribution.

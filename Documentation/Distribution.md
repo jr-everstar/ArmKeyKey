@@ -18,8 +18,8 @@ Validate an existing signed, notarized and stapled package without changing GitH
 
 ```sh
 python3 Scripts/publish-release.py \
-  --pkg build/distribution/v0.8.1-build16/ArmKeyKey-0.8.1-build16-mac-arm64.pkg \
-  --notes-file Documentation/Releases/0.8.1.md
+  --pkg build/distribution/v0.9.0-build17/ArmKeyKey-0.9.0-build17-mac-arm64.pkg \
+  --notes-file Documentation/Releases/0.9.0.md
 ```
 
 To perform the upload/publication and create the stable-feed PR, add `--publish` to the same command. The package's app version, build and minimum OS must match `Resources/Info.plist`. The tool checks the PKG signature, notarization staple, Gatekeeper assessment, payload app signature/team, architecture, receipt identity and install destination. This validates the package and metadata; it is not proof of a reproducible binary/source match.
@@ -28,7 +28,7 @@ For the complete local build/sign/notarize/package/upload pipeline:
 
 ```sh
 python3 Scripts/publish-release.py --build \
-  --notes-file Documentation/Releases/0.8.1.md --publish
+  --notes-file Documentation/Releases/0.9.0.md --publish
 ```
 
 Set `DEVELOPER_ID_APPLICATION`, `DEVELOPER_ID_INSTALLER` and `NOTARY_PROFILE` in the local shell first; the development Mac's existing settings are recorded in ignored `.local/notarization-settings.txt`. Without `--publish`, `--build` prints the intended steps only and does not build or contact Apple.
@@ -104,7 +104,7 @@ The app downloads only on request, verifies the PKG and embedded app, and asks t
 ## 0.8.1 publication sequence
 
 1. Merge the maintainer version/documentation release PR and pass CI.
-2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.8.1.md --publish`.
+2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.9.0.md --publish`.
 3. Verify the resulting versioned GitHub Release and package; retain the signed bytes and publication results locally.
 4. Merge the generated stable-feed PR and the website release update. Check the deployed JSON, size/hash and public download link after Pages completes.
 
@@ -113,7 +113,7 @@ The app version is 0.8.1/build 16; the tag is `v0.8.1-build16`. Publication must
 
 ## Homebrew
 
-The public [homebrew-armkeykey](https://github.com/jr-everstar/homebrew-armkeykey) repository provides the tap, using the 0.8.1 (build 16) package. Homebrew automatically adds it when installing:
+The public [homebrew-armkeykey](https://github.com/jr-everstar/homebrew-armkeykey) repository provides the tap, using the current signed release package. Homebrew automatically adds it when installing:
 
 ```sh
 brew install --cask jr-everstar/armkeykey/armkeykey
@@ -153,3 +153,11 @@ This resets only this tap's local Git files to the new repository; back up any l
 ## 0.8.1 installer regression
 
 The 0.8.0 installation log reported `PKInstallErrorDomain Code=112` from preinstall because a personal App remained. Version 0.8.1 replaces that refusal with recoverable migration. `Tests/InstallerTests.py` exercises fresh/repeated installs, personal and leftover bundles, running-process refusal, custom homes, symlinks and preservation of learning data. The existing 0.8.0 OS/input-engine acceptance is historical; these automated checks do not claim a new manual macOS 26/27 or live logout test. See [0.8.1 validation](Releases/0.8.1-validation.md).
+
+## 0.9.0 maintainer publication
+
+Target: 0.9.0/build 17. The maintainer explicitly requested direct feature-branch commits and a merge into main without PRs, including version/docs/site/release/tap updates. This supersedes the default contributor PR workflow for this release only.
+
+After local tests and build, merge `feature/0.9.0-input-methods` into main and push without force. Publish the fresh signed/notarized PKG from that clean source commit using `--feed-mode direct` with the publisher. This opt-in updates the verified stable feed through a normal fast-forward main commit; concurrent changes reject the push and require a fresh retry. Never weaken branch rules or overwrite a published asset.
+
+Only after the public PKG hash is verified, update the website download URL and the dedicated Homebrew tap to `0.9.0,17` with that final SHA-256. Verify deployed Pages/feed, release download, Homebrew style/audit/livecheck/fetch. No installation or forced logout is performed on the active development account. Current automated evidence and any remaining manual acceptance limits belong in `Releases/0.9.0-validation.md`; historical macOS 26/27 acceptance is not relabeled as a new run.

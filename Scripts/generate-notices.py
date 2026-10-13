@@ -38,7 +38,21 @@ upstream_notice = 'OpenVanilla — upstream project license (data-table scope re
 parts.append(upstream_notice)
 parts.extend([read('Resources/RimeCantonese-Attribution.txt'), read('Vendor/RimeCantonese/LICENSE-CC-BY')])
 parts.extend([read('Resources/NotoSansTC-Attribution.txt'), read('Resources/NotoSansTC-LICENSE.txt')])
+new_notices = [read('Resources/NewInputs-Attribution.txt'), read('Vendor/Cangjie5/LICENSE'), read('Vendor/McBopomofo/LICENSE.txt'), read('Licenses/libtabe-COPYING.txt')]
+for path in sorted((root/'Vendor/McBopomofo/Source/Engine').rglob('*')):
+    if path.suffix in ('.h','.cpp'):
+        lines=path.read_text().splitlines()
+        notice=[]
+        for line in lines:
+            if not line.startswith('//'): break
+            notice.append(line[3:] if line.startswith('// ') else line[2:])
+        block='\n'.join(notice).strip()
+        if 'Permission is hereby granted' not in block: raise SystemExit(f'Missing vendor notice: {path}')
+        if block not in new_notices: new_notices.append(block)
+parts.extend(new_notices)
 outputs = {
+    'Resources/Cangjie5-LICENSE.txt': read('Vendor/Cangjie5/LICENSE'),
+    'Resources/McBopomofo-LICENSE.txt': '\n\n'.join(new_notices[2:]).rstrip()+'\n',
     'Resources/OpenVanilla-LICENSE.txt': '\n\n'.join(parts[3:3 + len(groups)] + [upstream_notice]).rstrip() + '\n',
     'Resources/YahooKeyKey-LICENSE.txt': read('Licenses/YahooKeyKey-BSD-3-Clause.txt'),
     'Resources/ThirdPartyNotices.txt': '\n\n'.join(parts).rstrip() + '\n',

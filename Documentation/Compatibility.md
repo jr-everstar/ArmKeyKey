@@ -15,7 +15,7 @@ Intentional changes:
 
 Vendored changes: `OVFileHelper.h` adds the missing POSIX include and replaces obsolete temporary-name creation with `mkstemp`; `OVSQLiteDatabaseService.h` adds dictionary ordering and metadata exclusion; `OVIMGeneric.cpp` adds deterministic learning ties, immediate persistence, database ownership cleanup, and filtering of learned entries against the active candidate set. Original copyright headers are retained.
 
-Smart Zhuyin, associated phrases, reverse lookup, user phrase editing, Yahoo online integrations, and custom external tables are not part of this first Cangjie/Simplex build. No original binary installation was available for comparison.
+In the original first Cangjie/Simplex build, Smart Zhuyin and associated phrases were absent; later additions are documented below. Reverse lookup, user phrase editing, Yahoo online integrations and custom external tables remain excluded. No original binary installation was available for comparison.
 
 ## 0.4.0 candidate window and associated phrases
 
@@ -31,10 +31,22 @@ The new 廣東話拼音（粵拼） mode uses a separate exact-word lookup engin
 
 Examples: `neihou`, `nei5hou2`, `nei5'hou2` → 你好; `ngo5dei6` → 我哋; `hoenggong` → 香港. This initial mode is exact whole-word lookup, not Rime's full sentence composition engine: mixed optional tones, v/x/q tone shortcuts, fuzzy pronunciation, predictive syllable completion, and adaptive Jyutping learning are not implemented. Cantonese uses its own upstream character repertoire; the compatible/full character switch applies only to Cangjie/Simplex.
 
-Cantonese.sqlite3 includes 137,441 unique word/reading pairs and 101,745 distinct multi-character suggestion words from pinned Rime Cantonese chars/words tables plus ArmKeyKey supplements. Suggestions in all modes now use this indexed database. Frequencies come from essay-cantonese; dictionary reading percentages adjust lookup scores. Ties retain source order. This is ArmKeyKey's deterministic ranking, not a claim of identical Rime candidate order. Existing Cangjie/Simplex raw dictionary order and default learning preferences are unchanged.
+Cantonese.sqlite3 includes 137,441 unique word/reading pairs and 101,745 distinct multi-character suggestion words from pinned Rime Cantonese chars/words tables plus ArmKeyKey supplements. Suggestions in the Cangjie/Simplex/Jyutping modes use this indexed database. Frequencies come from essay-cantonese; dictionary reading percentages adjust lookup scores. Ties retain source order. This is ArmKeyKey's deterministic ranking, not a claim of identical Rime candidate order. Existing Cangjie/Simplex raw dictionary order and default learning preferences are unchanged.
 
 ## 0.8.0 soft updates
 
 Input engines, dictionaries and candidate order are unchanged. Optional update checks use the network while input remains offline. The client selects the highest newer build compatible with the current OS and arm64, retaining an older compatible release when the newest needs a newer OS.
 
 0.7.2 and earlier require a manual first upgrade. Shared installations use a verified PKG, another active input source, normal app exit, administrator authorization and Installer's logout flow. Since 0.8.1, the PKG automatically backs up personal App bundles outside Input Methods before installing to the shared destination; older updater versions may still direct users to open the downloaded PKG manually. Learning data is preserved. See [installation handoff](Distribution.md#in-app-update-handoff).
+
+## 0.9.0 Cangjie 5 and Zhuyin
+
+Cangjie 5 uses Jackchows' Hong Kong completion table (132,420 unique code/value mappings). `mwsl` → 面, `lmsy` → 非, `hui` → 鬼. Cangjie 3 remains the default with its original table and learning filename; the two modes never combine codes or learned ranks. Character repertoire filtering applies to both Cangjie modes and Simplex, not Mandarin or Cantonese.
+
+Traditional Zhuyin is single-syllable selection with a fixed source order. Smart Zhuyin uses local word scores to compose a sentence and lets the user override words at the cursor. Both use the standard Zhuyin keyboard only. Tone 1 completes with Space; tones 2/3/4/5 use 6/3/4/7. Numbers choose candidates only while the panel is open. Smart choices remain marked until Return or a forced commit. Left/Right/Home/End edit the sentence; Down/Space at a completed syllable opens choices. Backspace/Delete edit readings. Escape closes the panel, then cancels an unfinished syllable, then cancels the sentence. Shift-comma/period/question mark and other documented Shift punctuation commit converted text followed by Chinese punctuation. Unshifted punctuation keys may be Zhuyin vowels.
+
+Composition is bounded to 128 syllables; an extra completed syllable remains editable and beeps. Shortcuts pass through after committing converted smart text; unfinished phonetics are canceled on forced commit or focus loss. This differs from the legacy radical cancellation policy. Output script/width conversion occurs at commit, never while calculating the caret. The candidate window uses UTF-16 selection ranges, including supplementary-plane characters.
+
+Mandarin data contains 26,535 plain mappings and 172,663 smart mappings. 966 non-aligned symbol/emoji/variant mappings are excluded and reported by the builder to keep one output Unicode scalar per syllable. Reading keys for macros and special symbol modes are omitted. The legacy Cantonese associated suggestions are not used in either Zhuyin mode. There is no cloud input, custom phrase editor, other keyboard layout, or claim of identical Yahoo/McBopomofo candidate behavior.
+
+Smart learning stores only explicit selected reading/value pairs from the final submitted sentence. Cancellation does not learn. A bounded score bonus influences future composition; turning learning off ignores but preserves saved preferences. Backup format 2 restores all four learning modes atomically; format 1 restores only Cangjie 3 and Simplex, retaining new-mode data.

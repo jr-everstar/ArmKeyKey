@@ -29,7 +29,7 @@ if let fontURL = Bundle.main.url(forResource: "NotoSansTC-VariableFont_wght", wi
 }
 let app = NSApplication.shared
 let defaults = UserDefaults.standard
-defaults.register(defaults: ["candidateStyle": "yahoo", "candidateFontSize": 17.0, "candidateScale": 1.0, "mode": "cangjie", "cangjieLearning": true, "simplexLearning": false, "extendedCharacters": false, "associatedPhrases": true, "phraseModifier": 8, "simplifiedOutput": false, "fullWidthOutput": false])
+defaults.register(defaults: ["candidateStyle": "yahoo", "candidateFontSize": 17.0, "candidateScale": 1.0, "mode": "cangjie", "cangjieLearning": true, "cangjie5Learning": true, "smartZhuyinLearning": true, "simplexLearning": false, "extendedCharacters": false, "associatedPhrases": true, "phraseModifier": 8, "simplifiedOutput": false, "fullWidthOutput": false])
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { AKSettings.show(); return true }
     func applicationDidFinishLaunching(_ notification: Notification) {

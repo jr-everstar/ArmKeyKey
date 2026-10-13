@@ -43,6 +43,21 @@ class PublisherTests(unittest.TestCase):
                 remote.assert_not_called()
                 build.assert_not_called()
 
+    def test_direct_feed_pushes_main_without_pr(self):
+        with tempfile.TemporaryDirectory() as folder:
+            temporary=Path(folder)
+            feed=temporary/'feed-repository/site/updates/stable.json'
+            feed.parent.mkdir(parents=True)
+            feed.write_text(json.dumps(self.feed()))
+            with patch.object(p, 'gh', return_value='{"id": 1, "login": "maintainer"}') as remote, patch.object(p, 'run') as run:
+                p.feed_direct(self.entry(), temporary)
+                run.assert_any_call('git', 'push', 'origin', 'HEAD:main', cwd=temporary/'feed-repository')
+                self.assertFalse(any(c.args[:1]==('pr',) for c in remote.call_args_list))
+                self.assertFalse(any('--force' in c.args for c in run.call_args_list))
+                run.reset_mock()
+                p.feed_direct(self.entry(), temporary)
+                run.assert_not_called()
+
     def feed(self):
         return {'schemaVersion': 1, 'bundleIdentifier': p.BUNDLE, 'channel': 'stable', 'releases': []}
 

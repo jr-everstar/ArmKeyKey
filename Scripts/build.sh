@@ -10,6 +10,7 @@ xcrun swift Scripts/check-icons.swift build/ArmKeyKey.iconset Resources/InputSou
 iconutil -c icns build/ArmKeyKey.iconset -o Resources/ArmKeyKey.icns
 xcrun clang++ -std=c++17 -DOV_USE_SQLITE -I Vendor -Wno-parentheses -Wno-dangling-else Scripts/BuildDictionary.cpp -lsqlite3 -o build/tools/build-dictionary
 build/tools/build-dictionary Vendor/LegacyTables Resources/Dictionary.sqlite3
+python3 Scripts/build-new-inputs.py
 python3 Scripts/build-cantonese.py
 python3 Scripts/generate_project.py
 xcodebuild -project ArmKeyKey.xcodeproj -scheme ArmKeyKey -configuration Release -derivedDataPath build CODE_SIGNING_ALLOWED=NO build

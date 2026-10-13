@@ -1,0 +1,118 @@
+{
+  "repository": "https://github.com/openvanilla/McBopomofo",
+  "commit": "be6564acad6c4d3265c34a2e1a872d80f9db6068",
+  "files": [
+    {
+      "path": "LICENSE.txt",
+      "sha256": "72ed32193b0c629def66df63791b2fb125946b593a3251380e6b949488f47b72"
+    },
+    {
+      "path": "README.markdown",
+      "sha256": "9a3b67a4231bfabc7a6dc0081918f423cea378cd34f9f56c45fca2369a405536"
+    },
+    {
+      "path": "Source/Data/BPMFBase.txt",
+      "sha256": "46e64a53dc9c6baa2cbe6e0b1af572f8ef6aafb50597178b5fd53df804316ce7"
+    },
+    {
+      "path": "Source/Data/BPMFMappings.txt",
+      "sha256": "394f3946754ebdd9d5e503f0f94c6977e5e19bd7cab21b4b18a6ea0167e00171"
+    },
+    {
+      "path": "Source/Data/BPMFPunctuations.txt",
+      "sha256": "3058fd5fb933a5919900caa7332c2d1a95cd11a2a2ff56e51526a4daa4c95083"
+    },
+    {
+      "path": "Source/Data/Macros.txt",
+      "sha256": "44f6b29c3d23189f5519ab83c4b9a6cf2d0cf91398276c277d84779b7e472582"
+    },
+    {
+      "path": "Source/Data/Postprocess.txt",
+      "sha256": "5f01a9b387f6f1a7198a8c19d3a0181aad4f29663d40307de9cc8de664adf5ab"
+    },
+    {
+      "path": "Source/Data/README.md",
+      "sha256": "4b2eea7122a2a4d8bea7f23f611c6817d681a55d397b1ba3f8100acbfeb9f82e"
+    },
+    {
+      "path": "Source/Data/Symbols.txt",
+      "sha256": "d05d69afb44cbe6833db98dd46b0a4c6d60fbc97df8fcb361dce8123938e9b94"
+    },
+    {
+      "path": "Source/Data/curation/__init__.py",
+      "sha256": "a850afdc000b3fa8564f10826b4169409686f13159ccab0bf3d45f37c1250b5f"
+    },
+    {
+      "path": "Source/Data/curation/builders/__init__.py",
+      "sha256": "a624c18a02bd8403cdb37b9eeaa70c6a7bb4611caa39e4f3b012c224592ff860"
+    },
+    {
+      "path": "Source/Data/curation/builders/frequency_builder.py",
+      "sha256": "8042e65097ff209464e702a846e6cea42aa566dc8197f0f712b9e947dd4b26e7"
+    },
+    {
+      "path": "Source/Data/curation/compilers/__init__.py",
+      "sha256": "a37876e8e8d15154df6fe9dc88c540b5132994c402263b57ac09bf56bac9d292"
+    },
+    {
+      "path": "Source/Data/curation/compilers/compiler_utils.py",
+      "sha256": "828e8faa0adc42053111a08e87e85314e1f83a801c8a0c3a3c3e44f39d32b60a"
+    },
+    {
+      "path": "Source/Data/curation/compilers/main_compiler.py",
+      "sha256": "1ba950bc915ef423d3f01b44066e5aa6539293a11da13042f9f30f2c9fa572c4"
+    },
+    {
+      "path": "Source/Data/curation/compilers/plain_bpmf_compiler.py",
+      "sha256": "6be7eac7060f933c0c52957c71a6abcdd33e8b8ca1557771fb24ba8f35443108"
+    },
+    {
+      "path": "Source/Data/curation/compilers/postprocess.py",
+      "sha256": "e73b83d93e604560663ed4eaa8a0e0ef23467595b758affe961eadb2d9b9fb92"
+    },
+    {
+      "path": "Source/Data/curation/mandarin/grid.py",
+      "sha256": "38132daacd2963001dfe616b48df95a4735a9373825ab01eea3947055f3a748c"
+    },
+    {
+      "path": "Source/Data/exclusion.txt",
+      "sha256": "d0d72eb220d31d5800658de8d788a9e2531b504e9f05ffe633fb11d43d217a3d"
+    },
+    {
+      "path": "Source/Data/heterophony1.list",
+      "sha256": "7fddbb6a66022b1809181484c7627d79dee4231849cb2d3c8c8cd4578b3d22cb"
+    },
+    {
+      "path": "Source/Data/heterophony2.list",
+      "sha256": "4afd69a2702ae3af533cd01b755f81d77a430ace91311a8229319334aec24e37"
+    },
+    {
+      "path": "Source/Data/heterophony3.list",
+      "sha256": "8be3f37fe419744c3792df1bdfc67a0abdb215dbbb759c92204d4f8d68a32cd9"
+    },
+    {
+      "path": "Source/Data/phrase.occ",
+      "sha256": "dcd11597090b2bef88fb385bdd567e235ccd916728c84b8d0d3f8069ccfc7b8d"
+    },
+    {
+      "path": "Source/Engine/Mandarin/Mandarin.cpp",
+      "sha256": "82971280e70eaffac9b2068061312d93f9eeb8b5cd3992fabffeaf52a1685421"
+    },
+    {
+      "path": "Source/Engine/Mandarin/Mandarin.h",
+      "sha256": "0b650b0e3ba830e9dfa15da42755c3fde9515525f4694310ba2d172b6d5bc269"
+    },
+    {
+      "path": "Source/Engine/gramambular2/language_model.h",
+      "sha256": "7e66e79052ba5bf5065074f6437ad0e85e7afd488ea6b3c5613b9cae7956aa2c"
+    },
+    {
+      "path": "Source/Engine/gramambular2/reading_grid.cpp",
+      "sha256": "bf493acd3981d62bee248b9c531cac6a62e6e3f95fb1cefa963c22077f9a4f1a"
+    },
+    {
+      "path": "Source/Engine/gramambular2/reading_grid.h",
+      "sha256": "8fc8ba020ef69a548d94dddea40db3b024d98726f09419406c09745d3cb522b7"
+    }
+  ]
+}

@@ -195,6 +195,25 @@ def feed_pr(entry, temporary):
              '--title', f'Offer ArmKeyKey {entry["version"]} build {entry["build"]}', '--body-file', body).strip())
 
 
+def feed_direct(entry, temporary):
+    """Maintainer-only opt-in: fast-forward main; never force push or create a PR."""
+    checkout = temporary / 'feed-repository'
+    gh('repo', 'clone', REPO, checkout, '--', '--depth', '1', '--branch', 'main')
+    path = checkout / 'site/updates/stable.json'
+    previous = json.loads(path.read_text())
+    updated = add_release(json.loads(path.read_text()), entry)
+    if previous == updated:
+        print('This exact update is already on main; nothing to commit.')
+        return
+    path.write_text(json.dumps(updated, ensure_ascii=False, indent=2) + '\n')
+    user = json.loads(gh('api', 'user'))
+    run('git', 'config', 'user.name', user['login'], cwd=checkout)
+    run('git', 'config', 'user.email', f'{user["id"]}+{user["login"]}@users.noreply.github.com', cwd=checkout)
+    run('git', 'add', 'site/updates/stable.json', cwd=checkout)
+    run('git', 'commit', '-m', f'Publish ArmKeyKey {entry["version"]} build {entry["build"]} update feed', cwd=checkout)
+    run('git', 'push', 'origin', 'HEAD:main', cwd=checkout)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -202,6 +221,7 @@ def main():
     mode.add_argument('--build', action='store_true', help='Build and notarize app and PKG locally')
     parser.add_argument('--notes-file', required=True, type=Path, help='UTF-8 release notes; will be public')
     parser.add_argument('--publish', action='store_true', help='Actually publish release and create feed PR')
+    parser.add_argument('--feed-mode', choices=('pr', 'direct'), default='pr', help='Use direct only for a maintainer-authorized main update; never force pushes')
     args = parser.parse_args()
     notes = args.notes_file.resolve().read_text().strip()
     if not notes:
@@ -255,8 +275,8 @@ def main():
         note_path = temporary / 'release-notes.txt'
         note_path.write_text(notes + '\n')
         ensure_asset(tag, target, named, note_path, temporary)
-        feed_pr(entry, temporary)
-        print('Release published. Feed becomes live only after its PR is merged. Saved PKG:', saved)
+        (feed_direct if args.feed_mode == "direct" else feed_pr)(entry, temporary)
+        print("Release published; feed mode:", args.feed_mode, "Saved PKG:", saved)
 
 
 if __name__ == '__main__':

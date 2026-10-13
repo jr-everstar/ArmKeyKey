@@ -110,8 +110,14 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
 }
 - (void)buildEngine {
     NSUserDefaults *defaults=NSUserDefaults.standardUserDefaults;
-    BOOL simplex=[[defaults stringForKey:@"mode"] isEqual:@"simplex"];
-    NSString *key=simplex?@"simplexLearning":@"cangjieLearning";
+    NSString *selected=[defaults stringForKey:@"mode"];
+    armkeykey::InputMode mode=armkeykey::InputMode::Cangjie3;
+    NSString *key=@"cangjieLearning";
+    if([selected isEqual:@"simplex"]){mode=armkeykey::InputMode::Simplex;key=@"simplexLearning";}
+    else if([selected isEqual:@"cangjie5"]){mode=armkeykey::InputMode::Cangjie5;key=@"cangjie5Learning";}
+    else if([selected isEqual:@"jyutping"])mode=armkeykey::InputMode::Jyutping;
+    else if([selected isEqual:@"zhuyin"])mode=armkeykey::InputMode::Zhuyin;
+    else if([selected isEqual:@"smartZhuyin"]){mode=armkeykey::InputMode::SmartZhuyin;key=@"smartZhuyinLearning";}
     NSURL *support=[NSFileManager.defaultManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask].firstObject;
     support=[support URLByAppendingPathComponent:@"ArmKeyKey" isDirectory:YES];
     NSError *error=nil;
@@ -120,10 +126,13 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
     if(error)return;
     NSString *dictionary=[NSBundle.mainBundle pathForResource:@"Dictionary" ofType:@"sqlite3"];
     NSString *cantonese=[NSBundle.mainBundle pathForResource:@"Cantonese" ofType:@"sqlite3"];
-    BOOL jyutping=[[defaults stringForKey:@"mode"] isEqual:@"jyutping"];
-    if(jyutping && !cantonese)return;
-    try {if(dictionary)_engine=std::make_unique<armkeykey::Engine>(dictionary.UTF8String,support.path.UTF8String,simplex,[defaults boolForKey:key],[defaults boolForKey:@"extendedCharacters"]?armkeykey::CharacterSet::FullUnicode:armkeykey::CharacterSet::Compatible,[defaults boolForKey:@"associatedPhrases"]?(cantonese.UTF8String ?: ""):"",jyutping?(cantonese.UTF8String ?: ""):"",[defaults integerForKey:@"phraseModifier"]);}
-    catch(const std::exception&) { /* Never log client text. Settings exposes installation help. */ }
+    NSString *mandarin=[NSBundle.mainBundle pathForResource:@"Mandarin" ofType:@"sqlite3"];
+    try {_engine=std::make_unique<armkeykey::Engine>(dictionary.UTF8String ?: "",support.path.UTF8String,mode,[defaults boolForKey:key],[defaults boolForKey:@"extendedCharacters"]?armkeykey::CharacterSet::FullUnicode:armkeykey::CharacterSet::Compatible,[defaults boolForKey:@"associatedPhrases"]?(cantonese.UTF8String ?: ""):"",cantonese.UTF8String ?: "",[defaults integerForKey:@"phraseModifier"],mandarin.UTF8String ?: "");}
+    catch(const std::exception&) {
+        [defaults setObject:@"無法載入輸入法字庫或學習資料，請重新安裝完整的 ArmKeyKey，並檢查個人資料夾權限。" forKey:@"inputEngineError"];
+        NSBeep();
+    }
+    if(_engine)[defaults removeObjectForKey:@"inputEngineError"];
     _generation=[defaults integerForKey:@"dataGeneration"];
 }
 - (void)activateServer:(id)sender { [self buildEngine];_activeClient=sender; }
@@ -131,7 +140,7 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
 - (NSUInteger)recognizedEvents:(id)sender {return NSEventMaskKeyDown;}
 - (BOOL)handleEvent:(NSEvent *)event client:(id)sender {
     if(event.type!=NSEventTypeKeyDown)return NO;
-    if(!_engine || _generation!=[NSUserDefaults.standardUserDefaults integerForKey:@"dataGeneration"]){[self clear:sender];[self buildEngine];}
+    if(!_engine || _generation!=[NSUserDefaults.standardUserDefaults integerForKey:@"dataGeneration"]){[self commitComposition:sender];[self buildEngine];}
     if(!_engine)return NO;
     _activeClient=sender;
     NSEventModifierFlags chord=event.modifierFlags & (NSEventModifierFlagControl|NSEventModifierFlagShift|NSEventModifierFlagOption|NSEventModifierFlagCommand);
@@ -188,10 +197,10 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
     [sender setMarkedText:@"" selectionRange:NSMakeRange(0,0) replacementRange:NSMakeRange(NSNotFound,NSNotFound)];
 }
 - (void)commitComposition:(id)sender {
-    if(_engine && _state.visible && !_state.associated && _state.highlight<_state.candidates.size()){
-        _state=_engine->select(_state.highlight);[self render:sender];
+    if(_engine){
+        _state=_engine->finish();
+        [self render:sender];
     }
-    // Unconverted radicals are canceled, never inserted as unintended Chinese text.
     [self clear:sender];
 }
 - (void)chooseCandidate:(NSButton*)button {
@@ -208,7 +217,12 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
         _state.committed.clear();
     }
     NSString *reading=S(_state.composition);
-    [sender setMarkedText:reading selectionRange:NSMakeRange(reading.length,0) replacementRange:NSMakeRange(NSNotFound,NSNotFound)];
+    NSUInteger markedStart=reading.length,markedLength=0;
+    if(_state.selectionStart!=std::string::npos && _state.selectionStart<=_state.composition.size()){
+        markedStart=S(_state.composition.substr(0,_state.selectionStart)).length;
+        markedLength=S(_state.composition.substr(_state.selectionStart,_state.selectionLength)).length;
+    }
+    [sender setMarkedText:reading selectionRange:NSMakeRange(markedStart,markedLength) replacementRange:NSMakeRange(NSNotFound,NSNotFound)];
     if(_state.beep)NSBeep();
     if(!_state.visible){[_panel orderOut:nil];return;}
     if(!_panel){
@@ -268,7 +282,9 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
 }
 - (NSMenu*)menu {
     NSMenu *menu=[[NSMenu alloc] initWithTitle:@"ArmKeyKey"];
-    for(NSString *mode in @[@"Cangjie",@"Simplex",@"Jyutping"]){NSMenuItem *item=[[NSMenuItem alloc]initWithTitle:L(mode) action:@selector(changeMode:) keyEquivalent:@""];item.target=self;item.representedObject=[mode lowercaseString];NSString *selected=[NSUserDefaults.standardUserDefaults stringForKey:@"mode"];item.state=[selected isEqual:item.representedObject]?NSControlStateValueOn:NSControlStateValueOff;[menu addItem:item];}
+    NSArray *modeValues=@[@"cangjie",@"cangjie5",@"simplex",@"jyutping",@"zhuyin",@"smartZhuyin"];
+    NSArray *modeTitles=@[@"倉頡三代",@"倉頡五代",@"速成",@"廣東話拼音（粵拼）",@"傳統注音",@"智慧注音"];
+    for(NSUInteger n=0;n<modeValues.count;n++){NSMenuItem *item=[[NSMenuItem alloc]initWithTitle:modeTitles[n] action:@selector(changeMode:) keyEquivalent:@""];item.target=self;item.representedObject=modeValues[n];item.state=[[NSUserDefaults.standardUserDefaults stringForKey:@"mode"] isEqual:item.representedObject]?NSControlStateValueOn:NSControlStateValueOff;[menu addItem:item];}
     [menu addItem:NSMenuItem.separatorItem];
     NSMenuItem *phrases=[[NSMenuItem alloc]initWithTitle:@"聯想字" action:@selector(toggleAssociatedPhrases:) keyEquivalent:@""];
     phrases.target=self;

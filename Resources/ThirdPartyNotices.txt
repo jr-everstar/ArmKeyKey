@@ -15,6 +15,9 @@ BSD 3-Clause；完整條款見 ArmKeyKey-LICENSE.txt。
 • Rime Cantonese 字詞與詞頻：CanCLID 及貢獻者，CC BY 4.0。
   固定版本、來源和修改見 RimeCantonese-Attribution.txt。
   未使用 Rime 執行引擎或 jyut6ping3.maps。
+• Jackchows 倉頡五代補完香港版：MIT，保留作者及修訂者聲明。
+• McBopomofo 注音解析、組句核心及字庫：MIT；資料繼承 libtabe BSD 聲明。
+  固定版本及轉換見 NewInputs-Attribution.txt；完整原文隨 App 附帶。
 • SQLite：使用 macOS 提供的系統函式庫；SQLite 上游程式碼屬公有領域。
   https://www.sqlite.org/copyright.html
 • AppKit、SwiftUI、Foundation、InputMethodKit、Carbon、UniformTypeIdentifiers：
@@ -818,3 +821,192 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
+
+
+ArmKeyKey 0.9.0 — third-party input data and code
+
+Cangjie 5 Completion Project / 倉頡五代補完計劃
+Source: https://github.com/Jackchows/Cangjie5
+Revision: e4a4242f518ab0d34066bbd8aa44cb0cefd61db2
+Input: Cangjie5_HK.txt (Hong Kong ordering)
+MIT; Copyright (c) 2025 朱邦復（發明）/倉頡之友·馬來西亞（修訂）/倉頡五代補完計劃（修訂）
+Transformation: parse text/code fields, discard annotations, deduplicate identical pairs retaining first occurrence, index in SQLite. Runtime character filtering and opt-in learned ordering are ArmKeyKey behavior. This is a revised table, not a claim of identical codes to all fifth-generation implementations.
+
+McBopomofo / 小麥注音
+Source: https://github.com/openvanilla/McBopomofo
+Revision: be6564acad6c4d3265c34a2e1a872d80f9db6068
+MIT; Copyright (c) 2011-2026 Mengjuei Hsieh et al.
+Mandarin parser: Copyright (c) 2006 and onwards Lukhnos Liu.
+Gramambular2: Copyright (c) 2022 and onwards Lukhnos Liu.
+Original file headers and MIT license remain in the vendor sources; complete notices accompany the app.
+The data README identifies BPMFMappings as derived from BSD-licensed libtabe tsi.src. Complete inherited TaBE / Academia Sinica / Chih-Hao Tsai notices are included in McBopomofo-LICENSE.txt and ThirdPartyNotices.txt.
+libtabe notice source: https://github.com/kcwu/libtabe/blob/ea382a829c916f2cceda2022afdf8e8471e6e7b5/tsi-src/COPYING
+
+Transformation: run pinned upstream compilers offline, keep phonetic readings, omit macros/punctuation keys and mappings whose Unicode scalar count does not match the number of syllables, deduplicate reading/value pairs, retain source scores/order in SQLite. The build reports every omitted non-aligned mapping (chiefly symbols and emoji). Standard-layout key handling, selection persistence and macOS integration are implemented by ArmKeyKey; this does not claim identical behavior or phrase ranking to McBopomofo.
+No upstream installer, updater, branding assets, external corpus, Rime engine or libchewing library is bundled. Source names identify provenance, not endorsement.
+
+
+MIT License
+
+Copyright (c) 2025 朱邦復（發明）/倉頡之友·馬來西亞（修訂）/倉頡五代補完計劃（修訂）
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+MIT License
+
+Copyright (c) 2011-2026 Mengjuei Hsieh et al.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
+/*
+ * Copyrighy (c) 1999 TaBE Project.
+ * Copyright (c) 1999 Pai-Hsiang Hsiao.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * . Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ * . Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in
+ *   the documentation and/or other materials provided with the
+ *   distribution.
+ * . Neither the name of the TaBE Project nor the names of its
+ *   contributors may be used to endorse or promote products derived
+ *   from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * Copyright (c) 1999 Computer Systems and Communication Lab,
+ *                    Institute of Information Science, Academia Sinica.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * . Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ * . Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in
+ *   the documentation and/or other materials provided with the
+ *   distribution.
+ * . Neither the name of the Computer Systems and Communication Lab
+ *   nor the names of its contributors may be used to endorse or
+ *   promote products derived from this software without specific
+ *   prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+Copyright 1996 Chih-Hao Tsai @ Beckman Institute, University of Illinois
+c-tsai4@uiuc.edu  http://casper.beckman.uiuc.edu/~c-tsai4
+
+
+
+Copyright (c) 2006 and onwards Lukhnos Liu
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+Copyright (c) 2022 and onwards Lukhnos Liu.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.

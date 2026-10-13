@@ -18,13 +18,14 @@ static int settingsOpens=0, aboutOpens=0, licenseOpens=0, updateOpens=0;
 @end
 @interface TestClient : NSObject
 @property NSString *marked;
+@property NSRange selection;
 @property NSMutableString *committed;
 @end
 @implementation TestClient
 - (instancetype)init {if((self=[super init])){_marked=@"";_committed=[NSMutableString new];}return self;}
 - (NSString*)bundleIdentifier {return @"org.armkeykey.testclient";}
 - (NSInteger)windowLevel {return NSNormalWindowLevel;}
-- (void)setMarkedText:(id)text selectionRange:(NSRange)selection replacementRange:(NSRange)replacement {_marked=[text isKindOfClass:NSAttributedString.class]?[text string]:text;}
+- (void)setMarkedText:(id)text selectionRange:(NSRange)selection replacementRange:(NSRange)replacement {_marked=[text isKindOfClass:NSAttributedString.class]?[text string]:text;_selection=selection;}
 - (void)insertText:(id)text replacementRange:(NSRange)replacement {[_committed appendString:[text isKindOfClass:NSAttributedString.class]?[text string]:text];_marked=@"";}
 - (NSDictionary*)attributesForCharacterIndex:(NSUInteger)index lineHeightRectangle:(NSRect*)rect {*rect=NSMakeRect(100,500,1,20);return @{};}
 - (NSRange)selectedRange {return NSMakeRange(0,0);}
@@ -157,6 +158,40 @@ int main(int argc,char**argv){@autoreleasepool{
     check([controller handleEvent:repeat client:client] && featureNotifications.count==4,"holding shortcut never repeats notification or toggle");
     check(![NSUserDefaults.standardUserDefaults boolForKey:@"fullWidthOutput"],"repeat preserves mode");
     [controller deactivateServer:client];
+    // New modes use the same controller and panel without changing system input sources.
+    [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"smartZhuyinLearning"];
+    [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"cangjie5Learning"];
+    [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"associatedPhrases"];
+    for(NSString *mode in @[@"cangjie5",@"zhuyin",@"smartZhuyin"]){
+        [NSUserDefaults.standardUserDefaults setObject:mode forKey:@"mode"];
+        [controller activateServer:client];before=[client.committed copy];
+        NSString *keys=[mode isEqual:@"cangjie5"]?@"mwsl ":@"su3";
+        for(NSUInteger n=0;n<keys.length;n++)send(controller,client,[keys substringWithRange:NSMakeRange(n,1)],0);
+        if([mode isEqual:@"smartZhuyin"]){
+            check(client.marked.length>0 && [client.committed isEqual:before],"smart marked text before commit");
+            for(NSString *letter in @[@"c",@"l",@"3"])send(controller,client,letter,0);
+            check([client.marked isEqual:@"你好"],"native smart phrase");
+            send(controller,client,@"",123);
+            check(client.selection.location==1 && client.selection.length==0,"native middle caret uses UTF16");
+            send(controller,client,@"",125);check(client.selection.length>0,"native candidate span");
+            send(controller,client,@"1",18);
+            check([client.committed isEqual:before],"native smart choice remains marked");
+        }
+        [controller commitComposition:client];
+        check(client.committed.length>before.length && client.marked.length==0,"new mode forced commit");
+        before=[client.committed copy];[controller deactivateServer:client];
+        check([client.committed isEqual:before],"new mode idempotent deactivate");
+    }
+    [NSUserDefaults.standardUserDefaults setObject:@"smartZhuyin" forKey:@"mode"];
+    [controller activateServer:client];
+    for(NSString *letter in @[@"s",@"u",@"3"])send(controller,client,letter,0);
+    send(controller,client,@"",125);send(controller,client,@"",121);send(controller,client,@"4",21);
+    check([client.marked isEqual:@"𦗚"] && client.selection.location==2,"supplementary character caret uses two UTF16 units");
+    for(NSString *letter in @[@"c",@"l",@"3"])send(controller,client,letter,0);
+    send(controller,client,@"",123);
+    check(client.selection.location==2,"sentence caret after supplementary character");
+    [controller deactivateServer:client];
+    [NSUserDefaults.standardUserDefaults setObject:@"simplex" forKey:@"mode"];
     // Exercise preference changes between panels, including enlarged text and scaled hit targets.
     for(NSString *style in @[@"everstar",@"yahoo"]){
         for(NSNumber *scale in @[@0.8,@1.0,@1.6]){
