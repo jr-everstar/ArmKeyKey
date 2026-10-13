@@ -30,6 +30,7 @@ public:
     }
     ~JyutpingEngine(){if(db)sqlite3_close(db);}
     bool showingSuggestions() const { return state.associated; }
+    State finish(){if(state.visible && !state.associated){auto result=select(state.highlight);reset();return result;}reset();return state;}
     void reset(){state={};head.clear();}
     State select(size_t index){
         state.committed.clear();state.beep=false;state.handled=true;

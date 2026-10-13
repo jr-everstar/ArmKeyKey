@@ -1,0 +1,18 @@
+{
+  "repository": "https://github.com/Jackchows/Cangjie5",
+  "commit": "e4a4242f518ab0d34066bbd8aa44cb0cefd61db2",
+  "files": [
+    {
+      "path": "Cangjie5_HK.txt",
+      "sha256": "fdbbc0af05a289d88f2ab3ceae12f5a4f0bd54966cbb0c4c8f34145246194314"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "cf2746abe0b37ba14fb0e735eb868d418e4d335b9040887f579da958f95ffa77"
+    },
+    {
+      "path": "README.md",
+      "sha256": "889a8177b47350824b73555bebf8db5b8d988553968bfa8f147d21b01dbd4017"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ struct LearningStore {
     init(directory: URL? = nil) {
         self.directory = directory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("ArmKeyKey", isDirectory: true)
     }
-    let modes = ["cj", "simplex"]
+    let modes = ["cj", "simplex", "cj5", "smartZhuyin"]
     func database(_ mode: String, body: (OpaquePointer) throws -> Void) throws {
         let folder = directory
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
@@ -36,31 +36,36 @@ struct LearningStore {
                 guard result == SQLITE_DONE else { throw DataError.database }
             }
         }
-        return try JSONEncoder().encode(Backup(format: 1, entries: entries))
+        return try JSONEncoder().encode(Backup(format: 2, entries: entries))
     }
-    func replace(_ data: Data, dictionary: URL? = Bundle.main.url(forResource: "Dictionary", withExtension: "sqlite3")) throws {
+    func replace(_ data: Data, dictionary: URL? = Bundle.main.url(forResource: "Dictionary", withExtension: "sqlite3"), mandarin: URL? = Bundle.main.url(forResource: "Mandarin", withExtension: "sqlite3")) throws {
         guard data.count <= 16 * 1024 * 1024 else { throw DataError.invalidBackup }
         let backup = try JSONDecoder().decode(Backup.self, from: data)
-        guard backup.format == 1, backup.entries.count <= 100_000 else { throw DataError.invalidBackup }
+        guard [1, 2].contains(backup.format), backup.entries.count <= 100_000 else { throw DataError.invalidBackup }
+        let targetModes = backup.format == 1 ? ["cj", "simplex"] : modes
         var seen = Set<String>()
         for entry in backup.entries {
-            guard modes.contains(entry.mode), !entry.key.isEmpty, entry.key.utf8.count <= 5,
-                  entry.key.utf8.allSatisfy({ $0 >= 32 && $0 < 127 }), !entry.value.isEmpty,
+            let smart = entry.mode == "smartZhuyin"
+            let validKey = smart ? entry.key.utf8.count <= 128 && entry.key.unicodeScalars.allSatisfy({ (0x3105...0x3129).contains($0.value) || "ˊˇˋ˙-".unicodeScalars.contains($0) }) : entry.key.utf8.count <= 5 && entry.key.utf8.allSatisfy({ $0 >= 32 && $0 < 127 })
+            guard targetModes.contains(entry.mode), !entry.key.isEmpty, validKey, !entry.value.isEmpty,
                   entry.value.utf8.count <= 128, entry.count > 0, entry.count <= Int(Int32.max),
                   seen.insert("\(entry.mode)\u{0}\(entry.key)\u{0}\(entry.value)").inserted else { throw DataError.invalidBackup }
         }
-        if !backup.entries.isEmpty {
-            guard let dictionary else { throw DataError.database }
+        let copyText = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+        for mode in targetModes {
+            let entries = backup.entries.filter { $0.mode == mode }
+            if entries.isEmpty { continue }
+            guard let url = mode == "smartZhuyin" ? mandarin : dictionary else { throw DataError.database }
             var source: OpaquePointer?
-            guard sqlite3_open_v2(dictionary.path, &source, SQLITE_OPEN_READONLY, nil) == SQLITE_OK, let source else { if let source { sqlite3_close(source) }; throw DataError.database }
+            guard sqlite3_open_v2(url.path, &source, SQLITE_OPEN_READONLY, nil) == SQLITE_OK, let source else { if let source { sqlite3_close(source) }; throw DataError.database }
             defer { sqlite3_close(source) }
-            let copyText = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-            for entry in backup.entries {
+            for entry in entries {
                 var query: OpaquePointer?
-                let wildcard = entry.mode == "cj" && entry.key.count > 1 && (entry.key.contains("*") || entry.key.contains("?"))
+                let wildcard = ["cj", "cj5"].contains(mode) && entry.key.count > 1 && (entry.key.contains("*") || entry.key.contains("?"))
                 let predicate = wildcard ? "key LIKE ? ESCAPE '!'" : "key = ?"
                 let pattern = wildcard ? entry.key.replacingOccurrences(of: "!", with: "!!").replacingOccurrences(of: "%", with: "!%").replacingOccurrences(of: "_", with: "!_").replacingOccurrences(of: "*", with: "%").replacingOccurrences(of: "?", with: "_") : entry.key
-                let sql = "SELECT 1 FROM 'Generic-\(entry.mode)-cin' WHERE \(predicate) AND value = ? AND substr(key,1,11) != '__property_' LIMIT 1"
+                let table = mode == "smartZhuyin" ? "smart" : "Generic-\(mode)-cin"
+                let sql = "SELECT 1 FROM '\(table)' WHERE \(predicate) AND value = ? AND substr(key,1,11) != '__property_' LIMIT 1"
                 guard sqlite3_prepare_v2(source, sql, -1, &query, nil) == SQLITE_OK else { throw DataError.database }
                 defer { sqlite3_finalize(query) }
                 sqlite3_bind_text(query, 1, pattern, -1, copyText)
@@ -68,22 +73,24 @@ struct LearningStore {
                 guard sqlite3_step(query) == SQLITE_ROW else { throw DataError.invalidBackup }
             }
         }
-        // ATTACH lets both mode databases participate in the same SQLite transaction.
+        // All participating databases use rollback journals for cross-file atomicity.
         let transient = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
         try database("cj") { db in
-            var attach: OpaquePointer?
-            guard sqlite3_prepare_v2(db, "ATTACH DATABASE ? AS simplex", -1, &attach, nil) == SQLITE_OK else { throw DataError.database }
-            let path = directory.appendingPathComponent("Generic-simplex-cin-DynamicCandidateOrder.sqlite3").path
-            sqlite3_bind_text(attach, 1, path, -1, transient)
-            let attached = sqlite3_step(attach)
-            sqlite3_finalize(attach)
-            guard attached == SQLITE_DONE else { throw DataError.database }
-            guard sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS simplex.user_frequency (key,value,count); BEGIN IMMEDIATE", nil, nil, nil) == SQLITE_OK else { throw DataError.database }
+            for mode in targetModes where mode != "cj" {
+                var attach: OpaquePointer?
+                guard sqlite3_prepare_v2(db, "ATTACH DATABASE ? AS \(mode)", -1, &attach, nil) == SQLITE_OK else { throw DataError.database }
+                let path = directory.appendingPathComponent("Generic-\(mode)-cin-DynamicCandidateOrder.sqlite3").path
+                sqlite3_bind_text(attach, 1, path, -1, transient)
+                let attached = sqlite3_step(attach)
+                sqlite3_finalize(attach)
+                guard attached == SQLITE_DONE, sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS \(mode).user_frequency (key,value,count)", nil, nil, nil) == SQLITE_OK else { throw DataError.database }
+            }
+            guard sqlite3_exec(db, "BEGIN IMMEDIATE", nil, nil, nil) == SQLITE_OK else { throw DataError.database }
             do {
-                guard sqlite3_exec(db, "DELETE FROM main.user_frequency; DELETE FROM simplex.user_frequency", nil, nil, nil) == SQLITE_OK else { throw DataError.database }
-                for mode in modes {
+                for mode in targetModes {
+                    let schema = mode == "cj" ? "main" : mode
+                    guard sqlite3_exec(db, "DELETE FROM \(schema).user_frequency", nil, nil, nil) == SQLITE_OK else { throw DataError.database }
                     var statement: OpaquePointer?
-                    let schema = mode == "cj" ? "main" : "simplex"
                     guard sqlite3_prepare_v2(db, "INSERT INTO \(schema).user_frequency VALUES(?,?,?)", -1, &statement, nil) == SQLITE_OK else { throw DataError.database }
                     defer { sqlite3_finalize(statement) }
                     for entry in backup.entries where entry.mode == mode {

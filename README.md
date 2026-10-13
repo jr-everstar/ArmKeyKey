@@ -3,7 +3,7 @@
 </p>
 
 <h3 align="center">用慣嘅倉頡、速成，繼續打落去。</h3>
-<p align="center">香港團隊製作・倉頡／速成為主，配上廣東話拼音・原生 Apple Silicon</p>
+<p align="center">香港團隊製作・倉頡三／五代、速成、粵拼、傳統／智慧注音・原生 Apple Silicon</p>
 <p align="center">
   <a href="https://jr-everstar.github.io/ArmKeyKey/">網站</a> ·
   <a href="https://github.com/jr-everstar/ArmKeyKey/issues">回報問題／傾功能</a> ·
@@ -25,11 +25,14 @@
 
 | 輸入方式 | 用法 |
 | --- | --- |
-| **倉頡** | 最多五碼，保留原有字表嘅相對選字順序；預設開啟選字學習。 |
+| **倉頡三代** | 最多五碼，保留原有字表嘅相對選字順序；預設開啟選字學習。 |
 | **速成** | 首尾兩碼自動組字；預設關閉學習，保留熟悉嘅排序。 |
 | **廣東話拼音** | `neihou` 或 `nei5hou2` →「你好」，`ngo5dei6` →「我哋」；聲調可以全部輸入或全部省略。 |
+| **倉頡五代** | Jackchows 五代補完香港版，保留香港候選排序；例如「面」`mwsl`、「非」`lmsy`、「鬼」`hui`。 |
+| **傳統注音** | 標準注音鍵盤，完成音節後逐字選字，選字即上屏。 |
+| **智慧注音** | 連續組句、句中移動及改字，Return 提交；可在本機記住手動選取並提交嘅字詞。 |
 
-- **離線聯想詞**：約 10.2 萬個字詞，揀完「我」可以接住揀「我們」，只補上未打嘅部分。
+- **離線聯想詞**：適用於倉頡、速成及粵拼，約 10.2 萬個字詞，揀完「我」可以接住揀「我們」，只補上未打嘅部分。
 - **自己調選字窗**：Yahoo KeyKey／ArmKeyKey 兩款外觀，顏色、字體大小同縮放都可以改。
 - **繁簡、半形／全形切換**：分別用 `Control + Command + G` 同 `Shift + Command + Space`，亦可喺選單設定。
 - **學習記錄自己保管**：支援匯出、匯入同重設；資料留喺自己部 Mac。
@@ -37,11 +40,19 @@
 
 粵拼目前支援整詞查找，未有整句自動組詞或模糊音。其他行為差異見[相容性說明](Documentation/Compatibility.md)，資料處理見[私隱說明](Documentation/Privacy.md)。
 
+## 注音操作
+
+傳統及智慧注音使用標準鍵盤：`su3` → ㄋㄧˇ，`cl3` → ㄏㄠˇ。一聲用空白鍵完成，二／三／四聲及輕聲分別用 `6`／`3`／`4`／`7`。候選窗開啟後 `1–9` 先係選字鍵。
+
+智慧注音連續輸入 `su3cl3` 可以組成「你好」；左右鍵移動游標，向下或空白鍵開啟目前位置候選，選詞後仍留喺組字區，Return 提交整段。Home／End 移至頭尾，Backspace／Delete 刪字。Esc 依序關閉候選、取消未完成音節、取消整段。`Shift+,`／`Shift+.` 輸入中文逗號／句號。
+
+智慧選詞學習預設開啟，可獨立關閉；傳統注音維持固定排序。新版備份涵蓋三代、五代、速成及智慧注音，舊備份仍可匯入，唔會清除新模式記錄。首版未提供其他注音鍵盤或自訂詞庫編輯器；組字上限為 128 音節。詳見[相容性說明](Documentation/Compatibility.md)。
+
 ## 最新版本與試用
 
-**0.8.1（build 16） · macOS 26 或以上 · Apple Silicon（M 系列）**
+**0.9.0（build 17） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
-今次修正舊個人版或殘留 App 令安裝失敗嘅問題，安裝程式會自動備份舊 App，保留學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
+今次新增倉頡五代、傳統注音及智慧注音，六種模式可隨時切換；升級保留原有模式及學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
 
 0.7.2 或更舊版本未有更新功能，需要先從 GitHub Releases 手動下載安裝一次。安裝前儲存工作、切換至其他輸入來源，再按 Installer 指示完成登出。
 
@@ -53,7 +64,7 @@
 brew install --cask jr-everstar/armkeykey/armkeykey
 ```
 
-Homebrew 會自動加入專案嘅 [獨立 tap](https://github.com/jr-everstar/homebrew-armkeykey)，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作、切換輸入來源及關閉 ArmKeyKey；如有舊個人安裝，0.8.1 會自動移至 `~/Library/ArmKeyKey Installer Backup.*`，保留學習資料及設定。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
+Homebrew 會自動加入專案嘅 [獨立 tap](https://github.com/jr-everstar/homebrew-armkeykey)，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作、切換輸入來源及關閉 ArmKeyKey；如有舊個人安裝，0.8.1 起會自動移至 `~/Library/ArmKeyKey Installer Backup.*`，保留學習資料及設定。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
 
 升級：
 
@@ -87,6 +98,6 @@ open build/Build/Products/Release/ArmKeyKey.app --args --settings
 
 ## 致謝與授權
 
-多謝 Yahoo KeyKey、OpenVanilla／PlainVanilla 留低嘅程式碼同多年累積嘅輸入體驗，亦多謝 Rime Cantonese 嘅廣東話字詞資料，以及 Noto Sans TC 字型。ArmKeyKey 直接沿用當中嘅引擎同資源，再為而家嘅 Mac 繼續改落去。
+多謝 Yahoo KeyKey、OpenVanilla／PlainVanilla 留低嘅程式碼同多年累積嘅輸入體驗，亦多謝 Rime Cantonese 嘅廣東話字詞資料，Jackchows 倉頡五代補完、小麥注音與 libtabe 嘅核心／字庫，以及 Noto Sans TC 字型。ArmKeyKey 直接沿用當中嘅引擎同資源，再為而家嘅 Mac 繼續改落去。
 
-ArmKeyKey 原創部分採用 [BSD 3-Clause](LICENSE)；第三方程式碼、字表同字型保留各自授權。Maintainer 已確認今次發佈嘅字表權利及私隱審核完成；確認紀錄與歷史資料見[授權審核](Documentation/LicenseAudit.md)、[第三方聲明](Resources/ThirdPartyNotices.txt)及[依賴清單](Documentation/Dependencies.md)。
+ArmKeyKey 原創部分採用 [BSD 3-Clause](LICENSE)；第三方程式碼、字表同字型保留各自授權。新增五代資料採 MIT；小麥核心與資料保留 MIT 及繼承嘅 BSD 聲明。逐項來源及歷史審核見[授權審核](Documentation/LicenseAudit.md)、[第三方聲明](Resources/ThirdPartyNotices.txt)及[依賴清單](Documentation/Dependencies.md)。

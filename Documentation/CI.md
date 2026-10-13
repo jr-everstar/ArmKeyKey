@@ -34,3 +34,7 @@ selection. If enabling a merge queue later, add a `merge_group` trigger
 before requiring this check for queued merges.
 
 Updater fixtures cover version/OS/architecture selection, malformed feeds, daily check policy, notification suppression, URL restrictions, HTTP errors, bounds, cancellation and checksums. CI does not exercise real notification delivery, signed handoff, Installer authorization or logout. Those are covered by maintainer acceptance, separately from automated results. Signing and notarization run locally; Pages deploys `site/` only after changes reach `main`.
+
+## 0.9.0 additions
+
+The C++20 suite includes all six input modes, new vendor checksum verification, both Mandarin resources, Cangjie 5 ordering, tone handling, sentence editing and selection learning, legacy/new backup atomicity, and native marked-text/caret tests. The 128-syllable composition limit is exercised under sanitizers. Release-tool tests include the explicit direct-feed workflow and assert that it creates no PR or force push.

@@ -1,6 +1,7 @@
 #include "Engine.hpp"
 #include "PhraseSuggestions.hpp"
 #include "JyutpingEngine.hpp"
+#include "ZhuyinEngine.hpp"
 #include <Generic/OVIMGeneric.h>
 #include <PlainVanilla/PVLoaderService.h>
 #include <PlainVanilla/PVCandidate.h>
@@ -33,12 +34,13 @@ struct Engine::Impl {
     PVTextBuffer reading, composing;
     std::unique_ptr<OVIMGeneric> module;
     std::unique_ptr<OVEventHandlingContext> context;
-    Impl(const std::string& dictionary,const std::string& user,bool simplex,bool learning,CharacterSet characters,const std::string& phrasePath)
+    Impl(const std::string& dictionary,const std::string& user,InputMode mode,bool learning,CharacterSet characters,const std::string& phrasePath)
     : phrases(phrasePath),encoding(characters),db(OVSQLiteDatabaseService::Create(dictionary)),loader("en",nullptr,db.get(),&log,&encoding),candidates(&loader) {
-        if(!db || !db->connection()->hasTable(simplex?"Generic-simplex-cin":"Generic-cj-cin")) throw std::runtime_error("ArmKeyKey dictionary is unavailable");
+        const char* table=mode==InputMode::Simplex?"Generic-simplex-cin":mode==InputMode::Cangjie5?"Generic-cj5-cin":"Generic-cj-cin";
+        if(!db || !db->connection()->hasTable(table)) throw std::runtime_error("ArmKeyKey dictionary is unavailable");
         // The bundled database is never modified by the engine.
         db->connection()->execute("PRAGMA query_only=ON");
-        module=std::make_unique<OVIMGeneric>(simplex?"Generic-simplex-cin":"Generic-cj-cin",db.get());
+        module=std::make_unique<OVIMGeneric>(table,db.get());
         OVPathInfo path;path.writablePath=user;
         if(!module->initialize(&path,&loader)) throw std::runtime_error("Engine initialization failed");
         PVBasicKeyValueMapImpl values;OVKeyValueMap config(&values);
@@ -65,13 +67,24 @@ struct Engine::Impl {
         return s;
     }
 };
-Engine::Engine(const std::string& d,const std::string& u,bool s,bool l,CharacterSet c,const std::string& phrases,const std::string& cantonese,unsigned modifier):phraseModifier(modifier){
-    if(!cantonese.empty())jyutping=std::make_unique<JyutpingEngine>(cantonese,phrases);
-    else impl=std::make_unique<Impl>(d,u,s,l,c,phrases);
+Engine::Engine(const std::string& d,const std::string& u,InputMode mode,bool l,CharacterSet c,const std::string& phrases,const std::string& cantonese,unsigned modifier,const std::string& mandarin):phraseModifier(modifier){
+    if(mode==InputMode::Jyutping)jyutping=std::make_unique<JyutpingEngine>(cantonese,phrases);
+    else if(mode==InputMode::Zhuyin || mode==InputMode::SmartZhuyin)zhuyin=std::make_unique<ZhuyinEngine>(mandarin,u,mode==InputMode::SmartZhuyin,l);
+    else impl=std::make_unique<Impl>(d,u,mode,l,c,phrases);
+}
+Engine::Engine(const std::string& d,const std::string& u,bool s,bool l,CharacterSet c,const std::string& phrases,const std::string& cantonese,unsigned modifier)
+:Engine(d,u,!cantonese.empty()?InputMode::Jyutping:s?InputMode::Simplex:InputMode::Cangjie3,l,c,phrases,cantonese,modifier){}
+State Engine::finish(){
+    if(zhuyin)return zhuyin->finish();
+    if(jyutping)return jyutping->finish();
+    if(impl && !impl->suggestion.visible && impl->panel()->isInControl()){
+        auto result=select(impl->panel()->currentHightlightIndexInCandidateList());reset();return result;
+    }
+    reset();return State{};
 }
 Engine::~Engine()=default;
-void Engine::reset(){if(jyutping){jyutping->reset();return;}impl->suggestion={};impl->phraseHead.clear();impl->context->stopSession(&impl->loader);impl->reading.clear();impl->composing.clear();impl->composing.finishCommit();impl->candidates.resetAll();impl->context->startSession(&impl->loader);}
-State Engine::select(size_t index){if(jyutping)return jyutping->select(index);auto&i=*impl;
+void Engine::reset(){if(zhuyin){zhuyin->reset();return;}if(jyutping){jyutping->reset();return;}impl->suggestion={};impl->phraseHead.clear();impl->context->stopSession(&impl->loader);impl->reading.clear();impl->composing.clear();impl->composing.finishCommit();impl->candidates.resetAll();impl->context->startSession(&impl->loader);}
+State Engine::select(size_t index){if(zhuyin)return zhuyin->select(index);if(jyutping)return jyutping->select(index);auto&i=*impl;
     if(i.suggestion.visible){
         if(index>=i.suggestion.candidates.size()){auto s=i.suggestion;s.handled=true;s.beep=true;return s;}
         State s;s.handled=true;s.committed=i.suggestion.candidates[index].substr(i.phraseHead.size());
@@ -79,6 +92,7 @@ State Engine::select(size_t index){if(jyutping)return jyutping->select(index);au
     }
 auto p=i.panel();i.loader.resetState();if(index>=p->candidateList()->size())return i.state(false);auto text=p->candidateList()->candidateAtIndex(index);i.context->candidateSelected(&i.candidates,text,index,&i.reading,&i.composing,&i.loader);p->reset();return i.state(true);}
 State Engine::process(const Key& input){
+    if(zhuyin)return zhuyin->process(input);
     Key event=input;
     const bool associated=jyutping?jyutping->showingSuggestions():impl->suggestion.visible;
     if(associated && ((event.code>='1' && event.code<='9') || event.code==32)){

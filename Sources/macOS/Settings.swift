@@ -151,6 +151,8 @@ private struct SettingsView: View {
     }
     @AppStorage("mode") private var mode = "cangjie"
     @AppStorage("cangjieLearning") private var cangjieLearning = true
+    @AppStorage("cangjie5Learning") private var cangjie5Learning = true
+    @AppStorage("smartZhuyinLearning") private var smartZhuyinLearning = true
     @AppStorage("simplexLearning") private var simplexLearning = false
     @AppStorage("extendedCharacters") private var extendedCharacters = false
     @AppStorage("associatedPhrases") private var associatedPhrases = true
@@ -160,6 +162,7 @@ private struct SettingsView: View {
     }
     @AppStorage("simplifiedOutput") private var simplifiedOutput = false
     @AppStorage("fullWidthOutput") private var fullWidthOutput = false
+    @AppStorage("inputEngineError") private var inputEngineError = ""
     @State private var status = ""
     @State private var confirmReset = false
     private var version: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—" }
@@ -200,6 +203,7 @@ private struct SettingsView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 22) {
                         settingsContent
+                        if !inputEngineError.isEmpty { Text(inputEngineError).foregroundStyle(.red) }
                         if !status.isEmpty { Text(status).font(.callout).textSelection(.enabled) }
                     }.padding(30).frame(maxWidth: 850, alignment: .leading).frame(maxWidth: .infinity)
                 }.id(navigation.selection).background(Color(nsColor: .windowBackgroundColor))
@@ -208,13 +212,15 @@ private struct SettingsView: View {
         .onChange(of: phraseModifier) { LearningStore.changed() }
         .onChange(of: associatedPhrases) { LearningStore.changed() }
         .onChange(of: mode) { LearningStore.changed() }
+        .onChange(of: cangjie5Learning) { LearningStore.changed() }
+        .onChange(of: smartZhuyinLearning) { LearningStore.changed() }
         .onChange(of: cangjieLearning) { LearningStore.changed() }
         .onChange(of: extendedCharacters) { LearningStore.changed() }
         .onChange(of: simplexLearning) { LearningStore.changed() }
         .alert("重設個人選字順序？", isPresented: $confirmReset) {
             Button("取消", role: .cancel) {}
-            Button("重設", role: .destructive) { perform { try LearningStore.shared.replace(JSONEncoder().encode(Backup(format: 1, entries: []))) } }
-        } message: { Text("這會移除兩種輸入法記住的選字偏好。如需保留，請先匯出備份。") }
+            Button("重設", role: .destructive) { perform { try LearningStore.shared.replace(JSONEncoder().encode(Backup(format: 2, entries: []))) } }
+        } message: { Text("這會移除倉頡三代、五代、速成及智慧注音記住的選字偏好。如需保留，請先匯出備份。") }
     }
     private func sidebar(_ title: String, _ symbol: String, _ tag: String) -> some View {
         Label {
@@ -281,7 +287,7 @@ private struct SettingsView: View {
                 hint("列表大小會縮放整個選字窗；字體大小只調整候選文字，行高會自動配合。")
                 Divider()
                 Toggle("顯示完整擴充字集", isOn: $extendedCharacters)
-                hint("倉頡／速成預設使用相容字集。開啟擴充字集會增加罕用字及選字頁數。")
+                hint("倉頡三代／五代及速成預設使用相容字集。注音使用獨立字庫。開啟擴充字集會增加罕用字及選字頁數。")
             }
             card("聯想詞") {
                 Toggle("選字後顯示聯想詞", isOn: $associatedPhrases)
@@ -289,20 +295,22 @@ private struct SettingsView: View {
                     Text("Shift（預設）").tag(8); Text("Control").tag(4); Text("Option").tag(2)
                     Text("Command").tag(16); Text("無需修飾鍵").tag(0)
                 }.disabled(!associatedPhrases)
-                hint("例如選「我」後可選「我們」。\(phraseKeyPrefix)1–9 選詞，\(phraseKeyPrefix)空白鍵下一頁；繼續輸入或按 Esc 收起。")
+                hint("適用於倉頡、速成及粵拼。例如選「我」後可選「我們」。\(phraseKeyPrefix)1–9 選詞，\(phraseKeyPrefix)空白鍵下一頁；繼續輸入或按 Esc 收起。")
             }
         case "learning":
             hero("個人選字資料", "記住你的選擇，資料只留在這部 Mac。", "externaldrive")
             card("學習偏好") {
-                Toggle("記住倉頡選字順序", isOn: $cangjieLearning)
+                Toggle("記住倉頡三代選字順序", isOn: $cangjieLearning)
+                Toggle("記住倉頡五代選字順序", isOn: $cangjie5Learning)
+                Toggle("記住智慧注音選詞", isOn: $smartZhuyinLearning)
                 Toggle("記住速成選字順序", isOn: $simplexLearning)
                 hint("根據你明確選取的候選字，調整日後的選字順序。")
             }
             card("備份與還原") {
-                hint("匯出備份可以保留個人選字順序。匯入會取代倉頡與速成目前的學習資料。")
+                hint("匯出備份可以保留個人選字順序。新版備份會取代所有支援模式的學習資料；舊版備份只取代三代與速成。")
                 HStack { Button("匯出⋯", action: exportBackup); Button("匯入⋯", action: importBackup); Spacer(); Button("重設⋯", role: .destructive) { confirmReset = true } }
             }
-            hint("個人選字資料只留在本機，也不記錄輸入內容。")
+            hint("只在本機保存選字／選詞偏好，不記錄完整輸入歷史。智慧注音只學習手動選取並提交的字詞。")
         case "setup":
             hero("安裝與使用", "幾個簡單步驟，開始使用 ArmKeyKey。", "arrow.down.app")
             card("加入輸入來源") {
@@ -315,6 +323,7 @@ private struct SettingsView: View {
             }
             card("常用操作") {
                 hint("使用 1–9 選字，空白鍵翻頁。按 Esc 取消本次組字。")
+                hint("注音採標準鍵盤，空白鍵完成一聲，其餘聲調用 6／3／4／7。智慧注音可左右移動、向下選詞，Return 提交整段；Shift＋逗號／句號輸入中文標點。")
                 hint("Control＋Command＋G 切換繁／簡。Shift＋Command＋空白鍵 切換全形／半形。")
             }
         case "updates":
@@ -326,7 +335,7 @@ private struct SettingsView: View {
                     Image(nsImage: NSImage(named: "ArmKeyKey") ?? NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 76, height: 76)
                     VStack(alignment: .leading, spacing: 8) {
                         Text("版本 \(version)").font(.title3.bold())
-                        Text("倉頡、速成與廣東話拼音（粵拼）").foregroundStyle(.secondary)
+                        Text("倉頡三／五代、速成、粵拼與傳統／智慧注音").foregroundStyle(.secondary)
                         Text("© 2026 jr-everstar").textSelection(.enabled)
                     }
                 }
@@ -340,7 +349,7 @@ private struct SettingsView: View {
         default:
             hero("輸入與輸出", "選擇輸入方式與文字格式。", "keyboard")
             card("輸入方式") {
-                Picker("輸入法", selection: $mode) { Text("倉頡").tag("cangjie"); Text("速成").tag("simplex"); Text("廣東話拼音（粵拼）").tag("jyutping") }
+                Picker("輸入法", selection: $mode) { Text("倉頡三代").tag("cangjie"); Text("倉頡五代").tag("cangjie5"); Text("傳統注音").tag("zhuyin"); Text("智慧注音").tag("smartZhuyin"); Text("速成").tag("simplex"); Text("廣東話拼音（粵拼）").tag("jyutping") }
                 if mode == "jyutping" { hint("輸入 neihou 或 nei5hou2，按空白鍵開選字，再按 1–9 選字。可用 ' 分隔音節；聲調須全部輸入或全部省略。") }
                 else { hint("使用 1–9 選字。空白鍵與方向鍵保留原輸入法的操作方式。") }
             }

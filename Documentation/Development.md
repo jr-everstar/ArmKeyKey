@@ -1,6 +1,6 @@
 # 開發指南
 
-ArmKeyKey 以 C++ 引擎配合原生 macOS 介面，支援 Apple Silicon、macOS 26 或以上。目前功能及專案介紹見 [README](../README.md)，歷史版本改動見 [CHANGELOG](../CHANGELOG.md)。
+ArmKeyKey 以 C++20 引擎配合原生 macOS 介面，支援 Apple Silicon、macOS 26 或以上。目前功能及專案介紹見 [README](../README.md)，歷史版本改動見 [CHANGELOG](../CHANGELOG.md)。
 
 ## Build and test
 
@@ -28,7 +28,7 @@ open build/Build/Products/Release/ArmKeyKey.app --args --settings
 
 更新本機開發版本：先選另一個輸入來源、關閉 ArmKeyKey 設定，將舊 App 移至垃圾桶，再執行安裝腳本及登出／登入。移除時亦先切換輸入來源，再從鍵盤設定移除 ArmKeyKey 及刪除 App。
 
-學習資料留喺 `~/Library/Application Support/ArmKeyKey`，移除 App 唔會自動刪除。可喺設定匯出備份或重設；匯入會取代倉頡及速成兩個模式嘅學習排序，請先備份。匯入會驗證格式、數量、重複項目及字典成員，並以 SQLite transaction 處理，失敗會回滾。
+學習資料留喺 `~/Library/Application Support/ArmKeyKey`，移除 App 唔會自動刪除。可喺設定匯出備份或重設；格式 2 匯入會取代三代、五代、速成及智慧注音嘅學習資料；格式 1 只取代三代與速成，保留新模式記錄，請先備份。匯入會驗證格式、數量、重複項目及字典成員，並以 SQLite transaction 處理，失敗會回滾。
 
 PKG 安裝至共用嘅 `/Library/Input Methods/ArmKeyKey.app`，與本機開發安裝路徑不同。請跟[安裝包說明](Distribution.md#signed-pkg-installer)，避免同時保留兩份安裝。
 
@@ -63,3 +63,13 @@ Repository 根目錄係包含 `ArmKeyKey.xcodeproj` 嘅目錄。原始舊版壓�
 Contributors branch from current `main` with a feature name such as `feature/soft-updates`, commit the implementation and relevant tests, then open a PR. Feature PRs do not choose the next release number or announce a release. The maintainer reviews and merges, then prepares a separate version/documentation commit and release PR.
 
 For 0.8.1, release preparation sets version 0.8.1/build 16 and fixes personal-install migration. Publish from the clean pushed source commit, verify the new signed/notarized PKG, then update the feed, website and dedicated Homebrew tap with its final checksum. Historical 0.8.0 acceptance remains unchanged; record new installer checks separately. No PKG, signing key or local settings file belongs in Git.
+
+## 0.9.0 input architecture
+
+The mode enum explicitly selects Generic (Cangjie 3/5 or Simplex), Jyutping, or the new Zhuyin adapter. `ZhuyinEngine.hpp` uses the pinned McBopomofo Mandarin parser and Gramambular2 ReadingGrid, backed by a read-only `Mandarin.sqlite3`. The adapter implements key handling and a separate SQLite learning store. Production and tests compile as C++20.
+
+`Scripts/build-new-inputs.py` verifies both new vendor manifests before building. It adds the Hong Kong Cangjie table to the freshly generated legacy dictionary and runs the required upstream Python compilers in a temporary copy, never editing vendor inputs. Normal builds need no downloads or Python third-party packages. Unsupported non-aligned phonetic mappings are reported individually; macros are not exposed.
+
+Composition selection ranges are UTF-8 byte offsets in engine state and explicitly converted to UTF-16 for InputMethodKit. ReadingGrid indices are syllable positions; imported Mandarin values must have one Unicode scalar per syllable. Smart learning applies a bounded score bonus only to existing reading/value entries and records explicit overrides surviving the final committed walk. It does not implement McBopomofo's context override model or its user-phrase editor.
+
+Run `Scripts/test.sh` for the old-engine differential tests plus new-mode, backup-v2, UTF-16 controller and reproducible-data tests. The legacy fixtures remain untouched. The 0.9.0 maintainer workflow directly merges `feature/0.9.0-input-methods` into main, without a PR, as explicitly requested. Release metadata is version 0.9.0/build 17.

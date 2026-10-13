@@ -15,6 +15,9 @@ BSD 3-Clause；完整條款見 ArmKeyKey-LICENSE.txt。
 • Rime Cantonese 字詞與詞頻：CanCLID 及貢獻者，CC BY 4.0。
   固定版本、來源和修改見 RimeCantonese-Attribution.txt。
   未使用 Rime 執行引擎或 jyut6ping3.maps。
+• Jackchows 倉頡五代補完香港版：MIT，保留作者及修訂者聲明。
+• McBopomofo 注音解析、組句核心及字庫：MIT；資料繼承 libtabe BSD 聲明。
+  固定版本及轉換見 NewInputs-Attribution.txt；完整原文隨 App 附帶。
 • SQLite：使用 macOS 提供的系統函式庫；SQLite 上游程式碼屬公有領域。
   https://www.sqlite.org/copyright.html
 • AppKit、SwiftUI、Foundation、InputMethodKit、Carbon、UniformTypeIdentifiers：

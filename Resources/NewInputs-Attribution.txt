@@ -1,0 +1,21 @@
+ArmKeyKey 0.9.0 — third-party input data and code
+
+Cangjie 5 Completion Project / 倉頡五代補完計劃
+Source: https://github.com/Jackchows/Cangjie5
+Revision: e4a4242f518ab0d34066bbd8aa44cb0cefd61db2
+Input: Cangjie5_HK.txt (Hong Kong ordering)
+MIT; Copyright (c) 2025 朱邦復（發明）/倉頡之友·馬來西亞（修訂）/倉頡五代補完計劃（修訂）
+Transformation: parse text/code fields, discard annotations, deduplicate identical pairs retaining first occurrence, index in SQLite. Runtime character filtering and opt-in learned ordering are ArmKeyKey behavior. This is a revised table, not a claim of identical codes to all fifth-generation implementations.
+
+McBopomofo / 小麥注音
+Source: https://github.com/openvanilla/McBopomofo
+Revision: be6564acad6c4d3265c34a2e1a872d80f9db6068
+MIT; Copyright (c) 2011-2026 Mengjuei Hsieh et al.
+Mandarin parser: Copyright (c) 2006 and onwards Lukhnos Liu.
+Gramambular2: Copyright (c) 2022 and onwards Lukhnos Liu.
+Original file headers and MIT license remain in the vendor sources; complete notices accompany the app.
+The data README identifies BPMFMappings as derived from BSD-licensed libtabe tsi.src. Complete inherited TaBE / Academia Sinica / Chih-Hao Tsai notices are included in McBopomofo-LICENSE.txt and ThirdPartyNotices.txt.
+libtabe notice source: https://github.com/kcwu/libtabe/blob/ea382a829c916f2cceda2022afdf8e8471e6e7b5/tsi-src/COPYING
+
+Transformation: run pinned upstream compilers offline, keep phonetic readings, omit macros/punctuation keys and mappings whose Unicode scalar count does not match the number of syllables, deduplicate reading/value pairs, retain source scores/order in SQLite. The build reports every omitted non-aligned mapping (chiefly symbols and emoji). Standard-layout key handling, selection persistence and macOS integration are implemented by ArmKeyKey; this does not claim identical behavior or phrase ranking to McBopomofo.
+No upstream installer, updater, branding assets, external corpus, Rime engine or libchewing library is bundled. Source names identify provenance, not endorsement.

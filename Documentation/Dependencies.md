@@ -10,6 +10,9 @@ The project license is [BSD-3-Clause](../LICENSE) for original ArmKeyKey contrib
 | PlainVanilla headers | `Vendor/PlainVanilla`; candidate state, text buffers and loader adapters | MIT-style file headers; Lukhnos D. Liu, 2007–2010 |
 | Rime Cantonese data | Revision `259f0e48bba840c3a2e0d117539e96937f3d89bc`; chars, words, essay-cantonese; hashes in `Vendor/RimeCantonese/manifest.json` | CC-BY-4.0; CanCLID and contributors; bundled attribution, modifications and full license |
 | Cangjie / Simplex data | Pinned `Vendor/LegacyTables/cj-ext.cin` and `simplex-ext.cin` → `Resources/Dictionary.sqlite3` | Maintainer confirmed review for 0.8.0; see [audit](LicenseAudit.md) |
+| Jackchows Cangjie5 | Pinned HK table, manifest under `Vendor/Cangjie5`; converted to SQLite | MIT; full original copyright retained |
+| McBopomofo | Pinned Mandarin parser, Gramambular2 and offline data compilers under `Vendor/McBopomofo` | MIT code and project data; inherited libtabe BSD notices retained separately |
+| libtabe data lineage | McBopomofo BPMFMappings derives from tsi.src; no libtabe runtime | Full TaBE, Academia Sinica and Chih-Hao Tsai notices in `Licenses/libtabe-COPYING.txt` |
 | SQLite | Dynamically linked macOS `libsqlite3`; version follows the host OS | [Upstream public-domain statement](https://www.sqlite.org/copyright.html); no bundled SQLite implementation or proprietary extension |
 | Apple frameworks and runtimes | AppKit, SwiftUI, Foundation, InputMethodKit, Carbon, UniformTypeIdentifiers, CryptoKit, UserNotifications, Swift and C++ runtimes | Platform/toolchain components; not relicensed by this project |
 | Build tools | Xcode/Apple SDK, clang, Swift, Python 3 standard library; CoreText for icon generation | Build dependencies, not vendored third-party packages |
@@ -35,3 +38,7 @@ Both build and test scripts check the pinned inputs before use. Original file he
 ## Updater platform dependencies (0.8.0)
 
 The updater uses Foundation URLSession, CryptoKit SHA-256 and UserNotifications. Verification/handoff uses macOS-provided `pkgutil`, `spctl`, `codesign` and `open`, followed by Apple's Installer. Users do not need Xcode or `stapler`. No Sparkle framework, privileged helper, new third-party package or new dictionary data is included.
+
+## New input sources in 0.9.0
+
+See `Resources/NewInputs-Attribution.txt` for exact upstream commits, transformations and exclusions. All vendored files are byte-identical to the manifest revisions; ArmKeyKey integration code is separate. MIT is not used to relicense inherited libtabe contributions. The generator bundles every retained C++ permission block and the complete upstream data notice. No GPL Rime Cangjie table, libchewing, external corpus or proprietary SQLite extension is added. The Python build subset uses the standard library; unused upstream scripts and optional packages are excluded.
