@@ -28,7 +28,7 @@ For the complete local build/sign/notarize/package/upload pipeline:
 
 ```sh
 python3 Scripts/publish-release.py --build \
-  --notes-file Documentation/Releases/0.9.0.md --publish
+  --notes-file Documentation/Releases/0.9.1.md --publish
 ```
 
 Set `DEVELOPER_ID_APPLICATION`, `DEVELOPER_ID_INSTALLER` and `NOTARY_PROFILE` in the local shell first; the development Mac's existing settings are recorded in ignored `.local/notarization-settings.txt`. Without `--publish`, `--build` prints the intended steps only and does not build or contact Apple.
@@ -101,14 +101,14 @@ Acceptance: no lost/duplicated committed text, stable ordered candidates, correc
 
 The app downloads only on request, verifies the PKG and embedded app, and asks the user to save work and switch to another input source. A narrowly scoped helper waits for normal parent exit, verifies the package again and opens Apple's Installer. No script kills apps or forces logout. Version 0.8.1 allows the handoff from personal installations; its installer backs up the old App automatically and retains learning data. Older updater versions may still require opening the downloaded PKG manually.
 
-## 0.9.0 publication sequence
+## 0.9.1 publication sequence
 
 1. Commit the feature branch, merge into main and push; this release explicitly uses the maintainer-authorized direct workflow without PRs. Run the regression and build checks.
-2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.9.0.md --publish --feed-mode direct`.
+2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.9.1.md --publish --feed-mode direct`.
 3. Verify the resulting versioned GitHub Release and package; retain the signed bytes and publication results locally.
 4. The publisher commits the verified stable feed directly to main. Commit the website release update on the feature branch and merge it into main. Check the deployed JSON, size/hash and public download link after Pages completes.
 
-The app version is 0.9.0/build 17; the tag is `v0.9.0-build17`. Publication must use the newly built package, never a relabeled older PKG. The source release commit is separate from later feed/site publication commits.
+The app version is 0.9.1/build 18; the tag is `v0.9.1-build18`. Publication must use the newly built package, never a relabeled older PKG. The source release commit is separate from later feed/site publication commits.
 
 
 ## Homebrew
@@ -152,11 +152,11 @@ This resets only this tap's local Git files to the new repository; back up any l
 
 ## 0.8.1 installer regression
 
-The 0.8.0 installation log reported `PKInstallErrorDomain Code=112` from preinstall because a personal App remained. Version 0.8.1 replaces that refusal with recoverable migration. `Tests/InstallerTests.py` exercises fresh/repeated installs, personal and leftover bundles, running-process refusal, custom homes, symlinks and preservation of learning data. The existing 0.8.0 OS/input-engine acceptance is historical; these automated checks do not claim a new manual macOS 26/27 or live logout test. See [0.8.1 validation](Releases/0.8.1-validation.md).
+The 0.8.0 installation log reported `PKInstallErrorDomain Code=112` from preinstall because a personal App remained. Version 0.8.1 replaces that refusal with recoverable migration. The 0.8.1 installer tests covered fresh/repeated installs, personal and leftover bundles, running-process refusal, custom homes, symlinks and preservation of learning data. The running-process refusal is removed and its regression test replaced in 0.9.1. The existing 0.8.0 OS/input-engine acceptance is historical; these automated checks do not claim a new manual macOS 26/27 or live logout test. See [0.8.1 validation](Releases/0.8.1-validation.md).
 
 ## 0.9.0 maintainer publication
 
-Target: 0.9.0/build 17. The maintainer explicitly requested direct feature-branch commits and a merge into main without PRs, including version/docs/site/release/tap updates. This supersedes the default contributor PR workflow for this release only.
+Target: 0.9.1/build 18 (installer hotfix following 0.9.0). The maintainer explicitly requested direct feature-branch commits and a merge into main without PRs, including version/docs/site/release/tap updates. This supersedes the default contributor PR workflow for this release only.
 
 After local tests and build, merge `feature/0.9.0-input-methods` into main and push without force. Publish the fresh signed/notarized PKG from that clean source commit using `--feed-mode direct` with the publisher. This opt-in updates the verified stable feed through a normal fast-forward main commit; concurrent changes reject the push and require a fresh retry. Never weaken branch rules or overwrite a published asset.
 
