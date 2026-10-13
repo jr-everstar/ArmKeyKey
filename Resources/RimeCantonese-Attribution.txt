@@ -1,0 +1,11 @@
+ArmKeyKey 使用 Rime Cantonese 字詞及詞頻資料。
+作者／維護者：粵語計算語言學基礎建設組 CanCLID 及 Rime Cantonese 貢獻者。
+來源：https://github.com/rime/rime-cantonese
+版本：259f0e48bba840c3a2e0d117539e96937f3d89bc
+授權：Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+完整授權附於 RimeCantonese-LICENSE.txt。
+
+採用檔案：jyut6ping3.chars.dict.yaml、jyut6ping3.words.dict.yaml、essay-cantonese.txt。
+修改：移除資料標頭及非標準讀音，將粵拼轉成連寫聲調碼及無聲調碼，合併重複字詞讀音，依詞頻及讀音權重排序，產生 SQLite 查找索引及聯想詞前綴索引，加入 ArmKeyKey 自訂基本問候語及原有常用詞。
+未採用 jyut6ping3.maps。此整合不代表上游認可或背書 ArmKeyKey；排序及操作方式並非 Rime 引擎的完整重現。

@@ -1,0 +1,55 @@
+# 開發指南
+
+ArmKeyKey 以 C++ 引擎配合原生 macOS 介面，支援 Apple Silicon、macOS 26 或以上。目前功能及專案介紹見 [README](../README.md)，歷史版本改動見 [CHANGELOG](../CHANGELOG.md)。
+
+## Build and test
+
+需要 Xcode（macOS 26 或更新嘅 SDK）、命令列工具及 Python 3。喺 repository 根目錄執行：
+
+```sh
+Scripts/test.sh
+Scripts/build.sh
+open build/Build/Products/Release/ArmKeyKey.app --args --settings
+```
+
+亦可開啟 `ArmKeyKey.xcodeproj`。產生專案嘅來源係 `Scripts/generate_project.py`；修改專案設定時應同步修改產生器。只建置 arm64，Bundle ID 為 `everstar.inputmethod.armkeykey.mac`。
+
+字典來源及獨立舊引擎測試基準已固定喺 repo，唔需要外部 YahooKeyKey 壓縮檔。原生控制器測試需要已登入嘅 macOS 圖形工作階段；使用 mock text client，唔會切換系統輸入來源，亦唔代表已完成真實跨 App 測試。
+
+`Scripts/test.sh` 檢查來源 checksum、第三方聲明、字典 schema／metadata／全部資料及排序、同一 SQLite runtime 內重建嘅 byte 一致性、引擎 sanitizer 測試、舊引擎對照、學習資料備份及回滾、字集篩選、聯想詞、粵拼及安裝路徑。唔同 SQLite runtime 嘅檔案 header 可以唔同，所以跨 runtime 比較資料內容而非整個檔案嘅 bytes。
+
+`Scripts/check-legacy-inputs.py` 會按 `Vendor/legacy-inputs-manifest.json` 核對 37 個來源檔案；唔好為咗令測試通過而直接重設基準 checksum。粵拼來源由 `Vendor/RimeCantonese/manifest.json` 固定，建置離線產生資料庫；只有明確執行 `Scripts/fetch-cantonese.py` 先會下載來源。
+
+## Local installation
+
+自行建置嘅 App 以 ad-hoc 簽署供本機測試。開啟 App 按「安裝並加入輸入來源」，或執行 `Scripts/install-local.sh`，會安裝至 `~/Library/Input Methods/ArmKeyKey.app`，唔需要管理員權限，亦唔會覆蓋已有版本。
+
+到「系統設定 → 鍵盤 → 文字輸入 → 編輯 → ＋ → 繁體中文」加入 ArmKeyKey；如未出現，登出再登入。註冊 API 成功唔代表系統已啟用輸入來源，仍需喺設定加入。
+
+更新本機開發版本：先選另一個輸入來源、關閉 ArmKeyKey 設定，將舊 App 移至垃圾桶，再執行安裝腳本及登出／登入。移除時亦先切換輸入來源，再從鍵盤設定移除 ArmKeyKey 及刪除 App。
+
+學習資料留喺 `~/Library/Application Support/ArmKeyKey`，移除 App 唔會自動刪除。可喺設定匯出備份或重設；匯入會取代倉頡及速成兩個模式嘅學習排序，請先備份。匯入會驗證格式、數量、重複項目及字典成員，並以 SQLite transaction 處理，失敗會回滾。
+
+PKG 安裝至共用嘅 `/Library/Input Methods/ArmKeyKey.app`，與本機開發安裝路徑不同。請跟[安裝包說明](Distribution.md#signed-pkg-installer)，避免同時保留兩份安裝。
+
+## Architecture
+
+- `Sources/Engine`：沿用嘅 C++ generic engine、選字狀態機、按鍵事件及狀態快照。
+- `Sources/macOS`：Objective-C++ InputMethodKit controller、AppKit 非啟用式選字窗及 SwiftUI 設定。每個 controller 有獨立組字狀態。
+- `Resources`：字典、字型及授權聲明；字典以明確序號保留選字順序，個人學習資料另外儲存。
+- `Tests/Fixtures/LegacyEngine`：獨立編譯嘅原始舊引擎，用作行為對照。
+- `site/`：網站及更新 feed，由 GitHub Pages workflow 部署。目前 App 未包含自動更新器。
+
+設定及輸入選單採用繁體中文。候選字型使用隨 App 附帶嘅 Noto Sans TC，未涵蓋字元交由系統後備字型處理。輸入模式行為及限制見[相容性說明](Compatibility.md)。
+
+## Repository hygiene
+
+Repository 根目錄係包含 `ArmKeyKey.xcodeproj` 嘅目錄。原始舊版壓縮檔如需保留，應放喺 Git 之外。`Resources` 嘅 SQLite 檔案係字典，唔係個人學習記錄。
+
+本機發佈備忘及設定放 `.local/`，憑證放 Keychain，學習匯出放 `.local/` 或 `learning-exports/`。唔好將個人 Application Support 資料、簽署金鑰、安裝包或 build 產物加入 Git。
+
+提交前執行 `python3 Scripts/check-public-files.py`，並檢查 `git status --short` 及 staged diff。掃描器係輔助檢查，唔保證識別所有敏感資料；`.gitignore` 亦唔會移除已提交嘅檔案。
+
+## Release tooling
+
+`python3 Scripts/publish-release.py --help` 說明本機 PKG 驗證及發佈流程。預設只作預覽／驗證；`--publish` 上傳已驗證安裝包並建立 stable-feed PR，`--build` 配合 `--publish` 執行建置、簽署及公證流程。前置條件、驗收清單及重試方式見[發佈指南](Distribution.md#local-release-command)。

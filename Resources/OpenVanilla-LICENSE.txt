@@ -1,0 +1,178 @@
+OpenVanilla / PlainVanilla — MIT-style notice
+Applies to:
+Vendor/Generic/OVIMGeneric.cpp
+Vendor/Generic/OVIMGeneric.h
+Vendor/Generic/OVIMGenericConfig.h
+
+Copyright (c) 2004-2010 The OpenVanilla Project (http://openvanilla.org)
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+OpenVanilla / PlainVanilla — MIT-style notice
+Applies to:
+Vendor/OpenVanilla/OVAroundFilter.h
+Vendor/OpenVanilla/OVBase.h
+Vendor/OpenVanilla/OVBenchmark.h
+Vendor/OpenVanilla/OVCINDataTable.h
+Vendor/OpenVanilla/OVCINDatabaseService.h
+Vendor/OpenVanilla/OVCINToSQLiteConvertor.h
+Vendor/OpenVanilla/OVCandidateService.h
+Vendor/OpenVanilla/OVDatabaseService.h
+Vendor/OpenVanilla/OVDateTimeHelper.h
+Vendor/OpenVanilla/OVEncodingService.h
+Vendor/OpenVanilla/OVEventHandlingContext.h
+Vendor/OpenVanilla/OVException.h
+Vendor/OpenVanilla/OVFileHelper.h
+Vendor/OpenVanilla/OVFrameworkInfo.h
+Vendor/OpenVanilla/OVInputMethod.h
+Vendor/OpenVanilla/OVKeyPreprocessor.h
+Vendor/OpenVanilla/OVKeyValueMap.h
+Vendor/OpenVanilla/OVLoaderBase.h
+Vendor/OpenVanilla/OVLoaderService.h
+Vendor/OpenVanilla/OVLocalization.h
+Vendor/OpenVanilla/OVModule.h
+Vendor/OpenVanilla/OVModulePackage.h
+Vendor/OpenVanilla/OVOutputFilter.h
+Vendor/OpenVanilla/OVPathInfo.h
+Vendor/OpenVanilla/OVSQLiteDatabaseService.h
+Vendor/OpenVanilla/OVSQLiteWrapper.h
+Vendor/OpenVanilla/OVStringHelper.h
+Vendor/OpenVanilla/OVTextBuffer.h
+Vendor/OpenVanilla/OVUTF8Helper.h
+Vendor/OpenVanilla/OVWildcard.h
+Vendor/OpenVanilla/OpenVanilla.h
+
+Copyright (c) 2007-2010 Lukhnos D. Liu
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+OpenVanilla / PlainVanilla — MIT-style notice
+Applies to:
+Vendor/OpenVanilla/OVKey.h
+
+Copyright (c) 2007-2010 Lukhnos D. Liu and Weizhong Yang
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+OpenVanilla / PlainVanilla — MIT-style notice
+Applies to:
+Vendor/PlainVanilla/PVBasicKeyValueMapImpl.h
+Vendor/PlainVanilla/PVCandidate.h
+Vendor/PlainVanilla/PVKeyImpl.h
+Vendor/PlainVanilla/PVLoaderService.h
+Vendor/PlainVanilla/PVTextBuffer.h
+
+Copyright (c) 2007-2010 Lukhnos D. Liu (http://lukhnos.org)
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+OpenVanilla — upstream project license (data-table scope retained)
+
+This is the license for OpenVanilla for Mac.
+
+See AUTHORS.txt for present and past contributors of this project.
+
+For external libraries and data table, please go to each library's
+directory under Libraries/ and each data table files under DataTables/
+for their licenses.
+
+
+Copyright (c) 2004-2026 The OpenVanilla Project.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.

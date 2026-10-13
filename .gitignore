@@ -1,0 +1,45 @@
+# Reproducible build output; includes local backups, logs and signed packages.
+/build/
+/DerivedData/
+/dist/
+.DS_Store
+*.xcuserstate
+xcuserdata/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Machine-specific notes, credentials and user data belong here.
+/.local/
+/.private/
+.env
+.env.*
+!.env.example
+*.p12
+*.pfx
+*.p8
+*.pem
+*.key
+*.keychain
+*.keychain-db
+*.mobileprovision
+*.provisionprofile
+.netrc
+.npmrc
+.ssh/
+.aws/
+
+# Distribute installers via Releases, not source commits.
+*.app/
+*.dSYM/
+*.pkg
+*.dmg
+*.zip
+*.log
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3-journal
+
+# Local learning exports/backups: keep inside these ignored folders.
+/backups/
+/learning-exports/

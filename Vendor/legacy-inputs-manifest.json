@@ -1,0 +1,230 @@
+{
+  "source_distribution": "YahooKeyKey-Source-1.1.2528",
+  "provenance": "Copied byte-for-byte from the local original source distribution; no upstream URL or commit is asserted. Original archive is not required for build or tests.",
+  "license_notice": "Licenses/YahooKeyKey-BSD-3-Clause.txt",
+  "licensing_notes": "Original file headers are retained. See Documentation/LicenseAudit.md for the separate unresolved historical table redistribution review.",
+  "files": [
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVAroundFilter.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVAroundFilter.h",
+      "sha256": "d13e339a070d5de41500c8af0ccd93c1930ce95e667604c4dadbcf64a2d3bd65",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVBase.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVBase.h",
+      "sha256": "0a231e5071ff19fab18f1f34d09ff53fcc09973cd6299fc5eda9530495758daa",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVBenchmark.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVBenchmark.h",
+      "sha256": "eeba07c4c915f0e9f9d280ad41bfd63d8c7dcfbbc38854597c7c5707798e4150",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVCINDataTable.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVCINDataTable.h",
+      "sha256": "4244a319a226aa15f60b17c6e1128fa56c2c37362e5d85103abbfc991d638498",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVCINDatabaseService.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVCINDatabaseService.h",
+      "sha256": "2a2e34d1b0271a6d0aa4ad3a617a56089a33cf62e27d2762bce8f92033807c4a",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVCandidateService.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVCandidateService.h",
+      "sha256": "3a66f73ef4177ed3d652746b4be12fd8796967c776378354103e21d7674d6865",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVDatabaseService.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVDatabaseService.h",
+      "sha256": "9fae441d12a29ff05aa80cbcd182f8dba4b4ef88135e24040e7d10b7d7fe3bf1",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVDateTimeHelper.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVDateTimeHelper.h",
+      "sha256": "16499ffe24b2dce46ff9e3d9c2399c4b952214801353c5cc3f612cf3a5eb3d91",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVEncodingService.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVEncodingService.h",
+      "sha256": "6a7eea77772b887899e29899d46ada0cb379cde4b101dfb8cb21377a0942f0ed",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVEventHandlingContext.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVEventHandlingContext.h",
+      "sha256": "9ee75907d58e134bc3803056423f7964e84efb953fcb4f8cd4265010ef5cedc8",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVFileHelper.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVFileHelper.h",
+      "sha256": "a4efebd442e1c669d9925b9b33a0580593e5b74aa2b617422ef91333fdf7b6fe",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVFrameworkInfo.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVFrameworkInfo.h",
+      "sha256": "0a2acbc72152ed1d63074c28768913834dc210c20cd772f7545f39e678394f06",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVInputMethod.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVInputMethod.h",
+      "sha256": "ea6020874dd8a2bebfcd83571f00d4796bc14cbec3fecd4b87653d5d0468c64f",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVKey.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVKey.h",
+      "sha256": "ad116e2796c4af93a72a9fea49068bd6a2a225971968137832213f7bfd8ecb8f",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVKeyValueMap.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVKeyValueMap.h",
+      "sha256": "2a4b64e8629f9aebe615e9b1a064061dfb67d3ea8e403c2d863d769233050e34",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVLoaderService.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVLoaderService.h",
+      "sha256": "6a3c72c8d6120195f0686710ed9e73650e3efb8681edf37d5e1a03c9d1a973a6",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVLocalization.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVLocalization.h",
+      "sha256": "c9e652b8232de50555f74dd28f55e552e8d405baf178fa6aac14f676b5842474",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVModule.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVModule.h",
+      "sha256": "7f528905ec684d16d9e97a50ca616fb20c5dbf050f2727caa8448726746f858a",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVModulePackage.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVModulePackage.h",
+      "sha256": "48fdf1ed8fa4c61b2ef7a4a7263e6d32a8d6dc66a0ac8951d0793b01a33b6270",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVOutputFilter.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVOutputFilter.h",
+      "sha256": "6facfd58ca39cd02068e6b2143904bace4a29fffc81e816f633ab81e4e945a6e",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVPathInfo.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVPathInfo.h",
+      "sha256": "964d3f85b8a48ab4c4308167fef847ce8b34136157deea2f3699d423ac7064a6",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVSQLiteDatabaseService.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVSQLiteDatabaseService.h",
+      "sha256": "d111045d7415a0f2e4b104692e71df8704707198e7121f594a5e5cc51f049c26",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVSQLiteWrapper.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVSQLiteWrapper.h",
+      "sha256": "0a5cbf8bfe654eebfddfa28ebda59bc8ee7d65a1e5399e562b7e024eaeb1980f",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVStringHelper.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVStringHelper.h",
+      "sha256": "4a7a82b97b0ff7a8ae5bc4fac70d821077e3c967382cd2ef56760c29ec7e894e",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVTextBuffer.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVTextBuffer.h",
+      "sha256": "d5cebe7667d68b47c41b0d1947f8d2806adb0046e9cea38e3f0a7edff0e5525a",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVUTF8Helper.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVUTF8Helper.h",
+      "sha256": "873e3240cf4d516656a9aee75209c320e6ecd5c4af41e2b390b8716c71798fb8",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OVWildcard.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OVWildcard.h",
+      "sha256": "f4c8477b2badb221470d3d5d13127d239343dfc2b10cbbfaa1a908f7b4039dca",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/OpenVanilla/OpenVanilla.h",
+      "upstream_path": "Frameworks/OpenVanilla/Headers/OpenVanilla.h",
+      "sha256": "1d527388e2eaa752689f99fd6131d6222125e1f3af08bf619d493916665b9837",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/PlainVanilla/PVBasicKeyValueMapImpl.h",
+      "upstream_path": "Frameworks/PlainVanilla/Headers/PVBasicKeyValueMapImpl.h",
+      "sha256": "5bf48834d2c628e4451631556cd8189d47b004f8e6ba88e3cc68e25e9492d7b6",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/PlainVanilla/PVCandidate.h",
+      "upstream_path": "Frameworks/PlainVanilla/Headers/PVCandidate.h",
+      "sha256": "1415bcbb44aa96e841ee9eccf10fc17957ff2850a5086643a6ad45883050221b",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/PlainVanilla/PVKeyImpl.h",
+      "upstream_path": "Frameworks/PlainVanilla/Headers/PVKeyImpl.h",
+      "sha256": "d841405232081cc4ebbf50768c7b4634cd46d7e91052d3b5af625338b83036c3",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/PlainVanilla/PVLoaderService.h",
+      "upstream_path": "Frameworks/PlainVanilla/Headers/PVLoaderService.h",
+      "sha256": "fc3a2b811bfdb4f321282b1a533c2dc6839ddc52bb2987e53290f31d50dd0741",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/PlainVanilla/PVTextBuffer.h",
+      "upstream_path": "Frameworks/PlainVanilla/Headers/PVTextBuffer.h",
+      "sha256": "a059d6b9403d6859b684925820fab58867225f833b644843904b77322db84d82",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/Generic/OVIMGeneric.cpp",
+      "upstream_path": "ModulePackages/OVIMGeneric/OVIMGeneric.cpp",
+      "sha256": "f1c4d43bb9614d70e391fab3036e07be8986be8ad4b028159f45dd3eb9fbcfe6",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Tests/Fixtures/LegacyEngine/Generic/OVIMGeneric.h",
+      "upstream_path": "ModulePackages/OVIMGeneric/OVIMGeneric.h",
+      "sha256": "b79b20b14228e37e9a3af4727fdebef46e5d4c04e13def8c37428293043f6650",
+      "purpose": "test-only untouched reference"
+    },
+    {
+      "path": "Vendor/LegacyTables/cj-ext.cin",
+      "upstream_path": "DataTables/cj-ext.cin",
+      "sha256": "bb30b57550e796aeb255e0efe92749c1ea28b74cd42fed7a6c22282091bd44e6",
+      "purpose": "dictionary build input"
+    },
+    {
+      "path": "Vendor/LegacyTables/simplex-ext.cin",
+      "upstream_path": "DataTables/simplex-ext.cin",
+      "sha256": "8d925bfbd524dbc6042a1ce89912aadc17d8aa34109410a22948fd07c2d006e9",
+      "purpose": "dictionary build input"
+    }
+  ]
+}
