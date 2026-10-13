@@ -50,3 +50,7 @@ Composition is bounded to 128 syllables; an extra completed syllable remains edi
 Mandarin data contains 26,535 plain mappings and 172,663 smart mappings. 966 non-aligned symbol/emoji/variant mappings are excluded and reported by the builder to keep one output Unicode scalar per syllable. Reading keys for macros and special symbol modes are omitted. The legacy Cantonese associated suggestions are not used in either Zhuyin mode. There is no cloud input, custom phrase editor, other keyboard layout, or claim of identical Yahoo/McBopomofo candidate behavior.
 
 Smart learning stores only explicit selected reading/value pairs from the final submitted sentence. Cancellation does not learn. A bounded score bonus influences future composition; turning learning off ignores but preserves saved preferences. Backup format 2 restores all four learning modes atomically; format 1 restores only Cangjie 3 and Simplex, retaining new-mode data.
+
+### 0.9.1 installer relaunch handling
+
+Background ArmKeyKey processes no longer block a PKG upgrade. The shared bundle is backed up and atomically replaced by PackageKit; all users must log out/in afterward. This fixes the process-name preinstall failure reported with 0.9.0. It does not claim that old sessions immediately switch to the newly installed engine.

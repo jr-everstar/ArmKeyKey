@@ -33,7 +33,8 @@ class InstallerTests(unittest.TestCase):
         # Rewrite only OS integration boundaries in a temporary copy. The release
         # script accepts no environment variables that can bypass safety checks.
         source = SOURCE.read_text().replace('/Users/*', '"' + str(self.users) + '"/*')
-        source = source.replace("'/Library/Input Methods", "'" + str(self.root / 'Shared/Input Methods'))
+        source = source.replace("'/Library/", "'" + str(self.root / 'Shared') + '/')
+        (self.root / 'Shared').mkdir(exist_ok=True)
         source = source.replace('/usr/bin/pgrep -x ArmKeyKey', '/usr/bin/true' if running else '/usr/bin/false')
         source = source.replace('/usr/bin/stat -f %Su /dev/console', '/usr/bin/printf test' if console_home else '/usr/bin/printf root')
         if console_home:
@@ -61,10 +62,43 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual(self.run_script().returncode, 0)
         self.assertEqual(len(list((self.home / 'Library').glob('ArmKeyKey Installer Backup.*'))), 2)
 
-    def test_running_app_blocks_before_moving(self):
+    def test_running_app_does_not_block_upgrade(self):
+        self.app_fixture()
+        result = self.run_script(running=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(self.app.exists())
+        self.assertEqual(self.data.read_text(), 'preserve my learning')
+
+    def test_shared_bundle_stays_in_place_and_is_backed_up(self):
+        shared = self.root / 'Shared/Input Methods/ArmKeyKey.app'
+        shared.mkdir(parents=True)
+        binary = shared / 'old-binary'
+        binary.write_bytes(b'old running image')
+        inode = binary.stat().st_ino
+        with binary.open('rb') as mapped:
+            result = self.run_script(running=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(binary.stat().st_ino, inode)
+            self.assertEqual(mapped.read(), b'old running image')
+        backups = list((self.root / 'Shared').glob('ArmKeyKey Installer Backup.*/ArmKeyKey.app/old-binary'))
+        self.assertEqual(len(backups), 1)
+        self.assertEqual(backups[0].read_bytes(), binary.read_bytes())
+
+    def test_shared_symlink_rejected_before_any_backup(self):
+        shared = self.root / 'Shared/Input Methods'
+        shared.mkdir(parents=True)
+        (shared / 'ArmKeyKey.app').symlink_to(self.root / 'missing')
         self.app_fixture()
         self.assertNotEqual(self.run_script(running=True).returncode, 0)
         self.assertTrue(self.app.exists())
+
+    def test_no_process_killing_or_running_process_gate(self):
+        source = SOURCE.read_text()
+        for forbidden in ['pgrep', 'pkill', 'killall', '/bin/kill']:
+            self.assertNotIn(forbidden, source)
+        builder = (SOURCE.parents[1] / 'build-pkg.py').read_text()
+        self.assertIn("entry['BundleOverwriteAction'] = 'upgrade'", builder)
+        self.assertIn('onConclusion="RequireLogout"', builder)
 
     def test_symlink_is_rejected_without_touching_target(self):
         target = self.root / 'outside'
