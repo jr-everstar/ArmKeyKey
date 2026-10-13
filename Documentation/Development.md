@@ -38,7 +38,7 @@ PKG 安裝至共用嘅 `/Library/Input Methods/ArmKeyKey.app`，與本機開發�
 - `Sources/macOS`：Objective-C++ InputMethodKit controller、AppKit 非啟用式選字窗及 SwiftUI 設定。每個 controller 有獨立組字狀態。
 - `Resources`：字典、字型及授權聲明；字典以明確序號保留選字順序，個人學習資料另外儲存。
 - `Tests/Fixtures/LegacyEngine`：獨立編譯嘅原始舊引擎，用作行為對照。
-- `site/`：網站及更新 feed，由 GitHub Pages workflow 部署。目前 App 未包含自動更新器。
+- `site/`：網站及更新 feed，由 GitHub Pages workflow 部署。0.8.0 起由 App 內更新器讀取 stable feed。
 
 設定及輸入選單採用繁體中文。候選字型使用隨 App 附帶嘅 Noto Sans TC，未涵蓋字元交由系統後備字型處理。輸入模式行為及限制見[相容性說明](Compatibility.md)。
 
@@ -53,3 +53,13 @@ Repository 根目錄係包含 `ArmKeyKey.xcodeproj` 嘅目錄。原始舊版壓�
 ## Release tooling
 
 `python3 Scripts/publish-release.py --help` 說明本機 PKG 驗證及發佈流程。預設只作預覽／驗證；`--publish` 上傳已驗證安裝包並建立 stable-feed PR，`--build` 配合 `--publish` 執行建置、簽署及公證流程。前置條件、驗收清單及重試方式見[發佈指南](Distribution.md#local-release-command)。
+
+## Update architecture
+
+`UpdateManifest.swift` validates feed entries and update policy; `UpdateTransport.swift` handles bounded, cancellable network requests; `UpdateInstaller.swift` verifies packages and implements the parent-exit handoff; `Updates.swift` owns state, notifications and the settings page. `main.swift` handles installer handoff before initializing InputMethodKit. `Scripts/test.sh` includes offline updater tests.
+
+## Contribution and release workflow
+
+Contributors branch from current `main` with a feature name such as `feature/soft-updates`, commit the implementation and relevant tests, then open a PR. Feature PRs do not choose the next release number or announce a release. The maintainer reviews and merges, then prepares a separate version/documentation commit and release PR.
+
+For 0.8.0, the merged feature is PR #3. The maintainer release preparation sets version 0.8.0/build 15, records acceptance and updates documentation. After its merge and checks, publish the signed/notarized PKG from the clean source commit. Review the generated feed PR and website update, merge them, and verify the public package and Pages JSON. No PKG, signing key or local settings file belongs in Git.

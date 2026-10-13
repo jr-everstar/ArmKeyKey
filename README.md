@@ -39,9 +39,11 @@
 
 ## 最新版本與試用
 
-**0.7.2（build 14） · macOS 26 或以上 · Apple Silicon（M 系列）**
+**0.8.0（build 15） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
-目前版本修正咗輸入來源註冊問題，PKG 已完成 Developer ID 簽署、Apple 公證及票證附加驗證。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
+今次加入 App 內「軟件更新」：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
+
+0.7.2 或更舊版本未有更新功能，需要先從 GitHub Releases 手動下載安裝一次。安裝前儲存工作、切換至其他輸入來源，再按 Installer 指示完成登出。
 
 想自行建置試用，需要 Xcode（macOS 26+ SDK）、命令列工具同 Python 3：
 
@@ -66,4 +68,4 @@ open build/Build/Products/Release/ArmKeyKey.app --args --settings
 
 多謝 Yahoo KeyKey、OpenVanilla／PlainVanilla 留低嘅程式碼同多年累積嘅輸入體驗，亦多謝 Rime Cantonese 嘅廣東話字詞資料，以及 Noto Sans TC 字型。ArmKeyKey 直接沿用當中嘅引擎同資源，再為而家嘅 Mac 繼續改落去。
 
-ArmKeyKey 原創部分採用 [BSD 3-Clause](LICENSE)；第三方程式碼、字表同字型保留各自授權。歷史倉頡／速成字表嘅再散佈授權仍有待釐清，詳見[授權審核](Documentation/LicenseAudit.md)、[第三方聲明](Resources/ThirdPartyNotices.txt)及[依賴清單](Documentation/Dependencies.md)。
+ArmKeyKey 原創部分採用 [BSD 3-Clause](LICENSE)；第三方程式碼、字表同字型保留各自授權。Maintainer 已確認今次發佈嘅字表權利及私隱審核完成；確認紀錄與歷史資料見[授權審核](Documentation/LicenseAudit.md)、[第三方聲明](Resources/ThirdPartyNotices.txt)及[依賴清單](Documentation/Dependencies.md)。
