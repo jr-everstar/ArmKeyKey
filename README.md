@@ -41,9 +41,31 @@
 
 **0.8.0（build 15） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
-今次加入 App 內「軟件更新」：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
+今次加入 Homebrew 安裝方法。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
 
 0.7.2 或更舊版本未有更新功能，需要先從 GitHub Releases 手動下載安裝一次。安裝前儲存工作、切換至其他輸入來源，再按 Installer 指示完成登出。
+
+### Homebrew 安裝
+
+已安裝 [Homebrew](https://brew.sh/) 嘅話，可以直接執行：
+
+```sh
+brew tap jr-everstar/armkeykey https://github.com/jr-everstar/ArmKeyKey.git
+brew install --cask jr-everstar/armkeykey/armkeykey
+```
+
+呢個係專案自訂 tap，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作、切換輸入來源及關閉 ArmKeyKey；如有個人安裝，先移走 `~/Library/Input Methods/ArmKeyKey.app`，保留學習資料。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
+
+升級：
+
+```sh
+brew update
+brew upgrade --cask --greedy jr-everstar/armkeykey/armkeykey
+```
+
+移除前先切換至其他輸入來源、關閉 ArmKeyKey，並在鍵盤設定移除輸入來源，再執行 `brew uninstall --cask jr-everstar/armkeykey/armkeykey`。學習資料及個人設定會保留。詳細說明見 [Homebrew 安裝](Documentation/Distribution.md#homebrew)。
+
+### 自行建置
 
 想自行建置試用，需要 Xcode（macOS 26+ SDK）、命令列工具同 Python 3：
 

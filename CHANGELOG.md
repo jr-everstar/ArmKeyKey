@@ -1,5 +1,12 @@
 # Changelog
 
+## 發佈渠道更新 — Homebrew 安裝（App 維持 0.8.0 build 15）
+
+- 新增自訂 Homebrew tap，可用 `brew install --cask jr-everstar/armkeykey/armkeykey` 安裝。
+- 沿用 Developer ID 簽署及 Apple 公證嘅 PKG，驗證固定版本 SHA-256。
+- 補充 Homebrew 升級、移除、個人安裝遷移及登出指引。
+- 輸入引擎及選字行為維持不變。
+
 ## 0.8.0（build 15）— App 內軟件更新
 
 - 新增「軟件更新」設定頁及輸入法選單「檢查更新…」。
