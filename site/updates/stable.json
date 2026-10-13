@@ -4,6 +4,20 @@
   "channel": "stable",
   "releases": [
     {
+      "version": "0.9.0",
+      "build": 17,
+      "minimumSystemVersion": "26.0",
+      "architectures": [
+        "arm64"
+      ],
+      "notes": "# ArmKeyKey 0.9.0（build 17）\n\n新增三個輸入模式，連同原有模式共有六種選擇：\n\n- 倉頡五代：採用 Jackchows 五代補完香港版，保留香港候選排序，設獨立學習開關。\n- 傳統注音：標準注音鍵盤，完成音節後逐字選字。\n- 智慧注音：本機詞庫組句、句中改字及游標移動，記住手動選取並提交嘅字詞。\n- 三代仍為預設，保留原有速成／粵拼、輸出設定及個人資料。\n- 備份格式 2 同時涵蓋三代、五代、速成及智慧注音；舊備份仍可匯入，唔會刪除新模式記錄。\n- 新增完整第三方來源、MIT 及繼承 BSD 授權聲明。\n\n注音第一階段使用標準鍵盤。智慧注音按 Return 提交整段，方向鍵移動、向下選詞；暫未提供其他鍵盤配置或自訂詞庫編輯器。輸入與學習全程留喺本機。\n\n支援 Apple Silicon、macOS 26 或以上。安裝前請儲存工作、切換至其他輸入來源，並關閉所有登入帳戶的 ArmKeyKey。需要管理員授權；完成後登出再登入。舊個人安裝會備份，學習資料保留。Homebrew 使用同一份簽署及公證 PKG。",
+      "package": {
+        "url": "https://github.com/jr-everstar/ArmKeyKey/releases/download/v0.9.0-build17/ArmKeyKey-0.9.0-build17-mac-arm64.pkg",
+        "size": 28760212,
+        "sha256": "4fca0a8eda116d39d3c52a6d6a4b578b6358d5b004d3d0ae18b330837964f2bf"
+      }
+    },
+    {
       "version": "0.8.1",
       "build": 16,
       "minimumSystemVersion": "26.0",
