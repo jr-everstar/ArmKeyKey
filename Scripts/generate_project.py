@@ -5,7 +5,7 @@ def uid(s):return hashlib.sha256(s.encode()).hexdigest()[:24].upper()
 def q(s):return json.dumps(str(s))
 objects={}
 def add(name,body):objects[uid(name)]=body;return uid(name)
-sources=['Sources/macOS/Licenses.swift','Sources/macOS/Installation.swift','Sources/macOS/LearningStore.swift','Sources/Engine/Engine.cpp','Vendor/Generic/OVIMGeneric.cpp','Sources/macOS/AKInputController.mm','Sources/macOS/Settings.swift','Sources/macOS/main.swift']
+sources=['Sources/macOS/UpdateManifest.swift','Sources/macOS/UpdateTransport.swift','Sources/macOS/UpdateInstaller.swift','Sources/macOS/Updates.swift','Sources/macOS/Licenses.swift','Sources/macOS/Installation.swift','Sources/macOS/LearningStore.swift','Sources/Engine/Engine.cpp','Vendor/Generic/OVIMGeneric.cpp','Sources/macOS/AKInputController.mm','Sources/macOS/Settings.swift','Sources/macOS/main.swift']
 resources=['Resources/NotoSansTC-VariableFont_wght.ttf','Resources/NotoSansTC-LICENSE.txt','Resources/NotoSansTC-Attribution.txt','Resources/OpenVanilla-LICENSE.txt','Resources/YahooKeyKey-LICENSE.txt','Resources/ArmKeyKey-LICENSE.txt','Resources/LicensingOverview.txt','Resources/Cantonese.sqlite3','Resources/RimeCantonese-LICENSE.txt','Resources/RimeCantonese-Attribution.txt','Resources/Phrases.txt','Resources/ArmKeyKey.icns','Resources/InputSource.tiff','Resources/TransparentStatusIcon.tiff','Resources/Dictionary.sqlite3','Resources/ThirdPartyNotices.txt','Resources/zh-Hant.lproj/Localizable.strings']
 refs=[];builds={'source':[],'resource':[]}
 for path in sources+resources:

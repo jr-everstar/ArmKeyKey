@@ -9,9 +9,10 @@ static NSMutableArray *featureNotifications;
     [featureNotifications addObject:@[key,@(enabled)]];
 }
 @end
-static int settingsOpens=0, aboutOpens=0, licenseOpens=0;
+static int settingsOpens=0, aboutOpens=0, licenseOpens=0, updateOpens=0;
 @implementation AKSettings
 + (void)showAbout { ++aboutOpens; }
++ (void)checkUpdates { ++updateOpens; }
 + (void)showLicenses { ++licenseOpens; }
 + (void)show { ++settingsOpens; }
 @end
@@ -49,6 +50,8 @@ int main(int argc,char**argv){@autoreleasepool{
         check(item!=nil && item.target==controller,"informational menu entry exists and targets controller");
         check([NSApp sendAction:item.action to:item.target from:item],"informational menu action dispatch");
     }
+    NSMenuItem *updateItem=[menu itemWithTitle:@"檢查更新…"];
+    check(updateItem!=nil && [NSApp sendAction:updateItem.action to:updateItem.target from:updateItem] && updateOpens==1,"update menu opens update check");
     check(aboutOpens==1 && licenseOpens==1 && settingsOpens==0,"menu opens correct settings destination");
 
     check(send(controller,client,@"a",0),"first key consumed");check([client.marked isEqual:@"日"],"marked reading");

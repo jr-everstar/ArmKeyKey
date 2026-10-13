@@ -31,3 +31,5 @@ jobs:
           python3 --version
       - name: Run regression tests
         run: bash Scripts/test.sh
+      - name: Build complete app
+        run: bash Scripts/build.sh
