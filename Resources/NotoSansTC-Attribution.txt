@@ -1,0 +1,9 @@
+Noto Sans TC — bundled candidate font
+
+Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'
+License: SIL Open Font License 1.1; see NotoSansTC-LICENSE.txt.
+Upstream: https://github.com/google/fonts/tree/main/ofl/notosanstc
+Packaged unchanged from the locally installed NotoSansTC-VariableFont_wght.ttf.
+SHA-256: 6ce0f80c4d3e5b8ff32174239fc4c7efc1fdc3251b21f45702e206b59ee45ac6
+Registered for the application process only. No system-wide installation.
+Not all Unicode CJK extensions are covered.

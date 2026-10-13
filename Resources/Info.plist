@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>zh-Hant</string>
+	<key>CFBundleDisplayName</key>
+	<string>ArmKeyKey</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconFile</key>
+	<string>ArmKeyKey</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>zh-Hant</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>ArmKeyKey</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.7.2</string>
+	<key>CFBundleVersion</key>
+	<string>14</string>
+	<key>InputMethodConnectionName</key>
+	<string>ArmKeyKey_Connection</string>
+	<key>InputMethodServerControllerClass</key>
+	<string>AKInputController</string>
+	<key>InputMethodServerDelegateClass</key>
+	<string>AKInputController</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>26.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 jr-everstar. Includes third-party software and data; see bundled license notices.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>TISIconIsTemplate</key>
+	<false/>
+	<key>TISInputSourceID</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>TISIntendedLanguage</key>
+	<string>zh-Hant</string>
+	<key>tsInputMethodCharacterRepertoireKey</key>
+	<array>
+		<string>Hant</string>
+	</array>
+	<key>tsInputMethodIconFileKey</key>
+	<string>TransparentStatusIcon.tiff</string>
+	<key>tsInputMethodLanguageKey</key>
+	<string>zh-Hant</string>
+	<key>tsInputMethodPrimaryInScriptKey</key>
+	<true/>
+</dict>
+</plist>

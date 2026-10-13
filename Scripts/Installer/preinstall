@@ -1,0 +1,27 @@
+#!/bin/bash
+set -euo pipefail
+# Do not overwrite an input method while any user is running it.
+if /usr/bin/pgrep -x ArmKeyKey >/dev/null; then
+    echo '請先切換至其他輸入法、關閉 ArmKeyKey，並登出其他正在使用 ArmKeyKey 的帳戶，再重試安裝。' >&2
+    exit 1
+fi
+# Refuse a second installation; never delete a user's existing app or data.
+for user_home in /Users/*; do
+    if [[ -e "$user_home/Library/Input Methods/ArmKeyKey.app" ]]; then
+        echo "已有個人安裝版本：$user_home/Library/Input Methods/ArmKeyKey.app。請先移走舊 App 再重試；保留 Application Support 中的個人資料。" >&2
+        exit 1
+    fi
+done
+console_user=$(/usr/bin/stat -f %Su /dev/console)
+if [[ "$console_user" != root && "$console_user" != loginwindow ]]; then
+    console_home=$(/usr/bin/dscl . -read "/Users/$console_user" NFSHomeDirectory | /usr/bin/sed 's/^NFSHomeDirectory: //')
+    if [[ -e "$console_home/Library/Input Methods/ArmKeyKey.app" ]]; then
+        echo '目前帳戶已有個人安裝版本。請先移走舊 App，再重試全機安裝。' >&2
+        exit 1
+    fi
+fi
+if [[ -L '/Library/Input Methods' || -L '/Library/Input Methods/ArmKeyKey.app' ]]; then
+    echo '安裝位置是符號連結，請先檢查安裝位置。' >&2
+    exit 1
+fi
+exit 0

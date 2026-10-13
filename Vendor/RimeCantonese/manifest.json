@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/rime/rime-cantonese",
+  "revision": "259f0e48bba840c3a2e0d117539e96937f3d89bc",
+  "license": "CC-BY-4.0",
+  "files": {
+    "jyut6ping3.chars.dict.yaml": "9b053a594c80eae76545bcdd83239884a49b1ba48b89ca0ab9e8daac79f33013",
+    "jyut6ping3.words.dict.yaml": "54d174ad2bb997e4a678b7b076b84e4dc5914481b32467cdea3b43e88b7d5474",
+    "essay-cantonese.txt": "d08836175f598219f43c2f2f9e12e12711212dbefe08d57b2eddb7a9d9f22a5d",
+    "LICENSE-CC-BY": "97d24386ff776d7160b87031b259a942bd03c9939796cab6724ad5d17d2cf785",
+    "README.md": "cacf63550dbae0c9056360c6e2f6df74e4e58cc9b676a3859d0816b9d2fee92c"
+  }
+}

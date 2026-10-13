@@ -1,0 +1,55 @@
+ArmKeyKey — 版權、授權與第三方元件
+
+ArmKeyKey 新增的程式碼及專案原創素材：
+Copyright (c) 2026, jr-everstar. All rights reserved.
+BSD 3-Clause；完整條款見 ArmKeyKey-LICENSE.txt。
+此授權只涵蓋貢獻者有權授權的部分，不重新授權第三方程式碼、資料或系統素材。
+
+目前版本直接使用 OpenVanilla / PlainVanilla 原碼及 YahooKeyKey 字表；
+並非完全獨立重寫的 clean-room 實作。
+
+第三方元件：
+• YahooKeyKey 1.1.2528 來源套件：保留 Yahoo! Inc. 的 BSD 3-Clause 聲明。
+• OpenVanilla Generic、OpenVanilla 標頭、PlainVanilla 標頭：MIT-style 授權。
+  作者包括 The OpenVanilla Project、Lukhnos D. Liu、Weizhong Yang。
+• Rime Cantonese 字詞與詞頻：CanCLID 及貢獻者，CC BY 4.0。
+  固定版本、來源和修改見 RimeCantonese-Attribution.txt。
+  未使用 Rime 執行引擎或 jyut6ping3.maps。
+• SQLite：使用 macOS 提供的系統函式庫；SQLite 上游程式碼屬公有領域。
+  https://www.sqlite.org/copyright.html
+• AppKit、SwiftUI、Foundation、InputMethodKit、Carbon、UniformTypeIdentifiers：
+  Apple 平台框架；C++ / Swift 系統執行環境由平台／工具鏈提供。
+• Noto Sans TC：隨附字型採用 SIL OFL 1.1；完整授權及來源另附。
+
+倉頡／速成字表 — 來源與原始聲明：
+cj-ext.cin、simplex-ext.cin 取自 YahooKeyKey 1.1.2528 來源套件。
+速成 simplex-ext.cin 已與 OpenVanilla 官方版本逐位元組比對，內容及排序完全相同；
+倉頡 cj-ext.cin 具有相同來源說明，但現用檔案與該 OpenVanilla 版本並非完全相同。
+保留 CNS11643、opendesktop.org.tw、yylin、b6s 及 HKSCS 的原始來源記載。
+
+OpenVanilla 官網：https://openvanilla.org/
+官方原始碼：https://github.com/openvanilla/openvanilla
+OpenVanilla 專案採用 MIT License；其授權全文另指示外部函式庫及字表參閱各自檔案。
+本說明依上游方式保留專案授權及字表檔頭，不另行替完整合併字表指定 MIT 或 CC0。
+YahooKeyKey 來源套件的 BSD 3-Clause 聲明亦完整保留。
+
+cj-ext.cin — 原始檔頭
+# CangJie (often mis-Romanized as Changjei) input method table
+# tweaked by b6s for OVIMGeneric(SQLite) in UTF-8 encoding.
+#
+# This table also extended to include HKSCS encodings. For details, see
+#       http://www.info.gov.hk/digital21/chi/hkscs/index.html
+#
+# Now this table is supplied by CNS11643 to have around 70,000 Chinese
+# characters. This work is based on opendesktop.org.tw's cj.cin file and
+# merged by yylin and b6s.
+#
+
+simplex-ext.cin — 原始檔頭
+# This file includes CNS11643 and Unicode compatible characters based on
+# opendesktop.org.tw's simplex.cin.
+# This work has been done by yylin and b6s.
+#
+
+完整第三方聲明及免責條款見 ThirdPartyNotices.txt。
+上述名稱僅用於來源識別，不表示相關作者或機構認可 ArmKeyKey。
