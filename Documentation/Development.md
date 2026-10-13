@@ -62,7 +62,7 @@ Repository 根目錄係包含 `ArmKeyKey.xcodeproj` 嘅目錄。原始舊版壓�
 
 Contributors branch from current `main` with a feature name such as `feature/soft-updates`, commit the implementation and relevant tests, then open a PR. Feature PRs do not choose the next release number or announce a release. The maintainer reviews and merges, then prepares a separate version/documentation commit and release PR.
 
-For 0.9.0, release preparation sets version 0.9.0/build 17 and adds Cangjie 5 plus traditional and smart Zhuyin. Publish from the clean pushed source commit, verify the new signed/notarized PKG, then update the feed, website and dedicated Homebrew tap with its final checksum. Historical 0.8.0 acceptance remains unchanged; record new checks and remaining manual-test limitations separately. No PKG, signing key or local settings file belongs in Git.
+For 0.9.1, release preparation sets version 0.9.1/build 18 and fixes installation when the input method relaunches in the background. Publish from the clean pushed source commit, verify the new signed/notarized PKG, then update the feed, website and dedicated Homebrew tap with its final checksum. Historical 0.8.0 acceptance remains unchanged; record new checks and remaining manual-test limitations separately. No PKG, signing key or local settings file belongs in Git.
 
 ## 0.9.0 input architecture
 
@@ -72,4 +72,4 @@ The mode enum explicitly selects Generic (Cangjie 3/5 or Simplex), Jyutping, or 
 
 Composition selection ranges are UTF-8 byte offsets in engine state and explicitly converted to UTF-16 for InputMethodKit. ReadingGrid indices are syllable positions; imported Mandarin values must have one Unicode scalar per syllable. Smart learning applies a bounded score bonus only to existing reading/value entries and records explicit overrides surviving the final committed walk. It does not implement McBopomofo's context override model or its user-phrase editor.
 
-Run `Scripts/test.sh` for the old-engine differential tests plus new-mode, backup-v2, UTF-16 controller and reproducible-data tests. The legacy fixtures remain untouched. The 0.9.0 maintainer workflow directly merges `feature/0.9.0-input-methods` into main, without a PR, as explicitly requested. Release metadata is version 0.9.0/build 17.
+Run `Scripts/test.sh` for the old-engine differential tests plus new-mode, backup-v2, UTF-16 controller and reproducible-data tests. The legacy fixtures remain untouched. The 0.9.0 maintainer workflow directly merges `feature/0.9.0-input-methods` into main, without a PR, as explicitly requested. The follow-up installer hotfix uses `feature/installer-relaunch-fix` and version 0.9.1/build 18.
