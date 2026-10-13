@@ -101,14 +101,14 @@ Acceptance: no lost/duplicated committed text, stable ordered candidates, correc
 
 The app downloads only on request, verifies the PKG and embedded app, and asks the user to save work and switch to another input source. A narrowly scoped helper waits for normal parent exit, verifies the package again and opens Apple's Installer. No script kills apps or forces logout. Version 0.8.1 allows the handoff from personal installations; its installer backs up the old App automatically and retains learning data. Older updater versions may still require opening the downloaded PKG manually.
 
-## 0.8.1 publication sequence
+## 0.9.0 publication sequence
 
-1. Merge the maintainer version/documentation release PR and pass CI.
-2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.9.0.md --publish`.
+1. Commit the feature branch, merge into main and push; this release explicitly uses the maintainer-authorized direct workflow without PRs. Run the regression and build checks.
+2. From the clean pushed release commit, run the local publisher with `--build --notes-file Documentation/Releases/0.9.0.md --publish --feed-mode direct`.
 3. Verify the resulting versioned GitHub Release and package; retain the signed bytes and publication results locally.
-4. Merge the generated stable-feed PR and the website release update. Check the deployed JSON, size/hash and public download link after Pages completes.
+4. The publisher commits the verified stable feed directly to main. Commit the website release update on the feature branch and merge it into main. Check the deployed JSON, size/hash and public download link after Pages completes.
 
-The app version is 0.8.1/build 16; the tag is `v0.8.1-build16`. Publication must use the newly built package, never a relabeled older PKG. The source release commit is separate from later feed/site publication commits.
+The app version is 0.9.0/build 17; the tag is `v0.9.0-build17`. Publication must use the newly built package, never a relabeled older PKG. The source release commit is separate from later feed/site publication commits.
 
 
 ## Homebrew
