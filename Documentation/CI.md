@@ -1,6 +1,6 @@
 # Continuous integration
 
-`.github/workflows/tests.yml` runs `Scripts/test.sh` on the GitHub-hosted
+`.github/workflows/tests.yml` runs `Scripts/test.sh` and `Scripts/build.sh` on the GitHub-hosted
 `macos-26` Apple Silicon runner. The job is named **Tests** so branch rules
 can require a stable check name.
 
@@ -14,9 +14,9 @@ and needs no repository secrets.
 The existing suite checks imported inputs and notices, reproducible
 dictionaries, engine behavior with sanitizers and legacy differential
 traces, storage, character filtering, phrases, Jyutping, native controller
-behavior, and installation paths. It does not install the input method or
+behavior, installation paths, and the v0.8.0 updater feed/network/policy tests. The complete app build also compiles the SwiftUI updater and notification integration. It does not install the input method or
 publish a release. Native controller tests use AppKit and require a
-graphical session; the first hosted run must confirm runner compatibility.
+graphical session.
 They do not replace the [manual cross-application release checks](Distribution.md#manual-release-acceptance).
 
 ## Enable required checks
@@ -32,3 +32,9 @@ Configure the required check after its first successful run. GitHub needs
 a successful run from the past seven days to offer a workflow check for
 selection. If enabling a merge queue later, add a `merge_group` trigger
 before requiring this check for queued merges.
+
+## v0.8.0 review and release boundaries
+
+The feature branch's **Tests** job runs offline updater fixtures and builds an ad-hoc test app. It does not request notification permission, launch Installer, switch input sources, notarize packages, publish Releases or update the production feed. Live feed/real PKG checks are optional local evidence and are not CI requirements. The signed handoff and clean-account OS matrix remain manual release acceptance tasks.
+
+Pages PR checks validate site/feed inputs without deploying. Only a merged change to the Pages inputs on `main` (or explicit dispatch there) deploys the public website. The v0.8.0 feature PR leaves `site/` unchanged; release preparation, PKG publication, feed promotion and website updates follow separate reviews documented in [Distribution](Distribution.md#v080-release-sequence).

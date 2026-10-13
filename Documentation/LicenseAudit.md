@@ -37,3 +37,7 @@ Verified official sources:
 - Pinned tables: https://github.com/openvanilla/openvanilla/tree/a00488634ae723d3a379e158f278966948976ef1/DataTables
 
 `simplex-ext.cin` is byte-identical to the local YahooKeyKey source table, SHA-256 `8d925bfbd524dbc6042a1ce89912aadc17d8aa34109410a22948fd07c2d006e9`. The local Cangjie file is not byte-identical to that pinned OpenVanilla file; neither file nor ordering was replaced. Original table headers are reproduced in the bundled overview, and the complete pinned OpenVanilla project license is stored in `Licenses/OpenVanilla-Upstream-LICENSE.txt` and included in generated notices. No blanket MIT/CC0 data license is inferred.
+
+## v0.8.0 scope (pending release)
+
+The updater adds Apple platform APIs and system tools only; it adds no third-party code, fonts or dictionary data. Existing attribution and historical table-rights findings remain unchanged. A GitHub feature PR or successful updater test does not clear `dictionary_rights_cleared` or any other public-release gate.

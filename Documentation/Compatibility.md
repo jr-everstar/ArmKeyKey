@@ -32,3 +32,9 @@ The new 廣東話拼音（粵拼） mode uses a separate exact-word lookup engin
 Examples: `neihou`, `nei5hou2`, `nei5'hou2` → 你好; `ngo5dei6` → 我哋; `hoenggong` → 香港. This initial mode is exact whole-word lookup, not Rime's full sentence composition engine: mixed optional tones, v/x/q tone shortcuts, fuzzy pronunciation, predictive syllable completion, and adaptive Jyutping learning are not implemented. Cantonese uses its own upstream character repertoire; the compatible/full character switch applies only to Cangjie/Simplex.
 
 Cantonese.sqlite3 includes 137,441 unique word/reading pairs and 101,745 distinct multi-character suggestion words from pinned Rime Cantonese chars/words tables plus ArmKeyKey supplements. Suggestions in all modes now use this indexed database. Frequencies come from essay-cantonese; dictionary reading percentages adjust lookup scores. Ties retain source order. This is ArmKeyKey's deterministic ranking, not a claim of identical Rime candidate order. Existing Cangjie/Simplex raw dictionary order and default learning preferences are unchanged.
+
+## v0.8.0 (pending): optional update workflow
+
+The updater does not change engine behavior, candidate order, learning formats or the macOS 26 / Apple Silicon requirement. Automatic version checks introduce optional HTTPS traffic; input, suggestions and learning remain local. Checks may be disabled, while manual checks remain available. Existing 0.7.2 users need to install the updater-bearing release manually once.
+
+The updater selects the highest build compatible with the current OS and architecture, so a future release requiring a newer OS does not hide an older compatible update. Shared PKG upgrades require another input source, normal app exit, administrator authorization and logout. Personal installations require the documented manual migration; no learning data is removed. See [distribution](Distribution.md#v080-in-app-updater-installation-handoff) for acceptance limitations.

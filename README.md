@@ -37,7 +37,9 @@
 
 粵拼目前支援整詞查找，未有整句自動組詞或模糊音。其他行為差異見[相容性說明](Documentation/Compatibility.md)，資料處理見[私隱說明](Documentation/Privacy.md)。
 
-## 最新版本與試用
+**下一版本 v0.8.0（待 review／未發佈）**已加入「軟件更新」：每日自動檢查可關閉，亦可從設定或輸入法選單手動檢查；下載及安裝都由使用者確認。現有 0.7.2 需先手動升級一次，更新頻道暫未提供新安裝包。
+
+## 目前版本與試用
 
 **0.7.2（build 14） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
@@ -60,7 +62,7 @@ open build/Build/Products/Release/ArmKeyKey.app --args --settings
 
 回報打字問題時，講埋 macOS 同 App 版本、用緊邊個輸入模式、打咗咩字碼、預期同實際結果，會容易跟進好多。例子用測試文字就得。
 
-改程式前可以先睇[開發指南](Documentation/Development.md)；執行 `Scripts/test.sh` 跑測試。字典同舊引擎測試基準已放喺 repo，唔使另外搵 Yahoo KeyKey 原始壓縮檔。CI 詳情見 [CI 文件](Documentation/CI.md)，打包同公證見[發佈指南](Documentation/Distribution.md)。
+改程式前可以先睇[開發指南](Documentation/Development.md)；執行 `Scripts/test.sh` 跑測試。字典同舊引擎測試基準已放喺 repo，唔使另外搵 Yahoo KeyKey 原始壓縮檔。社群提交請跟[分支及 PR 流程](Documentation/Development.md#contribution-workflow)，功能合併與版本發佈分開處理。CI 詳情見 [CI 文件](Documentation/CI.md)，打包同公證見[發佈指南](Documentation/Distribution.md)。
 
 ## 致謝與授權
 
