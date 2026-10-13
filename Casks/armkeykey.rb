@@ -11,10 +11,14 @@ cask "armkeykey" do
     url :url
     regex(/^v(\d+(?:\.\d+)+)-build(\d+)$/i)
     strategy :github_releases do |json, regex|
-      match = json["tag_name"]&.match(regex)
-      next if match.blank?
+      json.filter_map do |release|
+        next if release["draft"] || release["prerelease"]
 
-      "#{match[1]},#{match[2]}"
+        match = release["tag_name"]&.match(regex)
+        next if match.blank?
+
+        "#{match[1]},#{match[2]}"
+      end
     end
   end
 
