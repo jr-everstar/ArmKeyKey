@@ -284,6 +284,8 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
         [menu addItem:item];
     }
     [menu addItem:NSMenuItem.separatorItem];NSMenuItem *settings=[[NSMenuItem alloc]initWithTitle:L(@"ArmKeyKey Settings…") action:@selector(openSettings:) keyEquivalent:@""];settings.target=self;[menu addItem:settings];
+    NSMenuItem *updates=[[NSMenuItem alloc]initWithTitle:@"檢查更新…" action:@selector(checkUpdates:) keyEquivalent:@""];
+    updates.target=self;[menu addItem:updates];
     NSMenuItem *about=[[NSMenuItem alloc]initWithTitle:@"關於 ArmKeyKey…" action:@selector(openAbout:) keyEquivalent:@""];
     about.target=self;[menu addItem:about];
     NSMenuItem *licenses=[[NSMenuItem alloc]initWithTitle:@"版權資訊…" action:@selector(openLicenses:) keyEquivalent:@""];
@@ -315,6 +317,7 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
     [self toggleOutputKey:item.representedObject];
 }
 - (void)openSettings:(id)sender { [AKSettings show]; }
+- (void)checkUpdates:(id)sender { [AKSettings checkUpdates]; }
 - (void)openAbout:(id)sender { [AKSettings showAbout]; }
 - (void)openLicenses:(id)sender { [AKSettings showLicenses]; }
 @end

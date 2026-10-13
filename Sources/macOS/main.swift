@@ -2,6 +2,8 @@ import AppKit
 import InputMethodKit
 import CoreText
 
+UpdateInstaller.runHandoffIfRequested()
+
 // App-only language override; does not change the user's system language.
 var arguments = UserDefaults.standard.volatileDomain(forName: UserDefaults.argumentDomain)
 arguments["AppleLanguages"] = ["zh-Hant"]
@@ -31,6 +33,7 @@ defaults.register(defaults: ["candidateStyle": "yahoo", "candidateFontSize": 17.
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { AKSettings.show(); return true }
     func applicationDidFinishLaunching(_ notification: Notification) {
+        UpdateManager.shared.start()
         if CommandLine.arguments.contains("--settings") || !UserDefaults.standard.bool(forKey: "onboardingShown") { AKSettings.show() }
     }
 }

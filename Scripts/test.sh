@@ -5,6 +5,8 @@ python3 Scripts/generate-notices.py --check
 python3 Scripts/check-legacy-inputs.py
 python3 Tests/PublishReleaseTests.py
 mkdir -p build/tests
+xcrun swiftc Sources/macOS/UpdateManifest.swift Sources/macOS/UpdateTransport.swift Sources/macOS/UpdateInstaller.swift Tests/UpdateTests.swift -o build/tests/update-tests
+build/tests/update-tests
 tables="Vendor/LegacyTables"
 reference="Tests/Fixtures/LegacyEngine"
 testdir=$(mktemp -d "${TMPDIR:-/tmp}/ArmKeyKey-tests.XXXXXX")

@@ -8,6 +8,7 @@ import UserNotifications
 @MainActor
 @objc final class AKFeatureNotifications: NSObject, UNUserNotificationCenterDelegate {
     private static let shared = AKFeatureNotifications()
+    static func configure() { UNUserNotificationCenter.current().delegate = shared }
     private var pending: [String: String] = [:]
     private var delivering = false
 
@@ -51,6 +52,15 @@ import UserNotifications
     }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let isUpdate = response.notification.request.identifier == "ArmKeyKey.update"
+        Task { @MainActor in
+            if isUpdate { AKSettings.checkUpdates() }
+            completionHandler()
+        }
+    }
+
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner])
@@ -67,6 +77,7 @@ private final class SettingsNavigation: ObservableObject {
     private static let navigation = SettingsNavigation()
     @objc static func show() { open("input") }
     @objc static func showAbout() { open("about") }
+    @objc static func checkUpdates() { open("updates"); UpdateManager.shared.check(manual: true) }
     @objc static func showLicenses() { open("license-armkeykey") }
     private static func open(_ page: String) {
         UserDefaults.standard.set(true, forKey: "onboardingShown")
@@ -170,7 +181,10 @@ private struct SettingsView: View {
                         sidebar("個人選字資料", "externaldrive", "learning")
                         sidebar("安裝與使用", "arrow.down.app", "setup")
                     }
-                    Section("關於") { sidebar("關於 ArmKeyKey", "info.circle", "about") }
+                    Section("關於") {
+                        sidebar("軟件更新", "arrow.triangle.2.circlepath", "updates")
+                        sidebar("關於 ArmKeyKey", "info.circle", "about")
+                    }
                     Section("版權資訊") {
                         ForEach(LicenseEntry.entries) { item in
                             sidebar(item.name, item.symbol, "license-" + item.id)
@@ -288,7 +302,7 @@ private struct SettingsView: View {
                 hint("匯出備份可以保留個人選字順序。匯入會取代倉頡與速成目前的學習資料。")
                 HStack { Button("匯出⋯", action: exportBackup); Button("匯入⋯", action: importBackup); Spacer(); Button("重設⋯", role: .destructive) { confirmReset = true } }
             }
-            hint("不需要帳號、不連線，也不記錄輸入內容。")
+            hint("個人選字資料只留在本機，也不記錄輸入內容。")
         case "setup":
             hero("安裝與使用", "幾個簡單步驟，開始使用 ArmKeyKey。", "arrow.down.app")
             card("加入輸入來源") {
@@ -303,6 +317,8 @@ private struct SettingsView: View {
                 hint("使用 1–9 選字，空白鍵翻頁。按 Esc 取消本次組字。")
                 hint("Control＋Command＋G 切換繁／簡。Shift＋Command＋空白鍵 切換全形／半形。")
             }
+        case "updates":
+            UpdatesView()
         case "about":
             hero("關於 ArmKeyKey", "熟悉的輸入體驗，全新的 Mac。", "info.circle")
             card("ArmKeyKey") {

@@ -10,6 +10,7 @@ cat > build/tests/include/ArmKeyKey-Swift.h <<'EOF'
 @interface AKSettings : NSObject
 + (void)show;
 + (void)showAbout;
++ (void)checkUpdates;
 + (void)showLicenses;
 @end
 EOF
