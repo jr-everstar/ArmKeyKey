@@ -50,7 +50,7 @@
 
 ## 最新版本與試用
 
-**0.9.0（build 17） · macOS 26 或以上 · Apple Silicon（M 系列）**
+**0.9.1（build 18） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
 今次新增倉頡五代、傳統注音及智慧注音，六種模式可隨時切換；升級保留原有模式及學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
 
@@ -64,7 +64,7 @@
 brew install --cask jr-everstar/armkeykey/armkeykey
 ```
 
-Homebrew 會自動加入專案嘅 [獨立 tap](https://github.com/jr-everstar/homebrew-armkeykey)，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作、切換輸入來源及關閉 ArmKeyKey；如有舊個人安裝，0.8.1 起會自動移至 `~/Library/ArmKeyKey Installer Backup.*`，保留學習資料及設定。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
+Homebrew 會自動加入專案嘅 [獨立 tap](https://github.com/jr-everstar/homebrew-armkeykey)，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作及切換輸入來源；背景程序重新啟動不會阻擋安裝。共用 App 會備份至 `/Library/ArmKeyKey Installer Backup.*`；如有舊個人安裝，0.8.1 起會自動移至 `~/Library/ArmKeyKey Installer Backup.*`，保留學習資料及設定。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
 
 升級：
 

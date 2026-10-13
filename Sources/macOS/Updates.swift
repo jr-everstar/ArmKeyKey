@@ -9,6 +9,7 @@ import UserNotifications
     @Published var busy = false
     @Published var progress: Double?
     @Published var package: URL?
+    @Published var installationError: String?
     private var operation: Task<Void, Never>?
     private var downloadID: UUID?
     private var timer: Timer?
@@ -107,10 +108,18 @@ import UserNotifications
     }
     func install() {
         guard !busy, let release, let package else { return }
-        do {
-            try UpdateInstaller.requireOtherInputSource()
-            try UpdateInstaller.handoff(package: package, release: release)
-        } catch { status = error.localizedDescription }
+        // Run after SwiftUI dismisses the confirmation sheet; errors must stay
+        // visible even when the status label is above a long release note.
+        busy = true
+        Task { @MainActor in
+            await Task.yield()
+            defer { busy = false }
+            do { try UpdateInstaller.handoff(package: package, release: release) }
+            catch {
+                status = error.localizedDescription
+                installationError = error.localizedDescription
+            }
+        }
     }
     func quitForManualInstall() {
         do { try UpdateInstaller.requireOtherInputSource(); NSApp.terminate(nil) }
@@ -157,7 +166,7 @@ struct UpdatesView: View {
                 Text("需要 macOS \(release.minimumSystemVersion) 或以上 · \(ByteCountFormatter.string(fromByteCount: release.package.size, countStyle: .file))")
                     .font(.caption).foregroundStyle(.secondary)
                 if let package = updater.package {
-                    Text("安裝會退出 ArmKeyKey，需要管理員授權，完成後需登出再登入。其他帳戶若仍在使用，安裝程式會要求先退出。")
+                    Text("安裝會退出 ArmKeyKey，需要管理員授權，完成後需登出再登入。背景程序即使重新啟動亦可安裝；完成後所有使用者需登出再登入。")
                     Button("準備安裝⋯") { confirmInstall = true }.buttonStyle(.borderedProminent).disabled(updater.busy)
                     Button("在 Finder 顯示安裝包") { NSWorkspace.shared.activateFileViewerSelecting([package]) }
                     if FileManager.default.fileExists(atPath: UpdateInstaller.personalInstallation.path) {
@@ -177,6 +186,9 @@ struct UpdatesView: View {
                 .font(.caption).foregroundStyle(.secondary)
         }
         .onChange(of: automatic) { if automatic { updater.check(manual: false) } }
+        .alert("未能準備安裝", isPresented: Binding(get: { updater.installationError != nil }, set: { if !$0 { updater.installationError = nil } })) {
+            Button("好") { updater.installationError = nil }
+        } message: { Text(updater.installationError ?? "") }
         .confirmationDialog("開始安裝更新？", isPresented: $confirmInstall) {
             Button("退出 ArmKeyKey 並開啟安裝程式") { updater.install() }
             Button("取消", role: .cancel) {}

@@ -85,8 +85,8 @@ enum UpdateInstaller {
         NSApp.terminate(nil)
     }
     // Spawn the same signed executable directly, before IMK initialization. It waits
-    // for its parent to exit, validates again, then execs open so Installer's
-    // preinstall never sees this handoff process named ArmKeyKey.
+    // for its parent to exit, validates again, then execs open. The package
+    // supports background relaunches and requires logout to end old sessions.
     static func runHandoffIfRequested() {
         guard CommandLine.arguments.contains("--update-installer") else { return }
         do {
@@ -103,7 +103,8 @@ enum UpdateInstaller {
                 guard Date() < deadline else { throw UpdateFailure.timedOut }
                 Thread.sleep(forTimeInterval: 0.1)
             }
-            try requireOtherInputSource()
+            // The input source can change after parent exit (including IMK
+            // relaunch). Do not reject a verified package on that race.
             try validate(package, release: release)
             let strings = ["/usr/bin/open", "-a", "/System/Library/CoreServices/Installer.app", package.path]
             let pointers = strings.map { strdup($0) }
