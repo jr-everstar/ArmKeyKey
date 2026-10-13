@@ -2,5 +2,20 @@
   "schemaVersion": 1,
   "bundleIdentifier": "everstar.inputmethod.armkeykey.mac",
   "channel": "stable",
-  "releases": []
+  "releases": [
+    {
+      "version": "0.8.0",
+      "build": 15,
+      "minimumSystemVersion": "26.0",
+      "architectures": [
+        "arm64"
+      ],
+      "notes": "# ArmKeyKey 0.8.0（build 15）\n\n新增 App 內軟件更新，支援 macOS 26 或以上嘅 Apple Silicon Mac。\n\n- 設定頁及輸入法選單可手動檢查更新。\n- 預設每日自動檢查，可關閉；通知需你授權，亦可略過指定版本提醒。\n- 只提供適合目前 macOS／架構嘅版本，下載可取消。\n- 安裝前驗證大小、SHA-256、Developer ID 簽署、公證及版本，再交由 macOS Installer。\n- 輸入及學習資料仍留喺本機，更新檢查唔會上傳文字。\n\n## 安裝及升級\n\n0.7.2 或更舊版本需要先手動下載安裝一次。儲存工作並切換至其他輸入來源，關閉 ArmKeyKey，再執行 PKG。安裝需要管理員授權，完成後按 Installer 指示登出再登入。個人安裝需先按遷移指引移走舊 App，避免與共用安裝並存；學習資料會保留。",
+      "package": {
+        "url": "https://github.com/jr-everstar/ArmKeyKey/releases/download/v0.8.0-build15/ArmKeyKey-0.8.0-build15-mac-arm64.pkg",
+        "size": 21256158,
+        "sha256": "4e21ac7859fe62ee4f50b430b209656dde159d70dff21bf7f8712ad0aedb50aa"
+      }
+    }
+  ]
 }
