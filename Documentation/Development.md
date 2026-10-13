@@ -38,7 +38,7 @@ PKG 安裝至共用嘅 `/Library/Input Methods/ArmKeyKey.app`，與本機開發�
 - `Sources/macOS`：Objective-C++ InputMethodKit controller、AppKit 非啟用式選字窗及 SwiftUI 設定。每個 controller 有獨立組字狀態。
 - `Resources`：字典、字型及授權聲明；字典以明確序號保留選字順序，個人學習資料另外儲存。
 - `Tests/Fixtures/LegacyEngine`：獨立編譯嘅原始舊引擎，用作行為對照。
-- `site/`：網站及更新 feed，由 GitHub Pages workflow 部署。App 更新模組讀取公開 feed，支援手動／每日檢查、通知及使用者確認後下載安裝。
+- `site/`：網站及更新 feed，由 GitHub Pages workflow 部署。目前 App 未包含自動更新器。
 
 設定及輸入選單採用繁體中文。候選字型使用隨 App 附帶嘅 Noto Sans TC，未涵蓋字元交由系統後備字型處理。輸入模式行為及限制見[相容性說明](Compatibility.md)。
 
@@ -53,24 +53,3 @@ Repository 根目錄係包含 `ArmKeyKey.xcodeproj` 嘅目錄。原始舊版壓�
 ## Release tooling
 
 `python3 Scripts/publish-release.py --help` 說明本機 PKG 驗證及發佈流程。預設只作預覽／驗證；`--publish` 上傳已驗證安裝包並建立 stable-feed PR，`--build` 配合 `--publish` 執行建置、簽署及公證流程。前置條件、驗收清單及重試方式見[發佈指南](Distribution.md#local-release-command)。
-
-## v0.8.0 updater verification — 2026-10-14
-
-Release 編譯及完整回歸測試通過。`Tests/UpdateTests.swift` 覆蓋空／錯誤／重複 feed、版本與 OS／架構篩選、URL／redirect 限制、每日節流、略過及已通知版本、HTTP 錯誤、下載長度／checksum 及取消。Native mock controller 測試亦檢查更新選單入口。獨立 SwiftUI 預覽已渲染並檢視，未啟動輸入法 server。
-
-Production Pages feed 實際讀取成功（零個可用更新）。現有已公證 0.7.2 build 14 PKG 通過 consumer verifier：checksum、Gatekeeper 公證結果、簽署 team、App／receipt 版本、安裝目的地及登出要求。測試亦確認 productbuild 產生嘅 `#` package reference 可正確處理。
-
-未啟動 Installer、切換輸入來源或取代使用中嘅 App。Parent-exit handoff、系統通知允許／拒絕、實際安裝／登出及多帳戶流程，仍需用 signed updater build 喺乾淨 macOS 26／27 帳戶驗收。Release-readiness flags 維持不變。
-
-## Contribution workflow
-
-以 v0.8.0 軟件更新為例，功能 PR、正式版本 metadata、PKG 同網站部署分開 review，唔直接 push `main`。
-
-1. 先確認 `git status --short`，更新本機 `main`，再建立有描述性嘅分支，例如 `feature/v0.8.0-soft-updates`。有未提交工作時先整理，唔用 reset／刪檔清走其他工作。
-2. 功能、測試及生成嘅 Xcode project 一齊提交；文檔使用「v0.8.0 待發佈」，保留當前 binary 版本 `0.7.2`／build `14`。分開功能與文檔 commit，方便 review。
-3. 執行 `Scripts/test.sh`、`Scripts/build.sh`、`python3 Scripts/check-public-files.py` 及 `git diff --check`，檢查 staged diff；PKG、私鑰、個人資料及 build logs 唔入 Git。
-4. Push feature branch，開 PR 到 `main`。說明使用者見到嘅改變、實作取捨、測試證據及未完成驗收；等 CI 通過及 maintainer review，唔自動合併。
-5. 功能 PR 合併後，再開 `release/v0.8.0` PR／獨立 commit，更新 Info.plist 至 `0.8.0`，預計 build `15`（提交前核對未被其他發版使用），同步 release notes、文件及驗收結果。
-6. Release-preparation PR 合併後，從乾淨、已 push 嘅 commit 喺本機簽署／公證及發佈 PKG。Publisher 自動另開 stable-feed PR；合併後 Pages 部署 JSON。最後獨立更新網站版本與下載資訊，驗證公開網址。詳見 [v0.8.0 發佈次序](Distribution.md#v080-release-sequence)。
-
-PR 至少應包含：具體改動及原因、成功測試、仍需人工驗收嘅項目，以及有冇安裝／發佈副作用。CI 通過唔代表 maintainer 已批准，亦唔代替真實輸入法安裝及登出測試。
