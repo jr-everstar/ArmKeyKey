@@ -29,3 +29,7 @@ body{font-size:17px;line-height:1.75}
 }
 
 .homebrew-install{grid-column:1/-1;min-width:0;border-top:1px solid var(--line);padding-top:24px}.homebrew-install h3{font-size:20px;margin:0 0 12px}.homebrew-install pre{max-width:100%;overflow-x:auto;padding:18px;background:var(--paper,#f5f3ed);border:1px solid var(--line);border-radius:10px;font-size:14px;line-height:1.8}.homebrew-install p{font-size:15px;line-height:1.9}.homebrew-install a{text-decoration:underline}
+
+/* Six input modes remain reachable on compact displays. */
+.candidate .selected{flex-shrink:0;white-space:nowrap}.mode-group{flex-wrap:wrap}.demo-toolbar{flex-wrap:wrap;gap:12px}.method-strip p{flex-wrap:wrap}
+@media(max-width:760px){.method-strip{flex-wrap:wrap;gap:12px}.mode-group .mode{white-space:nowrap}.demo-description .keys{flex-wrap:wrap}}

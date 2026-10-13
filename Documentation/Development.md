@@ -52,7 +52,7 @@ Repository 根目錄係包含 `ArmKeyKey.xcodeproj` 嘅目錄。原始舊版壓�
 
 ## Release tooling
 
-`python3 Scripts/publish-release.py --help` 說明本機 PKG 驗證及發佈流程。預設只作預覽／驗證；`--publish` 上傳已驗證安裝包並建立 stable-feed PR，`--build` 配合 `--publish` 執行建置、簽署及公證流程。前置條件、驗收清單及重試方式見[發佈指南](Distribution.md#local-release-command)。
+`python3 Scripts/publish-release.py --help` 說明本機 PKG 驗證及發佈流程。預設只作預覽／驗證；`--publish` 上傳已驗證安裝包並預設建立 stable-feed PR；獲 maintainer 授權可加 `--feed-mode direct` 直接更新 main。`--build` 配合 `--publish` 執行建置、簽署及公證流程。前置條件、驗收清單及重試方式見[發佈指南](Distribution.md#local-release-command)。
 
 ## Update architecture
 
@@ -62,7 +62,7 @@ Repository 根目錄係包含 `ArmKeyKey.xcodeproj` 嘅目錄。原始舊版壓�
 
 Contributors branch from current `main` with a feature name such as `feature/soft-updates`, commit the implementation and relevant tests, then open a PR. Feature PRs do not choose the next release number or announce a release. The maintainer reviews and merges, then prepares a separate version/documentation commit and release PR.
 
-For 0.8.1, release preparation sets version 0.8.1/build 16 and fixes personal-install migration. Publish from the clean pushed source commit, verify the new signed/notarized PKG, then update the feed, website and dedicated Homebrew tap with its final checksum. Historical 0.8.0 acceptance remains unchanged; record new installer checks separately. No PKG, signing key or local settings file belongs in Git.
+For 0.9.0, release preparation sets version 0.9.0/build 17 and adds Cangjie 5 plus traditional and smart Zhuyin. Publish from the clean pushed source commit, verify the new signed/notarized PKG, then update the feed, website and dedicated Homebrew tap with its final checksum. Historical 0.8.0 acceptance remains unchanged; record new checks and remaining manual-test limitations separately. No PKG, signing key or local settings file belongs in Git.
 
 ## 0.9.0 input architecture
 
