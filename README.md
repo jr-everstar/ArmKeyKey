@@ -50,11 +50,10 @@
 已安裝 [Homebrew](https://brew.sh/) 嘅話，可以直接執行：
 
 ```sh
-brew tap jr-everstar/armkeykey https://github.com/jr-everstar/ArmKeyKey.git
 brew install --cask jr-everstar/armkeykey/armkeykey
 ```
 
-呢個係專案自訂 tap，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作、切換輸入來源及關閉 ArmKeyKey；如有個人安裝，先移走 `~/Library/Input Methods/ArmKeyKey.app`，保留學習資料。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
+Homebrew 會自動加入專案嘅 [獨立 tap](https://github.com/jr-everstar/homebrew-armkeykey)，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作、切換輸入來源及關閉 ArmKeyKey；如有個人安裝，先移走 `~/Library/Input Methods/ArmKeyKey.app`，保留學習資料。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
 
 升級：
 

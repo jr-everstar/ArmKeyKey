@@ -113,14 +113,13 @@ The app version is 0.8.0/build 15; the tag is `v0.8.0-build15`. Publication must
 
 ## Homebrew
 
-This repository also acts as a custom tap, using the existing 0.8.0 (build 15) package without changing the app version. The explicit URL is required because its name is `ArmKeyKey`, not `homebrew-armkeykey`:
+The public [homebrew-armkeykey](https://github.com/jr-everstar/homebrew-armkeykey) repository provides the tap, using the existing 0.8.0 (build 15) package without changing the app version. Homebrew automatically adds it when installing:
 
 ```sh
-brew tap jr-everstar/armkeykey https://github.com/jr-everstar/ArmKeyKey.git
 brew install --cask jr-everstar/armkeykey/armkeykey
 ```
 
-`Casks/armkeykey.rb` pins the versioned, signed and notarized PKG and its final SHA-256. It requires arm64 and macOS 26+. Homebrew invokes the macOS command-line installer with administrator authorization; it installs to `/Library/Input Methods/ArmKeyKey.app`, not `/Applications`. This is a project-maintained tap, not a listing in Homebrew's official cask repository.
+[`Casks/armkeykey.rb`](https://github.com/jr-everstar/homebrew-armkeykey/blob/main/Casks/armkeykey.rb) in that separate repository pins the versioned, signed and notarized PKG and its final SHA-256. It requires arm64 and macOS 26+. Homebrew invokes the macOS command-line installer with administrator authorization; it installs to `/Library/Input Methods/ArmKeyKey.app`, not `/Applications`. This is a project-maintained tap, not a listing in Homebrew's official cask repository.
 
 Before installing or upgrading, save work, switch input sources and quit ArmKeyKey in every logged-in account. The PKG refuses to replace a running input method or coexist with a personal copy. Move an old personal app out of `~/Library/Input Methods` first, retaining learning data. After the command finishes, **log out and back in manually** and add ArmKeyKey in Keyboard settings. Command-line installation does not display the graphical Installer logout button.
 
@@ -139,4 +138,14 @@ brew uninstall --cask jr-everstar/armkeykey/armkeykey
 
 Uninstall uses the exact package receipt ID and preserves preferences and learning data. No `zap` cleanup is provided. Never run uninstall while another account is using the input method.
 
-For each release, build a fresh PKG, verify signing/notarization, and publish and verify its immutable download before updating the cask version/checksum and stable feed. Update `version` as `APP_VERSION,BUILD` so rebuilding an app release remains distinguishable. Validate with `brew info --cask jr-everstar/armkeykey/armkeykey`, `brew audit --cask --online jr-everstar/armkeykey/armkeykey`, and `brew fetch --cask jr-everstar/armkeykey/armkeykey`. Live install/upgrade/logout/removal testing requires a separate test Mac/account; download validation does not establish that acceptance.
+For each release, build a fresh PKG, verify signing/notarization, and publish and verify its immutable download before updating the cask version/checksum in `homebrew-armkeykey` and the stable feed in this repository. Update `version` as `APP_VERSION,BUILD` so rebuilding an app release remains distinguishable. Validate with `brew info --cask jr-everstar/armkeykey/armkeykey`, `brew audit --cask --online jr-everstar/armkeykey/armkeykey`, and `brew fetch --cask jr-everstar/armkeykey/armkeykey`. Live install/upgrade/logout/removal testing requires a separate test Mac/account; download validation does not establish that acceptance.
+
+
+If you previously tapped the source repository using its explicit URL, migrate once:
+
+```sh
+brew tap --custom-remote jr-everstar/armkeykey https://github.com/jr-everstar/homebrew-armkeykey.git
+brew update-reset "$(brew --repository jr-everstar/armkeykey)"
+```
+
+This resets only this tap's local Git files to the new repository; back up any local cask edits first. It does not uninstall the app or remove learning data.
