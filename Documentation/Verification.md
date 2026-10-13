@@ -127,3 +127,7 @@ Copied only Git-visible source candidates into a fresh temporary directory with 
 Checks included byte-identical dictionary regeneration, all 66,438 exact input codes / 146,107 entries and ordering, differential traces against the independent pinned legacy source, learning backup/rollback, character filtering, phrases, Jyutping, native controller mock-client tests and installation-path routing. The Release app built and received an ad-hoc test signature; this was not a new notarized release.
 
 The 37 imported source/data files are pinned by SHA-256. The input verifier was also tested with changed, missing, extra and symlinked inputs and rejected each case. The public-file heuristic scan passed with the added inputs. This check establishes independence from the external archive, not a clean-room rewrite, new data licensing clearance or completion of the manual OS release matrix.
+
+## Cross-runtime dictionary checks
+
+GitHub's macOS 26 runner uses a different SQLite runtime from the development Mac. SQLite stores its writing runtime version in the file header, so the bundled file and an equivalent rebuild need not be byte-identical across machines. Tests now compare integrity, schema, application/user metadata and every row (including rowid and candidate sequence), and independently require two rebuilds on the same runtime to be byte-identical. This applies to both dictionary databases. Data, sequence, missing-row, schema and metadata mutations were checked and rejected; a writing-runtime header change alone was accepted.

@@ -11,9 +11,10 @@ trap 'rm -rf "$testdir"' EXIT
 flags=(-std=c++17 -DOV_USE_SQLITE -I Vendor -I Sources/Engine -Wno-parentheses -Wno-dangling-else)
 xcrun clang++ "${flags[@]}" Scripts/BuildDictionary.cpp -lsqlite3 -o build/tests/build-dictionary
 build/tests/build-dictionary "$tables" "$testdir/Dictionary.sqlite3"
-cmp Resources/Dictionary.sqlite3 "$testdir/Dictionary.sqlite3"
+python3 Scripts/compare-dictionaries.py Resources/Dictionary.sqlite3 "$testdir/Dictionary.sqlite3"
+cp "$testdir/Dictionary.sqlite3" "$testdir/Dictionary-first.sqlite3"
 build/tests/build-dictionary "$tables" "$testdir/Dictionary.sqlite3"
-cmp Resources/Dictionary.sqlite3 "$testdir/Dictionary.sqlite3"
+cmp "$testdir/Dictionary-first.sqlite3" "$testdir/Dictionary.sqlite3"
 xcrun clang++ "${flags[@]}" -fsanitize=address,undefined -g Sources/Engine/Engine.cpp Vendor/Generic/OVIMGeneric.cpp Tests/EngineTests.cpp -lsqlite3 -o build/tests/engine-tests
 AK_TRACE=1 build/tests/engine-tests "$testdir/Dictionary.sqlite3" "$tables" "$testdir/current" > "$testdir/current.trace"
 # Compile the same adapter against untouched original engine, parser and panel sources.
@@ -30,7 +31,10 @@ build/tests/character-filter-tests "$testdir/Dictionary.sqlite3" "$testdir/chara
 xcrun clang++ "${flags[@]}" -fsanitize=address,undefined -g Sources/Engine/Engine.cpp Vendor/Generic/OVIMGeneric.cpp Tests/PhraseTests.cpp -lsqlite3 -o build/tests/phrase-tests
 build/tests/phrase-tests "$testdir/Dictionary.sqlite3" "$testdir/phrases" Resources/Phrases.txt
 python3 Scripts/build-cantonese.py "$testdir/Cantonese.sqlite3"
-cmp Resources/Cantonese.sqlite3 "$testdir/Cantonese.sqlite3"
+python3 Scripts/compare-dictionaries.py Resources/Cantonese.sqlite3 "$testdir/Cantonese.sqlite3"
+cp "$testdir/Cantonese.sqlite3" "$testdir/Cantonese-first.sqlite3"
+python3 Scripts/build-cantonese.py "$testdir/Cantonese.sqlite3"
+cmp "$testdir/Cantonese-first.sqlite3" "$testdir/Cantonese.sqlite3"
 xcrun clang++ "${flags[@]}" -fsanitize=address,undefined -g Sources/Engine/Engine.cpp Vendor/Generic/OVIMGeneric.cpp Tests/JyutpingTests.cpp -lsqlite3 -o build/tests/jyutping-tests
 build/tests/jyutping-tests "$testdir/Cantonese.sqlite3"
 Scripts/test-native.sh
