@@ -4,6 +4,20 @@
   "channel": "stable",
   "releases": [
     {
+      "version": "0.8.1",
+      "build": 16,
+      "minimumSystemVersion": "26.0",
+      "architectures": [
+        "arm64"
+      ],
+      "notes": "# ArmKeyKey 0.8.1（build 16）\n\n修正 0.8.0 安裝程式因偵測到舊個人版 App 而直接失敗的問題。\n\n- 安裝程式自動將舊個人版或殘留 App 移至該帳戶的 `~/Library/ArmKeyKey Installer Backup.*`，毋須先手動刪除。\n- 備份可以還原；個人選字、學習資料及設定保持不變。\n- App 內更新流程亦支援由個人安裝遷移至全機安裝。\n- 保留執行中輸入法與符號連結檢查，避免覆寫正在使用的 App。\n\n安裝前請儲存工作、切換至其他輸入來源，並關閉所有登入帳戶的 ArmKeyKey。安裝程式不會強制終止輸入法。需要管理員授權，完成後請登出再登入。若 0.8.0 的 App 內更新要求手動遷移，可在 Finder 顯示下載的 PKG，退出 ArmKeyKey 後直接開啟 0.8.1 安裝包。\n\n支援 Apple Silicon、macOS 26 或以上。Homebrew 使用同一份已簽署及公證的 PKG。",
+      "package": {
+        "url": "https://github.com/jr-everstar/ArmKeyKey/releases/download/v0.8.1-build16/ArmKeyKey-0.8.1-build16-mac-arm64.pkg",
+        "size": 21256151,
+        "sha256": "2a1a10c71ffcda40fea74145a57124c96989b8dcefba6e746fc93af9f7b56998"
+      }
+    },
+    {
       "version": "0.8.0",
       "build": 15,
       "minimumSystemVersion": "26.0",
