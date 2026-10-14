@@ -21,6 +21,7 @@ private final class FeaturePanel: NSPanel {
         switch key {
         case "simplifiedOutput": message = enabled ? "簡體輸出已開啟" : "簡體輸出已關閉，已切換至繁體"
         case "fullWidthOutput": message = enabled ? "全碼文字已開啟（全形）" : "全碼文字已關閉（半形）"
+        case "associatedPhrases": message = enabled ? "聯想詞已開啟" : "聯想詞已關閉"
         default: return
         }
         shared.show(message)

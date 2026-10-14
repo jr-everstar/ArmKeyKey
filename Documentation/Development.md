@@ -91,3 +91,10 @@ The first-login native regression test runs the real AppKit application loop and
 ## 0.9.2 release workflow
 
 Version 0.9.2/build 20 includes shortcut feedback and first-install guidance. The maintainer explicitly authorized commits/merges/pushes to both repositories’ main branches and the publisher’s `--feed-mode direct` for this release. See [publication record](Releases/0.9.2-publication.md) for source, signing, CI, feed/site and tap evidence. Earlier version-specific sections remain historical.
+
+
+## v0.10.0 configurable shortcuts (development)
+
+`AKShortcuts` owns default bindings, physical-key matching, validation and local UserDefaults storage (`shortcut.simplifiedOutput`, `shortcut.fullWidthOutput`, `shortcut.associatedPhrases`). Absent keys use defaults; empty or malformed dictionaries disable a shortcut. `ShortcutSettings` records local key events only while its sheet is open, consumes the captured event, and removes its monitor on dismissal. Require Control or Command to avoid intercepting ordinary input. Duplicate bindings are rejected before saving.
+
+The input controller reads settings on every event, ignores auto-repeat toggles and displays the current binding in its menu. Menu rows deliberately have no key equivalents: registering those would add a layout-dependent second shortcut dispatcher. Menu clicks and keyboard output toggles share feedback; the phrase toggle uses the existing commit/rebuild and dataGeneration invalidation path so other controllers reload. No global event monitor or Accessibility permission is used.

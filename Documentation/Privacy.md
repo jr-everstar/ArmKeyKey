@@ -23,3 +23,8 @@ Smart Zhuyin persists reading/word selection counts only when an explicitly sele
 Fresh PKG installations schedule a short-lived helper at graphical login to open Keyboard Settings and explain how to add the input source. Each account stores a local completion flag. Subsequent logins exit immediately after checking that flag; there is no continuously running setup helper. Upgrades do not create this login agent. The guide sends no network requests and does not enable or select an input source automatically.
 
 First-login setup keeps a bounded local diagnostic log at `~/Library/Logs/ArmKeyKey/first-login-setup.log` containing launch, skip, Settings-open and acknowledgement states. It contains no typed content and is not uploaded. Build 20 also records the installer’s setup decision under `/Library/ArmKeyKey Setup/last-install`.
+
+
+## v0.10.0 shortcut preferences (development)
+
+Custom shortcuts store only a physical key code and modifier flags in local UserDefaults. They are not typing history, are not uploaded and are separate from learning-data backups. The shortcut recording sheet uses an in-process event monitor only while open; normal matching receives events from InputMethodKit. No global keyboard listener or additional permission is requested.

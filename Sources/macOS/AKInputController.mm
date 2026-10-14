@@ -1,4 +1,5 @@
 #import "AKInputController.h"
+#import "AKShortcuts.h"
 #import <UserNotifications/UserNotifications.h>
 #import <CoreText/CoreText.h>
 #import "ArmKeyKey-Swift.h"
@@ -143,13 +144,11 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
     if(!_engine || _generation!=[NSUserDefaults.standardUserDefaults integerForKey:@"dataGeneration"]){[self commitComposition:sender];[self buildEngine];}
     if(!_engine)return NO;
     _activeClient=sender;
-    NSEventModifierFlags chord=event.modifierFlags & (NSEventModifierFlagControl|NSEventModifierFlagShift|NSEventModifierFlagOption|NSEventModifierFlagCommand);
-    BOOL scriptShortcut=chord==(NSEventModifierFlagControl|NSEventModifierFlagCommand) && event.keyCode==5;
-    BOOL widthShortcut=chord==(NSEventModifierFlagShift|NSEventModifierFlagCommand) && event.keyCode==49;
-    if(scriptShortcut || widthShortcut){
+    NSString *shortcutAction=[AKShortcuts actionForEvent:event];
+    if(shortcutAction){
         if(!event.isARepeat){
-            NSString *key=scriptShortcut?@"simplifiedOutput":@"fullWidthOutput";
-            [self toggleOutputKey:key];
+            if([shortcutAction isEqual:@"associatedPhrases"])[self toggleAssociatedPhrases:nil];
+            else [self toggleOutputKey:shortcutAction];
         }
         return YES;
     }
@@ -286,14 +285,17 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
     for(NSUInteger n=0;n<modeValues.count;n++){NSMenuItem *item=[[NSMenuItem alloc]initWithTitle:modeTitles[n] action:@selector(changeMode:) keyEquivalent:@""];item.target=self;item.representedObject=modeValues[n];item.state=[[NSUserDefaults.standardUserDefaults stringForKey:@"mode"] isEqual:item.representedObject]?NSControlStateValueOn:NSControlStateValueOff;[menu addItem:item];}
     [menu addItem:NSMenuItem.separatorItem];
     NSMenuItem *phrases=[[NSMenuItem alloc]initWithTitle:@"聯想字" action:@selector(toggleAssociatedPhrases:) keyEquivalent:@""];
+    phrases.title=[NSString stringWithFormat:@"聯想字（%@）",[AKShortcuts displayForAction:@"associatedPhrases"]];
     phrases.target=self;
     phrases.state=[NSUserDefaults.standardUserDefaults boolForKey:@"associatedPhrases"]?NSControlStateValueOn:NSControlStateValueOff;
     [menu addItem:phrases];
     NSArray *keys=@[@"simplifiedOutput",@"fullWidthOutput"];
     NSArray *titles=@[@"繁體中文轉換為簡体",@"全碼文字（全形）"];
     for(NSUInteger i=0;i<keys.count;i++){
-        NSMenuItem *item=[[NSMenuItem alloc]initWithTitle:titles[i] action:@selector(toggleOutput:) keyEquivalent:i==0?@"g":@" "];
-        item.keyEquivalentModifierMask=NSEventModifierFlagCommand|(i==0?NSEventModifierFlagControl:NSEventModifierFlagShift);
+        // Display the physical binding without registering a second, layout-dependent
+        // menu key equivalent. Keyboard dispatch has a single matching path.
+        NSString *title=[NSString stringWithFormat:@"%@（%@）",titles[i],[AKShortcuts displayForAction:keys[i]]];
+        NSMenuItem *item=[[NSMenuItem alloc]initWithTitle:title action:@selector(toggleOutput:) keyEquivalent:@""];
         item.target=self;item.representedObject=keys[i];
         item.state=[NSUserDefaults.standardUserDefaults boolForKey:keys[i]]?NSControlStateValueOn:NSControlStateValueOff;
         [menu addItem:item];
@@ -328,6 +330,7 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
     [self buildEngine];
     NSMenuItem *item=[sender isKindOfClass:NSDictionary.class]?sender[kIMKCommandMenuItemName]:sender;
     item.state=enabled?NSControlStateValueOn:NSControlStateValueOff;
+    [AKFeatureNotifications showFeature:@"associatedPhrases" enabled:enabled];
 }
 - (void)toggleOutput:(id)sender {
     NSMenuItem *item=[sender isKindOfClass:NSDictionary.class]?sender[kIMKCommandMenuItemName]:sender;

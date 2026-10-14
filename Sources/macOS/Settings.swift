@@ -227,6 +227,7 @@ private struct SettingsView: View {
             }
             card("聯想詞") {
                 Toggle("選字後顯示聯想詞", isOn: $associatedPhrases)
+                Button("設定聯想詞開關快捷鍵…") { navigation.selection = "input" }
                 Picker("聯想詞修飾鍵", selection: $phraseModifier) {
                     Text("Shift（預設）").tag(8); Text("Control").tag(4); Text("Option").tag(2)
                     Text("Command").tag(16); Text("無需修飾鍵").tag(0)
@@ -291,12 +292,13 @@ private struct SettingsView: View {
             }
             card("文字格式") {
                 Toggle("繁體中文轉換為簡体", isOn: $simplifiedOutput)
-                hint("Control＋Command＋G 切換繁／簡；套用至候選字、聯想詞及新輸入的文字。")
+                hint("套用至候選字、聯想詞及新輸入的文字；快捷鍵可在下方修改。")
                 Divider()
                 Toggle("全碼文字（全形）", isOn: $fullWidthOutput)
-                hint("Shift＋Command＋空白鍵 切換全形／半形，例如 ABC 123 → ＡＢＣ　１２３。")
+                hint("全形文字例如 ABC 123 → ＡＢＣ　１２３；快捷鍵可在下方修改。")
                 hint("快捷鍵切換後會在滑鼠所在螢幕右上角顯示兩秒提示，毋須系統通知權限。")
             }
+            card("快捷鍵") { ShortcutSettings() }
         }
     }
     private func perform(_ action: () throws -> Void) {

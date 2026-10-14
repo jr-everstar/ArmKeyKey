@@ -1,6 +1,7 @@
 #import <AppKit/AppKit.h>
 #import <InputMethodKit/InputMethodKit.h>
 #import "AKInputController.h"
+#import "AKShortcuts.h"
 #import "ArmKeyKey-Swift.h"
 static NSMutableArray *featureNotifications;
 @implementation AKFeatureNotifications
@@ -41,6 +42,7 @@ int main(int argc,char**argv){@autoreleasepool{
     // Explicit test-domain values: registerDefaults does not override a previous run's saved mode.
     NSDictionary *initial=@{@"mode":@"simplex",@"simplexLearning":@NO,@"cangjieLearning":@NO,@"associatedPhrases":@NO,@"extendedCharacters":@NO,@"phraseModifier":@8,@"simplifiedOutput":@NO,@"fullWidthOutput":@NO};
     for(NSString *key in initial)[NSUserDefaults.standardUserDefaults setObject:initial[key] forKey:key];
+    [AKShortcuts restoreDefaults];
     // Unit-test adapter methods only: real IMK initialization requires its remote client proxy.
     TestClient *client=[TestClient new];
     AKInputController *controller=[[AKInputController alloc]init];
@@ -173,6 +175,57 @@ int main(int argc,char**argv){@autoreleasepool{
             check(featureNotifications.count==previousCount+1 && [featureNotifications.lastObject isEqual:@[key,@(expected)]],"menu shortcut emits exactly one matching notification");
         }
     }
+    // Configurable shortcuts must persist, replace old chords and never steal plain typing.
+    check([AKShortcuts bindingForAction:@"associatedPhrases"].count==0,"phrase toggle has no default shortcut");
+    check([AKShortcuts setAction:@"associatedPhrases" keyCode:5 modifiers:scriptChord]!=nil,"reject another action default chord");
+    check([AKShortcuts setAction:@"simplifiedOutput" keyCode:0 modifiers:0]!=nil,"reject bare typing key");
+    check([AKShortcuts setAction:@"simplifiedOutput" keyCode:0 modifiers:NSEventModifierFlagShift]!=nil,"reject shift-only typing key");
+    check([AKShortcuts setAction:@"simplifiedOutput" keyCode:55 modifiers:scriptChord]!=nil,"reject modifier-only key");
+    check([AKShortcuts setAction:@"simplifiedOutput" keyCode:15 modifiers:scriptChord]==nil,"remap script shortcut");
+    check([[NSUserDefaults.standardUserDefaults dictionaryForKey:@"shortcut.simplifiedOutput"][@"keyCode"] integerValue]==15,"persist custom binding");
+    [controller activateServer:client];
+    BOOL oldScript=[NSUserDefaults.standardUserDefaults boolForKey:@"simplifiedOutput"];
+    check(!send(controller,client,@"g",5,scriptChord),"old chord passes to host after remap");
+    check([NSUserDefaults.standardUserDefaults boolForKey:@"simplifiedOutput"]==oldScript,"old chord cannot toggle");
+    check(send(controller,client,@"r",15,scriptChord|NSEventModifierFlagCapsLock),"custom chord ignores caps lock state");
+    check([NSUserDefaults.standardUserDefaults boolForKey:@"simplifiedOutput"]!=oldScript,"custom chord toggles");
+    NSUInteger notificationsBefore=featureNotifications.count;
+    check(!send(controller,client,@"R",15,scriptChord|NSEventModifierFlagShift),"extra modifier does not match");
+    check(featureNotifications.count==notificationsBefore,"unmatched chord produces no notification");
+    [controller deactivateServer:client];[controller activateServer:client];
+    check(send(controller,client,@"r",15,scriptChord),"custom binding survives controller activation");
+    [AKShortcuts clearAction:@"simplifiedOutput"];
+    check([AKShortcuts bindingForAction:@"simplifiedOutput"].count==0 && !send(controller,client,@"r",15,scriptChord),"clear disables custom shortcut");
+    check(!send(controller,client,@"g",5,scriptChord),"clear does not restore default implicitly");
+    check([AKShortcuts setAction:@"fullWidthOutput" keyCode:17 modifiers:scriptChord]==nil,"remap width shortcut");
+    BOOL oldWidth=[NSUserDefaults.standardUserDefaults boolForKey:@"fullWidthOutput"];
+    check(!send(controller,client,@" ",49,widthChord),"old width shortcut passes through");
+    check(send(controller,client,@"t",17,scriptChord) && [NSUserDefaults.standardUserDefaults boolForKey:@"fullWidthOutput"]!=oldWidth,"new width shortcut toggles");
+    send(controller,client,@"t",17,scriptChord);
+    check([AKShortcuts setAction:@"associatedPhrases" keyCode:35 modifiers:scriptChord]==nil,"assign phrase toggle shortcut");
+    BOOL oldPhrases=[NSUserDefaults.standardUserDefaults boolForKey:@"associatedPhrases"];
+    NSInteger generationBefore=[NSUserDefaults.standardUserDefaults integerForKey:@"dataGeneration"];
+    notificationsBefore=featureNotifications.count;
+    check(send(controller,client,@"p",35,scriptChord),"phrase shortcut consumed");
+    check([NSUserDefaults.standardUserDefaults boolForKey:@"associatedPhrases"]!=oldPhrases,"phrase shortcut changes preference");
+    check([NSUserDefaults.standardUserDefaults integerForKey:@"dataGeneration"]==generationBefore+1,"phrase toggle invalidates other controllers");
+    check(featureNotifications.count==notificationsBefore+1 && [featureNotifications.lastObject isEqual:@[@"associatedPhrases",@(!oldPhrases)]],"phrase feedback matches state");
+    NSEvent *phraseRepeat=[NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:scriptChord timestamp:0 windowNumber:0 context:nil characters:@"p" charactersIgnoringModifiers:@"p" isARepeat:YES keyCode:35];
+    check([controller handleEvent:phraseRepeat client:client] && featureNotifications.count==notificationsBefore+1,"held phrase shortcut toggles once");
+    NSMenu *customMenu=[controller menu];
+    check([customMenu itemWithTitle:@"聯想字（⌃⌘P）"]!=nil,"menu displays custom phrase binding");
+    for(NSMenuItem *item in customMenu.itemArray)if([item.representedObject isEqual:@"fullWidthOutput"]){
+        check([item.title containsString:@"⌃⌘T"] && !item.keyEquivalent.length,"menu displays physical chord without a second shortcut dispatcher");
+    }
+    [AKShortcuts clearAction:@"associatedPhrases"];
+    check(!send(controller,client,@"p",35,scriptChord),"cleared phrase shortcut passes through");
+    [NSUserDefaults.standardUserDefaults setObject:@{@"keyCode":@0,@"modifiers":@0} forKey:@"shortcut.simplifiedOutput"];
+    check([AKShortcuts bindingForAction:@"simplifiedOutput"].count==0,"invalid saved plain-key binding disabled");
+    [NSUserDefaults.standardUserDefaults setObject:@"bad" forKey:@"shortcut.fullWidthOutput"];
+    check([AKShortcuts bindingForAction:@"fullWidthOutput"].count==0,"malformed saved binding disabled");
+    [AKShortcuts restoreDefaults];
+    check([[AKShortcuts bindingForAction:@"simplifiedOutput"][@"keyCode"] integerValue]==5 && [[AKShortcuts bindingForAction:@"fullWidthOutput"][@"keyCode"] integerValue]==49 && ![AKShortcuts bindingForAction:@"associatedPhrases"].count,"restore all original defaults");
+    [controller deactivateServer:client];
     // New modes use the same controller and panel without changing system input sources.
     [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"smartZhuyinLearning"];
     [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"cangjie5Learning"];

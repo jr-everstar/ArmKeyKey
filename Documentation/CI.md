@@ -42,3 +42,8 @@ The C++20 suite includes all six input modes, new vendor checksum verification, 
 ## 0.9.2 additions
 
 Native tests now exercise the production nonactivating feature panel and the real AppKit first-login startup/modal lifecycle. First-login tests stub registration and Settings opening, run in a disposable preference home, and verify persisted completion suppresses a second guide. Installer fixtures cover receipt remnants, empty bundles, ordinary upgrades, first installs and repair of the missing build 19 helper. Actual Installer authorization and VM logout/login are recorded separately as manual acceptance.
+
+
+## v0.10.0 additions (development)
+
+Native controller regressions cover default and remapped shortcuts, disabled bindings, malformed preferences, duplicate rejection, held keys, exact modifier matching, Caps Lock, menu labels and phrase-toggle invalidation/feedback. The production feedback panel tests also verify both phrase states. Installed cross-application and full-screen behavior still require manual acceptance.
