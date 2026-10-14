@@ -51,6 +51,32 @@ final class UpdateStub: URLProtocol, @unchecked Sendable {
             print("PASS real signed PKG: checksum, Gatekeeper notarization, team, payload, receipt and logout requirement")
             return
         }
+        // Input-source switching is tested with fixtures; never change the real desktop.
+        let abc = UpdateKeyboardSource(id: "com.apple.keylayout.ABC", name: "ABC", enabled: true, selectable: true, keyboardLayout: true)
+        let other = UpdateKeyboardSource(id: "com.apple.keylayout.US", name: "U.S.", enabled: true, selectable: true, keyboardLayout: true)
+        let disabled = UpdateKeyboardSource(id: "disabled", name: "Disabled", enabled: false, selectable: true, keyboardLayout: true)
+        let unselectable = UpdateKeyboardSource(id: "not-selectable", name: "Unavailable", enabled: true, selectable: false, keyboardLayout: true)
+        let method = UpdateKeyboardSource(id: "other.method", name: "Other IME", enabled: true, selectable: true, keyboardLayout: false)
+        let arm = UpdateKeyboardSource(id: UpdateFeed.bundleID, name: "ArmKeyKey", enabled: true, selectable: true, keyboardLayout: true)
+        require(UpdateInputSourcePreparation.candidate([other, abc], preferredID: abc.id) == abc, "prefer last ASCII keyboard among enabled layouts")
+        require(UpdateInputSourcePreparation.candidate([disabled, unselectable, method, arm, other], preferredID: "missing") == other, "fallback uses only enabled selectable keyboard layout")
+        require(UpdateInputSourcePreparation.candidate([disabled, unselectable, method, arm], preferredID: nil) == nil, "no safe keyboard candidate")
+        var current: String? = UpdateFeed.bundleID
+        var selections = 0
+        let switched = try UpdateInputSourcePreparation.prepare(currentID: { current }, sources: [abc], preferredID: abc.id) { selected in
+            selections += 1; current = selected.id; return true
+        }
+        require(switched == abc.id && selections == 1 && current == abc.id, "switch ArmKeyKey and verify actual current source")
+        let retained = try UpdateInputSourcePreparation.prepare(currentID: { other.id }, sources: [], preferredID: nil) { _ in
+            fatalError("must not switch an already safe source")
+        }
+        require(retained == other.id, "preserve existing other source")
+        current = UpdateFeed.bundleID
+        rejected { try UpdateInputSourcePreparation.prepare(currentID: { current }, sources: [], preferredID: nil, select: { _ in fatalError("no candidate") }) }
+        rejected { try UpdateInputSourcePreparation.prepare(currentID: { nil }, sources: [abc], preferredID: nil, select: { _ in fatalError("unknown current source") }) }
+        rejected { try UpdateInputSourcePreparation.prepare(currentID: { current }, sources: [abc], preferredID: nil, select: { _ in false }) }
+        rejected { try UpdateInputSourcePreparation.prepare(currentID: { current }, sources: [abc], preferredID: nil, select: { _ in true }) }
+        require(current == UpdateFeed.bundleID, "failed selection must not proceed as if switched")
         let candidate = release()
         let encoded = try JSONEncoder().encode(feed([candidate]))
         require(try UpdateFeed.decode(encoded).newest(currentBuild: 14, system: "26.0") == candidate, "select newer")

@@ -3,6 +3,32 @@ import CryptoKit
 import AppKit
 import Carbon
 
+// Testable selection policy. Only enabled, selectable keyboard layouts are
+// eligible; preparing an update never enables or installs an input source.
+struct UpdateKeyboardSource: Equatable {
+    let id: String
+    let name: String
+    let enabled: Bool
+    let selectable: Bool
+    let keyboardLayout: Bool
+}
+
+enum UpdateInputSourcePreparation {
+    static func candidate(_ sources: [UpdateKeyboardSource], preferredID: String?) -> UpdateKeyboardSource? {
+        let eligible = sources.filter { $0.id != UpdateFeed.bundleID && $0.enabled && $0.selectable && $0.keyboardLayout }
+        return eligible.first { $0.id == preferredID } ?? eligible.first
+    }
+    @discardableResult static func prepare(currentID: () -> String?, sources: [UpdateKeyboardSource],
+                                          preferredID: String?, select: (UpdateKeyboardSource) -> Bool) throws -> String {
+        guard let current = currentID() else { throw UpdateFailure.inputSourceSwitch }
+        if current != UpdateFeed.bundleID { return current }
+        guard let source = candidate(sources, preferredID: preferredID), select(source), currentID() == source.id else {
+            throw UpdateFailure.inputSourceSwitch
+        }
+        return source.id
+    }
+}
+
 // Blocking verification runs off the UI thread, and before any Installer handoff.
 enum UpdateInstaller {
     static let team = "6495K4X8W5"
@@ -68,14 +94,56 @@ enum UpdateInstaller {
     static var personalInstallation: URL {
         FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Input Methods/ArmKeyKey.app")
     }
+    private static func sourceString(_ input: TISInputSource, _ key: CFString) -> String? {
+        guard let value = TISGetInputSourceProperty(input, key) else { return nil }
+        return Unmanaged<CFString>.fromOpaque(value).takeUnretainedValue() as String
+    }
+    private static func sourceBool(_ input: TISInputSource, _ key: CFString) -> Bool {
+        guard let value = TISGetInputSourceProperty(input, key) else { return false }
+        return CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(value).takeUnretainedValue())
+    }
+    private static func currentInputSourceID() -> String? {
+        guard let input = TISCopyCurrentKeyboardInputSource()?.takeRetainedValue() else { return nil }
+        return sourceString(input, kTISPropertyInputSourceID)
+    }
     static func requireOtherInputSource() throws {
-        guard let input = TISCopyCurrentKeyboardInputSource()?.takeRetainedValue(),
-              let value = TISGetInputSourceProperty(input, kTISPropertyInputSourceID) else { throw UpdateFailure.activeInput }
-        let identifier = Unmanaged<CFString>.fromOpaque(value).takeUnretainedValue() as String
-        guard identifier != UpdateFeed.bundleID else { throw UpdateFailure.activeInput }
+        guard let identifier = currentInputSourceID(), identifier != UpdateFeed.bundleID else { throw UpdateFailure.activeInput }
+    }
+    private static func keyboardSources() -> [(UpdateKeyboardSource, TISInputSource)] {
+        let filter = [kTISPropertyInputSourceType as String: kTISTypeKeyboardLayout as String,
+                      kTISPropertyInputSourceIsEnabled as String: true] as CFDictionary
+        guard let list = TISCreateInputSourceList(filter, false)?.takeRetainedValue() as? [TISInputSource] else { return [] }
+        return list.compactMap { input in
+            guard let id = sourceString(input, kTISPropertyInputSourceID) else { return nil }
+            return (UpdateKeyboardSource(id: id, name: sourceString(input, kTISPropertyLocalizedName) ?? id,
+                       enabled: sourceBool(input, kTISPropertyInputSourceIsEnabled),
+                       selectable: sourceBool(input, kTISPropertyInputSourceIsSelectCapable),
+                       keyboardLayout: sourceString(input, kTISPropertyInputSourceType) == kTISTypeKeyboardLayout as String), input)
+        }
+    }
+    private static func preferredKeyboardID() -> String? {
+        guard let source = TISCopyCurrentASCIICapableKeyboardLayoutInputSource()?.takeRetainedValue() else { return nil }
+        return sourceString(source, kTISPropertyInputSourceID)
+    }
+    @MainActor static var preparationMessage: String {
+        if let current = currentInputSourceID(), current != UpdateFeed.bundleID {
+            return "請先儲存其他 App 的工作。確認後會退出 ArmKeyKey 並開啟安裝程式；安裝完成後需要登出再登入。"
+        }
+        if let source = UpdateInputSourcePreparation.candidate(keyboardSources().map { $0.0 }, preferredID: preferredKeyboardID()) {
+            return "請先儲存其他 App 的工作。確認後會自動切換至「\(source.name)」，再退出 ArmKeyKey 並開啟安裝程式，毋須自行使用快捷鍵切換。安裝完成後需要登出再登入。"
+        }
+        return "請先儲存其他 App 的工作。未找到可切換的已啟用鍵盤來源；請在系統鍵盤設定加入 ABC 等鍵盤來源後重試。安裝完成後需要登出再登入。"
+    }
+    @MainActor static func prepareInputSource() throws {
+        let sources = keyboardSources()
+        try UpdateInputSourcePreparation.prepare(currentID: currentInputSourceID,
+            sources: sources.map { $0.0 }, preferredID: preferredKeyboardID()) { chosen in
+                guard let input = sources.first(where: { $0.0.id == chosen.id })?.1 else { return false }
+                return TISSelectInputSource(input) == noErr
+            }
     }
     @MainActor static func handoff(package: URL, release: UpdateRelease) throws {
-        try requireOtherInputSource()
+        try prepareInputSource()
         let receipt = package.deletingLastPathComponent().appendingPathComponent("release.json")
         try JSONEncoder().encode(release).write(to: receipt, options: .atomic)
         let helper = Process()

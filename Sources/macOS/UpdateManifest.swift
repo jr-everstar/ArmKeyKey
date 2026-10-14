@@ -64,13 +64,14 @@ struct UpdateFeed: Codable, Sendable {
 }
 
 enum UpdateFailure: LocalizedError {
-    case invalidFeed, download, verification, timedOut, activeInput
+    case invalidFeed, download, verification, timedOut, activeInput, inputSourceSwitch
     var errorDescription: String? {
         switch self {
         case .invalidFeed: return "更新資料格式不正確，請稍後再試。"
         case .download: return "下載未完成或伺服器回應不正確，請重新檢查更新後再試。"
         case .verification: return "安裝包驗證失敗，未啟動安裝。請重新下載。"
         case .timedOut: return "操作逾時，請稍後再試。"
+        case .inputSourceSwitch: return "未能自動切換輸入來源，尚未開始安裝。請在系統鍵盤設定確認已加入 ABC 等鍵盤來源，然後重試。"
         case .activeInput: return "請先從選單列切換至其他輸入法，再繼續。"
         }
     }

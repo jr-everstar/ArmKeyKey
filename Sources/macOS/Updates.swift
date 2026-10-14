@@ -166,7 +166,7 @@ struct UpdatesView: View {
                 Text("需要 macOS \(release.minimumSystemVersion) 或以上 · \(ByteCountFormatter.string(fromByteCount: release.package.size, countStyle: .file))")
                     .font(.caption).foregroundStyle(.secondary)
                 if let package = updater.package {
-                    Text("安裝會退出 ArmKeyKey，需要管理員授權，完成後需登出再登入。背景程序即使重新啟動亦可安裝；完成後所有使用者需登出再登入。")
+                    Text("確認安裝後會自動切換至已啟用的鍵盤來源，再退出 ArmKeyKey 並開啟安裝程式。需要管理員授權，完成後所有使用者需登出再登入。")
                     Button("準備安裝⋯") { confirmInstall = true }.buttonStyle(.borderedProminent).disabled(updater.busy)
                     Button("在 Finder 顯示安裝包") { NSWorkspace.shared.activateFileViewerSelecting([package]) }
                     if FileManager.default.fileExists(atPath: UpdateInstaller.personalInstallation.path) {
@@ -190,8 +190,8 @@ struct UpdatesView: View {
             Button("好") { updater.installationError = nil }
         } message: { Text(updater.installationError ?? "") }
         .confirmationDialog("開始安裝更新？", isPresented: $confirmInstall) {
-            Button("退出 ArmKeyKey 並開啟安裝程式") { updater.install() }
+            Button("切換輸入來源並開始安裝") { updater.install() }
             Button("取消", role: .cancel) {}
-        } message: { Text("請先儲存其他 App 的工作，並從選單列切換至其他輸入法。安裝完成後需要登出。") }
+        } message: { Text(UpdateInstaller.preparationMessage) }
     }
 }

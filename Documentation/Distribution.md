@@ -190,3 +190,7 @@ Homebrew removal also unloads/removes the first-login LaunchAgent and installer 
 ## 0.10.0 publication
 
 Current candidate is 0.10.0/build 21, tag `v0.10.0-build21`, asset `ArmKeyKey-0.10.0-build21-mac-arm64.pkg`. The user authorized main updates in the source and separate Homebrew repositories and `--feed-mode direct`. Fresh installed/manual acceptance is recorded separately from development UI tests and prior release gates. See [publication record](Releases/0.10.0-publication.md). Installation, first-login guidance, update handoff, backup and removal behavior remain unchanged; user shortcut preferences survive upgrades and removal alongside other retained preferences.
+
+## Automatic input-source preparation (unreleased)
+
+The follow-up update-preparation flow describes the selected enabled keyboard layout in the confirmation dialog. Confirmation uses TIS to switch away from ArmKeyKey, verifies the current source, then starts the existing signed helper/Installer handoff. The recent ASCII-capable keyboard layout is preferred when enabled/selectable; otherwise use another enabled/selectable keyboard layout. It does not enable/register a new source. An already non-ArmKeyKey source is retained; cancellation does not invoke switching. Failure stops before starting the helper and shows an error in the settings UI. Installation still requires administrator authorization and logout/login; automatic source switching does not reload other apps' input-method sessions. This follow-up is not included in v0.10.0/build 21.
