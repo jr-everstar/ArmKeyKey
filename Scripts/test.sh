@@ -50,5 +50,5 @@ xcrun clang++ "${flags[@]}" -fsanitize=address,undefined -g Sources/Engine/Engin
 build/tests/new-input-tests "$testdir/Dictionary.sqlite3" "$testdir/Mandarin.sqlite3" "$testdir/new-inputs"
 Scripts/test-native.sh
 
-xcrun swiftc Sources/macOS/Installation.swift Tests/InstallationPathTests.swift -o build/tests/installation-path-tests
+xcrun swiftc Sources/macOS/Installation.swift Sources/macOS/FirstLoginSetup.swift Tests/InstallationPathTests.swift -o build/tests/installation-path-tests
 build/tests/installation-path-tests

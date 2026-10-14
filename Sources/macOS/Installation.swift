@@ -47,6 +47,13 @@ enum Installation {
             throw NSError(domain: "ArmKeyKey", code: Int(result), userInfo: [NSLocalizedDescriptionKey: "輸入法註冊失敗（\(result)）。請登出後重新登入，再到「中文（繁體）」加入 ArmKeyKey。"])
         }
     }
+    static func hasEnabledSource() -> Bool {
+        guard let identifier = Bundle.main.bundleIdentifier else { return false }
+        let filter = [kTISPropertyInputSourceID as String: identifier,
+                      kTISPropertyInputSourceIsEnabled as String: true] as CFDictionary
+        guard let result = TISCreateInputSourceList(filter, false) else { return false }
+        return CFArrayGetCount(result.takeRetainedValue()) > 0
+    }
     static func registeredSources() -> [TISInputSource] {
         guard let identifier = Bundle.main.bundleIdentifier else { return [] }
         let filter = [kTISPropertyInputSourceID as String: identifier] as CFDictionary

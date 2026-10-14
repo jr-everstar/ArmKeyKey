@@ -2,6 +2,7 @@ import AppKit
 import InputMethodKit
 import CoreText
 
+MainActor.assumeIsolated { FirstLoginSetup.runIfRequested() }
 UpdateInstaller.runHandoffIfRequested()
 
 // App-only language override; does not change the user's system language.

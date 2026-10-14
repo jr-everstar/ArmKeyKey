@@ -33,7 +33,7 @@ For the complete local build/sign/notarize/package/upload pipeline:
 
 ```sh
 python3 Scripts/publish-release.py --build \
-  --notes-file Documentation/Releases/0.9.1.md --publish
+  --notes-file Documentation/Releases/0.9.2.md --publish
 ```
 
 Set `DEVELOPER_ID_APPLICATION`, `DEVELOPER_ID_INSTALLER` and `NOTARY_PROFILE` in the local shell first; the development Mac's existing settings are recorded in ignored `.local/notarization-settings.txt`. Without `--publish`, `--build` prints the intended steps only and does not build or contact Apple.
@@ -172,3 +172,17 @@ Only after the public PKG hash is verified, update the website download URL and 
 The 0.9.0 installer incorrectly treated `pgrep -x ArmKeyKey` as a prerequisite. An input method can return in the background after a normal quit; the process-name check then produced `PKInstallErrorDomain Code=112` before any payload installation. 0.9.1 removes that check, preserves path validation and backups, and relies on PackageKit's existing atomic whole-bundle upgrade plus `RequireLogout`. It does not kill processes, disable input sources, or force logout. Do not continue using an old input session after installation: all users must save work and log out/in.
 
 Prepare-install errors are presented in an alert after the confirmation sheet dismisses. The helper still validates the signed package; it no longer rejects it because the input source changed after the parent exited. Old downloaded PKGs retain their original scripts: download the new 0.9.1 build 18 package to obtain this fix.
+
+## 0.9.2 first-install login guidance
+
+Before replacing any bundles, preinstall checks for shared/personal app Info.plist files. A package receipt alone does not suppress first-install guidance. Fresh installs and repairs of the failed 0.9.2/build 19 test candidate (missing agent) write a protected pending marker under `/Library/ArmKeyKey Setup`. After payload installation, postinstall consumes that marker and creates `/Library/LaunchAgents/everstar.armkeykey.first-login.plist`. It never bootstraps the agent into the current session; guidance starts at the next graphical login.
+
+The installer records its decision in `/Library/ArmKeyKey Setup/last-install`. The agent runs the installed executable with `--first-login-setup`, which exits before creating an InputMethodKit server. It completes normal AppKit startup, then registers the source, opens Keyboard Settings and presents Traditional Chinese instructions for adding and selecting ArmKeyKey. It never automatically selects a source. Completion is tracked separately per user in `firstLoginSetupCompleted`; already-enabled sources are skipped and marked complete. Closing the guide with “稍後自行設定” also completes the one-time prompt. The shared agent performs a short check on later logins and exits; it has no KeepAlive or continuously running helper. New accounts on a fresh-install Mac can receive their own guide. Ordinary upgrades and personal-copy migrations do not create the agent; build 20 repairs the missing build 19 test agent; existing agents survive upgrades and keep respecting per-user completion.
+
+For complete manual removal, remove `/Library/LaunchAgents/everstar.armkeykey.first-login.plist` and the empty `/Library/ArmKeyKey Setup` directory as well as the app. The launch agent is created by a package script, so it is not part of the payload receipt. Learning data is retained. ZIP/local-copy installation retains the existing manual setup flow.
+
+## 0.9.2 publication
+
+Current target is 0.9.2/build 20, tag `v0.9.2-build20`, asset `ArmKeyKey-0.9.2-build20-mac-arm64.pkg`. The maintainer authorized direct main updates in both repositories and `--feed-mode direct`. Build a fresh formal release from the clean pushed source, verify its final public bytes, then update the website and Homebrew tap. The test PKGs remain historical; do not relabel them as the formal artifact. See [publication record](Releases/0.9.2-publication.md).
+
+Homebrew removal also unloads/removes the first-login LaunchAgent and installer setup-state directory; it retains personal preferences, learning data and installation backups.

@@ -1,6 +1,10 @@
 import Foundation
 @main struct InstallationPathTests {
-    static func main() throws {
+    @MainActor static func main() throws {
+        assert(FirstLoginSetup.shouldShow(completed: false, alreadyEnabled: false))
+        assert(!FirstLoginSetup.shouldShow(completed: true, alreadyEnabled: false))
+        assert(!FirstLoginSetup.shouldShow(completed: false, alreadyEnabled: true))
+        assert(!Installation.hasEnabledSource())
         // Command-line test hosts have no bundle identifier; discovery must not crash.
         assert(Installation.registeredSources().isEmpty)
         let info = try PropertyListSerialization.propertyList(from: Data(contentsOf: URL(fileURLWithPath: "Resources/Info.plist")), format: nil) as! [String: Any]

@@ -17,3 +17,9 @@ Downloads start only on request and come from this project's GitHub Releases. Th
 ## Smart Zhuyin learning
 
 Smart Zhuyin persists reading/word selection counts only when an explicitly selected word survives the final committed composition. Canceled text is not learned; whole sentences and raw keystroke history are not saved. Preferences live in a separate local SQLite file and are never transmitted. Disabling learning stops reading and updating those preferences without deleting them. Format-2 backups contain all four learning modes; old format-1 backups replace only legacy modes. Reset clears all learned modes. Exported preferences can reveal selected words, so share backups intentionally.
+
+## First-install guidance in 0.9.2
+
+Fresh PKG installations schedule a short-lived helper at graphical login to open Keyboard Settings and explain how to add the input source. Each account stores a local completion flag. Subsequent logins exit immediately after checking that flag; there is no continuously running setup helper. Upgrades do not create this login agent. The guide sends no network requests and does not enable or select an input source automatically.
+
+First-login setup keeps a bounded local diagnostic log at `~/Library/Logs/ArmKeyKey/first-login-setup.log` containing launch, skip, Settings-open and acknowledgement states. It contains no typed content and is not uploaded. Build 20 also records the installer’s setup decision under `/Library/ArmKeyKey Setup/last-install`.

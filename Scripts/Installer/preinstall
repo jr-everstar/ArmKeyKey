@@ -25,6 +25,41 @@ for user_home in "${homes[@]}"; do
         exit 1
     fi
 done
+# Record first-install eligibility before migration replaces the old bundles.
+# This root-owned staging directory is outside all user-writable home folders.
+setup_dir='/Library/ArmKeyKey Setup'
+if [[ -L "$setup_dir" || ( -e "$setup_dir" && ! -d "$setup_dir" ) ]]; then
+    echo '首次安裝設定位置不安全。' >&2
+    exit 1
+fi
+/bin/mkdir -p "$setup_dir"
+/bin/chmod 755 "$setup_dir"
+for state in pending last-install; do
+    if [[ -L "$setup_dir/$state" ]]; then exit 1; fi
+done
+/bin/rm -f "$setup_dir/pending"
+setup_reason=fresh-install
+shared_info='/Library/Input Methods/ArmKeyKey.app/Contents/Info.plist'
+if [[ -f "$shared_info" ]]; then setup_reason=existing-shared-install; fi
+for user_home in "${homes[@]}"; do
+    if [[ -f "$user_home/Library/Input Methods/ArmKeyKey.app/Contents/Info.plist" ]]; then
+        setup_reason=existing-personal-install
+    fi
+done
+# A receipt can survive removal, and is not proof of a usable installed app.
+# Repair the first-login test candidate without making the tester uninstall it.
+if [[ "$setup_reason" == existing-shared-install && ! -e '/Library/LaunchAgents/everstar.armkeykey.first-login.plist' ]]; then
+    previous_version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$shared_info" 2>/dev/null || true)
+    previous_build=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$shared_info" 2>/dev/null || true)
+    if [[ "$previous_version" == 0.9.2 && "$previous_build" == 19 ]]; then
+        setup_reason=repair-build19-first-login
+    fi
+fi
+if [[ "$setup_reason" == fresh-install || "$setup_reason" == repair-build19-first-login ]]; then
+    /usr/bin/touch "$setup_dir/pending"
+fi
+/usr/bin/printf '%s\n' "$setup_reason" > "$setup_dir/last-install"
+echo "ArmKeyKey first-login setup: $setup_reason"
 # Preserve the shared bundle without removing it from the input-method path.
 # Leave atomic replacement and rollback to PackageKit, not a move-and-copy gap.
 if [[ -d '/Library/Input Methods/ArmKeyKey.app' ]]; then

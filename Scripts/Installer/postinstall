@@ -1,0 +1,29 @@
+#!/bin/bash
+set -euo pipefail
+setup_dir='/Library/ArmKeyKey Setup'
+# Only a successful fresh installation schedules next-login guidance.
+[[ ! -L "$setup_dir" && -f "$setup_dir/pending" && ! -L "$setup_dir/pending" ]] || exit 0
+agents='/Library/LaunchAgents'
+agent="$agents/everstar.armkeykey.first-login.plist"
+if [[ -L "$agents" || -L "$agent" ]]; then exit 1; fi
+/bin/mkdir -p "$agents"
+/bin/cat > "$agent" <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>everstar.armkeykey.first-login</string>
+<key>ProgramArguments</key><array>
+<string>/Library/Input Methods/ArmKeyKey.app/Contents/MacOS/ArmKeyKey</string>
+<string>--first-login-setup</string>
+</array>
+<key>RunAtLoad</key><true/>
+<key>LimitLoadToSessionType</key><string>Aqua</string>
+<key>ProcessType</key><string>Interactive</string>
+</dict></plist>
+PLIST
+/bin/chmod 644 "$agent"
+/usr/sbin/chown root:wheel "$agent"
+/bin/rm -f "$setup_dir/pending"
+echo "ArmKeyKey first-login setup: scheduled for next graphical login"
+# Do not bootstrap now: InputMethodKit must refresh at the next login first.
+exit 0

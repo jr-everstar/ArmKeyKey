@@ -54,3 +54,9 @@ Smart learning stores only explicit selected reading/value pairs from the final 
 ### 0.9.1 installer relaunch handling
 
 Background ArmKeyKey processes no longer block a PKG upgrade. The shared bundle is backed up and atomically replaced by PackageKit; all users must log out/in afterward. This fixes the process-name preinstall failure reported with 0.9.0. It does not claim that old sessions immediately switch to the newly installed engine.
+
+### 0.9.2 setup and shortcut feedback
+
+Fresh PKG installs open Keyboard Settings and a one-time setup guide after the next graphical login. Existing enabled sources and completed accounts are skipped. Ordinary upgrades do not schedule new guidance; build 20 repairs the missing-agent build 19 test case. ZIP/local-copy installs retain manual setup. The guide assists registration but never selects an input source automatically.
+
+Shortcut state feedback uses a nonactivating AppKit panel on the pointer’s screen, with a two-second lifetime reset by subsequent toggles. It does not depend on Notification Center authorization. Update notifications retain their existing permission requirements.

@@ -77,3 +77,17 @@ The mode enum explicitly selects Generic (Cangjie 3/5 or Simplex), Jyutping, or 
 Composition selection ranges are UTF-8 byte offsets in engine state and explicitly converted to UTF-16 for InputMethodKit. ReadingGrid indices are syllable positions; imported Mandarin values must have one Unicode scalar per syllable. Smart learning applies a bounded score bonus only to existing reading/value entries and records explicit overrides surviving the final committed walk. It does not implement McBopomofo's context override model or its user-phrase editor.
 
 Run `Scripts/test.sh` for the old-engine differential tests plus new-mode, backup-v2, UTF-16 controller and reproducible-data tests. The legacy fixtures remain untouched. The 0.9.0 maintainer workflow directly merges `feature/0.9.0-input-methods` into main, without a PR, as explicitly requested. The follow-up installer hotfix uses `feature/installer-relaunch-fix` and version 0.9.1/build 18.
+
+## 0.9.2 shortcut feedback
+
+`FeatureNotifications.swift` displays mode changes in a nonactivating AppKit panel at the upper right of the pointer's screen. Mode feedback does not request or depend on Notification Center authorization. The shared delegate still handles update notifications. Repeated toggles reuse one panel and restart its two-second dismissal task.
+
+`Scripts/test-native.sh` runs both controller shortcut tests and the production Swift panel tests (state text, screen placement, focus preservation, reuse, and cancellation of an earlier dismissal). It requires a logged-in graphical session. Real input-source switching across apps, multiple displays and full-screen Spaces still needs manual acceptance.
+
+`FirstLoginSetup.swift` is the short-lived first-login helper path. Installer tests cover fresh installs, upgrades, receipts, personal migration, stale pending markers and symlink rejection. A real fresh-account logout/login remains a manual acceptance check; automated tests do not log out the developer.
+
+The first-login native regression test runs the real AppKit application loop and modal guide with stubbed registration/Settings opening, then checks persisted completion in a disposable home. Do not show the guide from top-level main before `applicationDidFinishLaunching`. Installer classification no longer relies on a receipt alone; build 20 repairs the missing-agent build 19 test case.
+
+## 0.9.2 release workflow
+
+Version 0.9.2/build 20 includes shortcut feedback and first-install guidance. The maintainer explicitly authorized commits/merges/pushes to both repositories’ main branches and the publisher’s `--feed-mode direct` for this release. See [publication record](Releases/0.9.2-publication.md) for source, signing, CI, feed/site and tap evidence. Earlier version-specific sections remain historical.

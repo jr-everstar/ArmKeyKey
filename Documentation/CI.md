@@ -38,3 +38,7 @@ Updater fixtures cover version/OS/architecture selection, malformed feeds, daily
 ## 0.9.0 additions
 
 The C++20 suite includes all six input modes, new vendor checksum verification, both Mandarin resources, Cangjie 5 ordering, tone handling, sentence editing and selection learning, legacy/new backup atomicity, and native marked-text/caret tests. The 128-syllable composition limit is exercised under sanitizers. Release-tool tests include the explicit direct-feed workflow and assert that it creates no PR or force push.
+
+## 0.9.2 additions
+
+Native tests now exercise the production nonactivating feature panel and the real AppKit first-login startup/modal lifecycle. First-login tests stub registration and Settings opening, run in a disposable preference home, and verify persisted completion suppresses a second guide. Installer fixtures cover receipt remnants, empty bundles, ordinary upgrades, first installs and repair of the missing build 19 helper. Actual Installer authorization and VM logout/login are recorded separately as manual acceptance.

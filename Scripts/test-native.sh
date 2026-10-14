@@ -25,3 +25,19 @@ xcrun clang++ -std=c++20 -DOV_USE_SQLITE -fobjc-arc -I build/tests/include -I So
 native_home=$(mktemp -d "${TMPDIR:-/tmp}/ArmKeyKey-native.XXXXXX")
 trap 'rm -rf "$native_home"' EXIT
 CFFIXED_USER_HOME="$native_home" build/tests/IMKSmoke.app/Contents/MacOS/IMKSmoke
+xcrun swiftc Sources/macOS/FeatureNotifications.swift Tests/FeatureNotificationTests.swift -o build/tests/feature-notification-tests
+build/tests/feature-notification-tests
+
+# Exercise the actual first-login app lifecycle, then ensure completion suppresses it.
+setup_test_app="$PWD/build/tests/FirstLoginSetupTests.app"
+mkdir -p "$setup_test_app/Contents/MacOS"
+python3 - "$setup_test_app" <<'PYTEST'
+import plistlib, sys
+from pathlib import Path
+(Path(sys.argv[1])/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleIdentifier':'org.armkeykey.tests.FirstLoginSetup','CFBundleExecutable':'FirstLoginSetupTests','CFBundlePackageType':'APPL','LSUIElement':True}))
+PYTEST
+xcrun swiftc Sources/macOS/FirstLoginSetup.swift Tests/FirstLoginSetupLifecycleTests.swift -o "$setup_test_app/Contents/MacOS/FirstLoginSetupTests"
+CFFIXED_USER_HOME="$native_home" "$setup_test_app/Contents/MacOS/FirstLoginSetupTests" --first-login-setup | tee "$native_home/setup.log"
+/usr/bin/grep -q "PASS real AppKit launch" "$native_home/setup.log"
+CFFIXED_USER_HOME="$native_home" /usr/bin/defaults read org.armkeykey.tests.FirstLoginSetup firstLoginSetupCompleted | /usr/bin/grep -qx 1
+CFFIXED_USER_HOME="$native_home" "$setup_test_app/Contents/MacOS/FirstLoginSetupTests" --first-login-setup --expect-completed

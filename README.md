@@ -34,7 +34,7 @@
 
 - **離線聯想詞**：適用於倉頡、速成及粵拼，約 10.2 萬個字詞，揀完「我」可以接住揀「我們」，只補上未打嘅部分。
 - **自己調選字窗**：Yahoo KeyKey／ArmKeyKey 兩款外觀，顏色、字體大小同縮放都可以改。
-- **繁簡、半形／全形切換**：分別用 `Control + Command + G` 同 `Shift + Command + Space`，亦可喺選單設定。
+- **繁簡、半形／全形切換**：分別用 `Control + Command + G` 同 `Shift + Command + Space`，亦可喺選單設定。快捷鍵切換會喺滑鼠所在螢幕右上角顯示兩秒提示，毋須系統通知權限，唔會搶走輸入焦點。
 - **學習記錄自己保管**：支援匯出、匯入同重設；資料留喺自己部 Mac。
 - **繁體中文介面**：原生 macOS 設定同選字窗，無需帳戶，唔會上傳按鍵或選字內容。
 
@@ -50,11 +50,21 @@
 
 ## 最新版本與試用
 
-**0.9.1（build 18） · macOS 26 或以上 · Apple Silicon（M 系列）**
+**0.9.2（build 20，測試候選版） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
-今次新增倉頡五代、傳統注音及智慧注音，六種模式可隨時切換；升級保留原有模式及學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
+今次修正繁簡及全／半形快捷鍵切換後嘅右上角提示，並加入首次安裝後嘅設定引導。六種輸入模式繼續保留，升級唔會清除學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
 
 0.7.2 或更舊版本未有更新功能，需要先從 GitHub Releases 手動下載安裝一次。安裝前儲存工作、切換至其他輸入來源，再按 Installer 指示完成登出。
+
+### PKG 安裝後，帶你完成設定
+
+首次安裝唔止係複製 App：完成 PKG 安裝並**登出再登入**後，ArmKeyKey 會自動開啟**鍵盤設定**，同時顯示一次性的歡迎指引：
+
+1. 喺「文字輸入」按「編輯⋯」，再按「＋」。
+2. 選「中文（繁體）」→「ArmKeyKey」→「加入」，再按「完成」。
+3. 從螢幕右上角輸入選單選擇 ArmKeyKey，即可開始打字。
+
+唔需要自己搵設定入口；加入同切換仍然由你決定。每個帳戶只提示一次，已啟用 ArmKeyKey 會略過，一般升級亦唔會重複提示。之後可從 ArmKeyKey「安裝與使用」頁重新開啟鍵盤設定。曾安裝 build 19 測試包但冇見到指引，可直接升級 build 20 修復，毋須先移除。
 
 ### Homebrew 安裝
 
@@ -64,7 +74,7 @@
 brew install --cask jr-everstar/armkeykey/armkeykey
 ```
 
-Homebrew 會自動加入專案嘅 [獨立 tap](https://github.com/jr-everstar/homebrew-armkeykey)，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作及切換輸入來源；背景程序重新啟動不會阻擋安裝。共用 App 會備份至 `/Library/ArmKeyKey Installer Backup.*`；如有舊個人安裝，0.8.1 起會自動移至 `~/Library/ArmKeyKey Installer Backup.*`，保留學習資料及設定。完成後請**自行登出再登入**，再到鍵盤設定加入 ArmKeyKey。
+Homebrew 會自動加入專案嘅 [獨立 tap](https://github.com/jr-everstar/homebrew-armkeykey)，使用同一份已簽署及公證嘅 PKG，安裝到 `/Library/Input Methods/ArmKeyKey.app`，需要管理員密碼。安裝／升級前請儲存工作及切換輸入來源；背景程序重新啟動不會阻擋安裝。共用 App 會備份至 `/Library/ArmKeyKey Installer Backup.*`；如有舊個人安裝，0.8.1 起會自動移至 `~/Library/ArmKeyKey Installer Backup.*`，保留學習資料及設定。完成後請**自行登出再登入**；首次安裝會自動開啟鍵盤設定及上述指引。
 
 升級：
 

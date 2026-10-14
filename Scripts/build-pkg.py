@@ -40,6 +40,7 @@ with tempfile.TemporaryDirectory(prefix='ArmKeyKey-pkg-') as temp:
 <p>請保留 Application Support/ArmKeyKey 中的個人選字資料。安裝程式不會刪除個人資料。安裝完成後需要登出，請先儲存其他 App 中的工作；macOS 安裝程式會帶你完成登出流程。</p></body></html>''')
     (resources/'conclusion.html').write_text('''<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><body>
 <h1>安裝完成：請登出</h1><p>請按安裝程式的「登出」按鈕，然後重新登入，以更新輸入來源清單。</p>
+<p>首次安裝後，重新登入會自動開啟鍵盤設定及一次性的加入步驟指引；升級使用者不會重複顯示。</p>
 <p>前往「系統設定 → 鍵盤 → 文字輸入 → 編輯 → ＋ → 中文（繁體）」，加入 ArmKeyKey。</p>
 <p>再從選單列切換至 ArmKeyKey。由舊測試版升級時，請移除舊輸入來源，再加入新版。</p>
 <p>移除方法：切換至其他輸入法，移除設定中的輸入來源，再將 /Library/Input Methods/ArmKeyKey.app 移到垃圾桶。</p></body></html>''')
