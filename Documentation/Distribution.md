@@ -183,6 +183,10 @@ For complete manual removal, remove `/Library/LaunchAgents/everstar.armkeykey.fi
 
 ## 0.9.2 publication
 
-Current target is 0.9.2/build 20, tag `v0.9.2-build20`, asset `ArmKeyKey-0.9.2-build20-mac-arm64.pkg`. The maintainer authorized direct main updates in both repositories and `--feed-mode direct`. Build a fresh formal release from the clean pushed source, verify its final public bytes, then update the website and Homebrew tap. The test PKGs remain historical; do not relabel them as the formal artifact. See [publication record](Releases/0.9.2-publication.md).
+The 0.9.2 publication target was 0.9.2/build 20, tag `v0.9.2-build20`, asset `ArmKeyKey-0.9.2-build20-mac-arm64.pkg`. The maintainer authorized direct main updates in both repositories and `--feed-mode direct`. Build a fresh formal release from the clean pushed source, verify its final public bytes, then update the website and Homebrew tap. The test PKGs remain historical; do not relabel them as the formal artifact. See [publication record](Releases/0.9.2-publication.md).
 
 Homebrew removal also unloads/removes the first-login LaunchAgent and installer setup-state directory; it retains personal preferences, learning data and installation backups.
+
+## 0.10.0 publication
+
+Current candidate is 0.10.0/build 21, tag `v0.10.0-build21`, asset `ArmKeyKey-0.10.0-build21-mac-arm64.pkg`. The user authorized main updates in the source and separate Homebrew repositories and `--feed-mode direct`. Fresh installed/manual acceptance is recorded separately from development UI tests and prior release gates. See [publication record](Releases/0.10.0-publication.md). Installation, first-login guidance, update handoff, backup and removal behavior remain unchanged; user shortcut preferences survive upgrades and removal alongside other retained preferences.
