@@ -7,6 +7,9 @@ import AppKit
 
 @main struct FeatureNotificationTests {
     @MainActor static func main() async throws {
+        // The standalone test executable has no resource bundle; use the shipped icon.
+        let appIcon = NSImage(contentsOfFile: "Resources/ArmKeyKey.icns")!
+        appIcon.setName("ArmKeyKey")
         let app = NSApplication.shared
         app.setActivationPolicy(.accessory)
         let defaults = UserDefaults.standard
@@ -61,6 +64,9 @@ import AppKit
         func checkPalette(_ background: String, _ highlight: String, _ text: String, _ selected: String, _ accent: String) {
             let view = panel.contentView!
             let label = view.viewWithTag(1) as! NSTextField
+            let icon = view.viewWithTag(3) as! NSImageView
+            require(icon.image === appIcon && icon.frame.width > 0, "Show bundled ArmKeyKey app icon")
+            require(icon.frame.maxX < label.superview!.frame.minX, "Icon and status text do not overlap")
             require(rgb(NSColor(cgColor: view.layer!.backgroundColor!)) == background, "Candidate background palette")
             require(rgb(NSColor(cgColor: label.superview!.layer!.backgroundColor!)) == highlight, "Candidate selection palette")
             require(rgb(label.textColor) == selected, "Candidate selected text palette")

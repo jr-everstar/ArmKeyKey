@@ -85,34 +85,43 @@ private final class FeaturePanel: NSPanel {
         ])
         let font = NSFont(descriptor: descriptor, size: size * scale) ?? base
         let padding = 14 * scale
-        let width = min(maximumWidth, max(260 * scale,
-            (message as NSString).size(withAttributes: [.font: font]).width + padding * 2 + 4))
+        let iconSize = 40 * scale
+        let textX = padding + iconSize + 12 * scale
+        let width = min(maximumWidth, max(340 * scale,
+            (message as NSString).size(withAttributes: [.font: font]).width + textX + padding + 4))
         let body = NSTextField(wrappingLabelWithString: message)
         body.tag = 1
         body.font = font
         body.textColor = color("candidateSelectedText", everstar ? "4D4D4D" : "FFFFFF")
-        let textWidth = max(1, width - padding * 2)
+        let textWidth = max(1, width - textX - padding)
         let textHeight = ceil(body.cell!.cellSize(forBounds: NSRect(x: 0, y: 0, width: textWidth, height: 1000)).height)
-        let rowHeight = max(25 * scale, textHeight + 12 * scale)
-        let titleHeight = 27 * scale
-        let height = titleHeight + rowHeight + 10 * scale
+        let rowHeight = max(25 * scale, textHeight + 8 * scale)
+        let titleHeight = 18 * scale
+        let height = max(iconSize + padding * 2, titleHeight + 4 * scale + rowHeight + padding * 2)
         let background = NSView(frame: NSRect(x: 0, y: 0, width: width, height: height))
         background.wantsLayer = true
         background.layer?.backgroundColor = color("candidateBackground", everstar ? "4D4D4D" : "000000").cgColor
         background.layer?.cornerRadius = 11 * scale
         background.layer?.masksToBounds = true
-        let row = NSView(frame: NSRect(x: 1, y: 10 * scale, width: width - 2, height: rowHeight))
+        let row = NSView(frame: NSRect(x: textX - 6 * scale, y: padding, width: textWidth + 12 * scale, height: rowHeight))
         row.wantsLayer = true
         row.layer?.backgroundColor = color("candidateHighlight", everstar ? "00D7E6" : "7A007A").cgColor
-        body.frame = NSRect(x: padding - 1, y: (rowHeight - textHeight) / 2, width: textWidth, height: textHeight)
+        row.layer?.cornerRadius = 5 * scale
+        body.frame = NSRect(x: 6 * scale, y: (rowHeight - textHeight) / 2, width: textWidth, height: textHeight)
         row.addSubview(body)
         background.addSubview(row)
         let title = NSTextField(labelWithString: "ArmKeyKey")
         title.tag = 2
-        title.font = .systemFont(ofSize: 11 * scale)
+        title.font = .boldSystemFont(ofSize: 13 * scale)
         title.textColor = color("candidateText", "FFFFFF")
-        title.frame = NSRect(x: padding, y: height - titleHeight + 5 * scale, width: textWidth, height: 17 * scale)
+        title.frame = NSRect(x: textX, y: padding + rowHeight + 4 * scale, width: textWidth, height: titleHeight)
         background.addSubview(title)
+        let icon = NSImageView(frame: NSRect(x: padding, y: (height - iconSize) / 2, width: iconSize, height: iconSize))
+        icon.tag = 3
+        icon.image = NSImage(named: "ArmKeyKey") ?? NSApp.applicationIconImage
+        icon.imageScaling = .scaleProportionallyUpOrDown
+        icon.setAccessibilityLabel("ArmKeyKey")
+        background.addSubview(icon)
         background.layer?.borderWidth = 1
         background.layer?.borderColor = color("candidateAccent", everstar ? "00D7E6" : "CCCCCC").cgColor
         panel.setContentSize(NSSize(width: width, height: height))
