@@ -5,7 +5,8 @@
 <h3 align="center">用慣嘅倉頡、速成，繼續打落去。</h3>
 <p align="center">香港團隊製作・倉頡三／五代、速成、粵拼、傳統／智慧注音・原生 Apple Silicon</p>
 <p align="center">
-  <a href="https://jr-everstar.github.io/ArmKeyKey/">網站</a> ·
+  <a href="https://github.com/jr-everstar/ArmKeyKey/releases/download/v0.10.0-build21/ArmKeyKey-0.10.0-build21-mac-arm64.pkg">下載 PKG</a> ·
+  <a href="https://jr-everstar.github.io/ArmKeyKey/">產品網站</a> ·
   <a href="https://github.com/jr-everstar/ArmKeyKey/issues">回報問題／傾功能</a> ·
   <a href="CHANGELOG.md">更新紀錄</a> ·
   <a href="Documentation/Development.md">開發指南</a>
@@ -63,6 +64,8 @@
 ## 最新版本與試用
 
 **0.10.0（build 21） · macOS 26 或以上 · Apple Silicon（M 系列）**
+
+[**下載已簽署及公證的 PKG 安裝包**](https://github.com/jr-everstar/ArmKeyKey/releases/download/v0.10.0-build21/ArmKeyKey-0.10.0-build21-mac-arm64.pkg) · [**產品網站**](https://jr-everstar.github.io/ArmKeyKey/) · [版本說明](https://github.com/jr-everstar/ArmKeyKey/releases/tag/v0.10.0-build21)
 
 今次新增自訂繁簡、全／半形及聯想詞開關快捷鍵，修正選單切換提示，並加入帶 App 圖示、跟隨選字表外觀嘅通知式提示。首次安裝後嘅設定引導繼續保留。六種輸入模式繼續保留，升級唔會清除學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
 
