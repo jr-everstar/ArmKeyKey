@@ -28,3 +28,7 @@ First-login setup keeps a bounded local diagnostic log at `~/Library/Logs/ArmKey
 ## v0.10.0 shortcut preferences
 
 Custom shortcuts store only a physical key code and modifier flags in local UserDefaults. They are not typing history, are not uploaded and are separate from learning-data backups. The shortcut recording sheet uses an in-process event monitor only while open; normal matching receives events from InputMethodKit. No global keyboard listener or additional permission is requested.
+
+## 0.10.1 update preparation
+
+After installation confirmation, the updater uses the standard Text Input Source API to choose an already-enabled keyboard layout. It does not add sources, request global keyboard monitoring permissions or transmit the input-source list. Cancellation leaves the selected source unchanged.

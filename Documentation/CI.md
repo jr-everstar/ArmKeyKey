@@ -47,3 +47,7 @@ Native tests now exercise the production nonactivating feature panel and the rea
 ## v0.10.0 additions
 
 Native controller regressions cover default and remapped shortcuts, disabled bindings, malformed preferences, duplicate rejection, held keys, exact modifier matching, Caps Lock, menu labels and phrase-toggle invalidation/feedback. The production feedback panel tests also verify both phrase states. Installed cross-application and full-screen behavior still require manual acceptance.
+
+## 0.10.1 additions
+
+Updater fixtures cover input-source preparation without changing the runner desktop: eligible layouts, preferred/fallback choices, current other source retention, missing/unknown sources, rejected selection and post-selection verification. Actual Installer/source-switch acceptance is maintainer-confirmed separately.
