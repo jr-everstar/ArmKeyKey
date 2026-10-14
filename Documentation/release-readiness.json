@@ -1,7 +1,7 @@
 {
   "dictionary_rights_cleared": true,
-  "macos26_manual_pass": false,
-  "macos27_manual_pass": false,
-  "clean_install_pass": false,
+  "macos26_manual_pass": true,
+  "macos27_manual_pass": true,
+  "clean_install_pass": true,
   "privacy_and_notices_approved": true
 }
