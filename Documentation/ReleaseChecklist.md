@@ -34,7 +34,7 @@ release notes and acceptance records. Do not bulk-replace old version numbers.
 | Files | Review for this release |
 | --- | --- |
 | `README.md` | Current version, features, system requirements, install/update/removal instructions and links; clearly label an unpublished candidate |
-| `CHANGELOG.md` | Version/build, user-visible changes, limitations and release date when known |
+| `CHANGELOG.md` | Version/build, user-visible changes and limitations; do not include release dates |
 | `Documentation/Releases/VERSION.md` | Public release notes used by the publisher, migration/logout guidance |
 | `Documentation/Releases/VERSION-validation.md` | Actual automated/manual results, OS/app versions, remaining limitations |
 | `Documentation/Development.md`, `Documentation/CI.md` | Build, test, generated files and workflow changes |
