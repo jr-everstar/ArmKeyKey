@@ -50,7 +50,7 @@
 
 ## 最新版本與試用
 
-**0.9.2（build 20，測試候選版） · macOS 26 或以上 · Apple Silicon（M 系列）**
+**0.9.2（build 20） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
 今次修正繁簡及全／半形快捷鍵切換後嘅右上角提示，並加入首次安裝後嘅設定引導。六種輸入模式繼續保留，升級唔會清除學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
 
