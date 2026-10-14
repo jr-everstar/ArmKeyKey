@@ -295,7 +295,7 @@ private struct SettingsView: View {
                 Divider()
                 Toggle("全碼文字（全形）", isOn: $fullWidthOutput)
                 hint("Shift＋Command＋空白鍵 切換全形／半形，例如 ABC 123 → ＡＢＣ　１２３。")
-                hint("快捷鍵切換後會顯示本機通知。請在 macOS「系統設定 → 通知 → ArmKeyKey」允許通知及橫額。")
+                hint("快捷鍵切換後會在滑鼠所在螢幕右上角顯示兩秒提示，毋須系統通知權限。")
             }
         }
     }

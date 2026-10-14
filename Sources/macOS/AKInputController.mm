@@ -150,7 +150,6 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
         if(!event.isARepeat){
             NSString *key=scriptShortcut?@"simplifiedOutput":@"fullWidthOutput";
             [self toggleOutputKey:key];
-            [AKFeatureNotifications showFeature:key enabled:[NSUserDefaults.standardUserDefaults boolForKey:key]];
         }
         return YES;
     }
@@ -316,6 +315,8 @@ static void DrawCandidateText(NSString *text, NSFont *font, NSColor *color,
     NSUserDefaults *defaults=NSUserDefaults.standardUserDefaults;
     [defaults setBool:![defaults boolForKey:key] forKey:key];
     if(_activeClient)[self render:_activeClient];
+    // IMK menu key equivalents and raw key events must report the same state.
+    [AKFeatureNotifications showFeature:key enabled:[defaults boolForKey:key]];
 }
 - (void)toggleAssociatedPhrases:(id)sender {
     NSUserDefaults *defaults=NSUserDefaults.standardUserDefaults;

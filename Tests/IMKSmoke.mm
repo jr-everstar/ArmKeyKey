@@ -158,6 +158,21 @@ int main(int argc,char**argv){@autoreleasepool{
     check([controller handleEvent:repeat client:client] && featureNotifications.count==4,"holding shortcut never repeats notification or toggle");
     check(![NSUserDefaults.standardUserDefaults boolForKey:@"fullWidthOutput"],"repeat preserves mode");
     [controller deactivateServer:client];
+    // InputMethodKit can dispatch registered key equivalents via its menu action,
+    // bypassing handleEvent. Exercise both plain and IMK-wrapped menu senders.
+    NSMenu *outputMenu=[controller menu];
+    for(NSString *key in @[@"simplifiedOutput",@"fullWidthOutput"]){
+        NSMenuItem *outputItem=nil;
+        for(NSMenuItem *item in outputMenu.itemArray)if([item.representedObject isEqual:key])outputItem=item;
+        check(outputItem!=nil,"output menu shortcut exists");
+        for(id sender in @[outputItem,@{kIMKCommandMenuItemName:outputItem}]){
+            BOOL expected=![NSUserDefaults.standardUserDefaults boolForKey:key];
+            NSUInteger previousCount=featureNotifications.count;
+            [NSApp sendAction:outputItem.action to:outputItem.target from:sender];
+            check([NSUserDefaults.standardUserDefaults boolForKey:key]==expected,"menu shortcut toggles output");
+            check(featureNotifications.count==previousCount+1 && [featureNotifications.lastObject isEqual:@[key,@(expected)]],"menu shortcut emits exactly one matching notification");
+        }
+    }
     // New modes use the same controller and panel without changing system input sources.
     [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"smartZhuyinLearning"];
     [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"cangjie5Learning"];
