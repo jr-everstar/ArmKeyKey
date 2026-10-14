@@ -1,5 +1,9 @@
 # 開發指南
 
+每次準備或發佈新版本，必須完成 [發版 checklist](ReleaseChecklist.md)，並由
+[範本](Releases/TEMPLATE.md) 建立逐版本 publication record，涵蓋文件、GitHub Release、
+GitHub Pages／stable feed 同獨立 Homebrew tap；未完成項目須明確記錄。
+
 ArmKeyKey 以 C++20 引擎配合原生 macOS 介面，支援 Apple Silicon、macOS 26 或以上。目前功能及專案介紹見 [README](../README.md)，歷史版本改動見 [CHANGELOG](../CHANGELOG.md)。
 
 ## Build and test

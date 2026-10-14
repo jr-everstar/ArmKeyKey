@@ -1,5 +1,10 @@
 # Distribution
 
+For every new version, follow the canonical [release checklist](ReleaseChecklist.md)
+and create a [publication record](Releases/TEMPLATE.md). It covers documentation,
+GitHub Release, Pages/stable feed and the separate Homebrew tap. Version-specific
+sequences below are historical; do not reuse their versions or authorization.
+
 ## GitHub update infrastructure
 
 Source repository: https://github.com/jr-everstar/ArmKeyKey . Pages deploys only `site/` through the `Deploy ArmKeyKey website` workflow on `main`; pull requests validate the feed without deploying. The stable endpoint is `https://jr-everstar.github.io/ArmKeyKey/updates/stable.json`. No Apple credentials or additional deployment token is needed for Pages.
