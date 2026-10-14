@@ -32,9 +32,8 @@ private final class FeaturePanel: NSPanel {
         dismissal?.cancel()
         let panel = self.panel ?? makePanel()
         self.panel = panel
-        let body = panel.contentView?.viewWithTag(1) as? NSTextField
-        body?.stringValue = message
         let visible = screen.visibleFrame
+        applyAppearance(to: panel, message: message, maximumWidth: visible.width - 32)
         panel.setFrameOrigin(NSPoint(x: visible.maxX - panel.frame.width - 16,
                                      y: visible.maxY - panel.frame.height - 16))
         panel.orderFrontRegardless()
@@ -58,24 +57,66 @@ private final class FeaturePanel: NSPanel {
         panel.isOpaque = false
         panel.backgroundColor = .clear
         panel.hasShadow = true
-        let background = NSVisualEffectView(frame: NSRect(x: 0, y: 0, width: 340, height: 84))
-        background.material = .hudWindow
-        background.blendingMode = .behindWindow
-        background.state = .active
-        background.wantsLayer = true
-        background.layer?.cornerRadius = 16
-        background.layer?.masksToBounds = true
-        let title = NSTextField(labelWithString: "ArmKeyKey")
-        title.font = .boldSystemFont(ofSize: 13)
-        title.frame = NSRect(x: 20, y: 49, width: 300, height: 18)
-        let body = NSTextField(labelWithString: "")
-        body.tag = 1
-        body.font = .systemFont(ofSize: 14)
-        body.frame = NSRect(x: 20, y: 21, width: 300, height: 20)
-        background.addSubview(title)
-        background.addSubview(body)
-        panel.contentView = background
         return panel
+    }
+
+    // Read the same preferences and palette as the candidate list on every show,
+    // so an existing feedback window also reflects appearance changes immediately.
+    private func applyAppearance(to panel: NSPanel, message: String, maximumWidth: CGFloat) {
+        let defaults = UserDefaults.standard
+        let everstar = defaults.string(forKey: "candidateStyle") == "everstar"
+        func color(_ key: String, _ fallback: String) -> NSColor {
+            let saved = defaults.string(forKey: key) ?? ""
+            let hex = saved.count == 6 ? saved : fallback
+            let rgb = UInt32(hex, radix: 16) ?? UInt32(fallback, radix: 16)!
+            return NSColor(srgbRed: CGFloat((rgb >> 16) & 255) / 255,
+                           green: CGFloat((rgb >> 8) & 255) / 255,
+                           blue: CGFloat(rgb & 255) / 255, alpha: 1)
+        }
+        let requestedSize = defaults.double(forKey: "candidateFontSize")
+        let size = requestedSize.isFinite && requestedSize > 0 ? min(28, max(12, requestedSize)) : 17
+        let requestedScale = defaults.double(forKey: "candidateScale")
+        let scale = requestedScale.isFinite && requestedScale > 0 ? min(1.6, max(0.8, requestedScale)) : 1
+        let base = NSFont(name: "NotoSansTC-Regular", size: size * scale)
+            ?? NSFont(name: "NotoSansTC-Thin_Regular", size: size * scale)
+            ?? NSFont.systemFont(ofSize: size * scale)
+        let descriptor = base.fontDescriptor.addingAttributes([
+            .cascadeList: [NSFontDescriptor(name: "PingFangTC-Regular", size: size * scale)]
+        ])
+        let font = NSFont(descriptor: descriptor, size: size * scale) ?? base
+        let padding = 14 * scale
+        let width = min(maximumWidth, max(260 * scale,
+            (message as NSString).size(withAttributes: [.font: font]).width + padding * 2 + 4))
+        let body = NSTextField(wrappingLabelWithString: message)
+        body.tag = 1
+        body.font = font
+        body.textColor = color("candidateSelectedText", everstar ? "4D4D4D" : "FFFFFF")
+        let textWidth = max(1, width - padding * 2)
+        let textHeight = ceil(body.cell!.cellSize(forBounds: NSRect(x: 0, y: 0, width: textWidth, height: 1000)).height)
+        let rowHeight = max(25 * scale, textHeight + 12 * scale)
+        let titleHeight = 27 * scale
+        let height = titleHeight + rowHeight + 10 * scale
+        let background = NSView(frame: NSRect(x: 0, y: 0, width: width, height: height))
+        background.wantsLayer = true
+        background.layer?.backgroundColor = color("candidateBackground", everstar ? "4D4D4D" : "000000").cgColor
+        background.layer?.cornerRadius = 11 * scale
+        background.layer?.masksToBounds = true
+        let row = NSView(frame: NSRect(x: 1, y: 10 * scale, width: width - 2, height: rowHeight))
+        row.wantsLayer = true
+        row.layer?.backgroundColor = color("candidateHighlight", everstar ? "00D7E6" : "7A007A").cgColor
+        body.frame = NSRect(x: padding - 1, y: (rowHeight - textHeight) / 2, width: textWidth, height: textHeight)
+        row.addSubview(body)
+        background.addSubview(row)
+        let title = NSTextField(labelWithString: "ArmKeyKey")
+        title.tag = 2
+        title.font = .systemFont(ofSize: 11 * scale)
+        title.textColor = color("candidateText", "FFFFFF")
+        title.frame = NSRect(x: padding, y: height - titleHeight + 5 * scale, width: textWidth, height: 17 * scale)
+        background.addSubview(title)
+        background.layer?.borderWidth = 1
+        background.layer?.borderColor = color("candidateAccent", everstar ? "00D7E6" : "CCCCCC").cgColor
+        panel.setContentSize(NSSize(width: width, height: height))
+        panel.contentView = background
     }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,

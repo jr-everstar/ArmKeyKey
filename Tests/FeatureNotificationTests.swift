@@ -9,6 +9,16 @@ import AppKit
     @MainActor static func main() async throws {
         let app = NSApplication.shared
         app.setActivationPolicy(.accessory)
+        let defaults = UserDefaults.standard
+        let appearanceKeys = ["candidateStyle", "candidateBackground", "candidateHighlight", "candidateText", "candidateSelectedText", "candidateAccent", "candidateFontSize", "candidateScale"]
+        let saved = Dictionary(uniqueKeysWithValues: appearanceKeys.map { ($0, defaults.object(forKey: $0)) })
+        defer {
+            for key in appearanceKeys {
+                if let value = saved[key] ?? nil { defaults.set(value, forKey: key) }
+                else { defaults.removeObject(forKey: key) }
+            }
+        }
+        for key in appearanceKeys { defaults.removeObject(forKey: key) }
         let wasActive = app.isActive
         let frontmost = NSWorkspace.shared.frontmostApplication?.processIdentifier
         func require(_ condition: Bool, _ message: String) {
@@ -44,6 +54,50 @@ import AppKit
         require(panel.isVisible, "Canceled earlier dismissal must not hide newer feedback")
         try await Task.sleep(for: .milliseconds(1100))
         require(!panel.isVisible, "Dismiss after latest display expires")
-        print("PASS production feature panel: state, placement, focus, reuse and dismissal")
+        func rgb(_ color: NSColor?) -> String {
+            guard let c = color?.usingColorSpace(.sRGB) else { return "missing" }
+            return String(format: "%02X%02X%02X", Int((c.redComponent * 255).rounded()), Int((c.greenComponent * 255).rounded()), Int((c.blueComponent * 255).rounded()))
+        }
+        func checkPalette(_ background: String, _ highlight: String, _ text: String, _ selected: String, _ accent: String) {
+            let view = panel.contentView!
+            let label = view.viewWithTag(1) as! NSTextField
+            require(rgb(NSColor(cgColor: view.layer!.backgroundColor!)) == background, "Candidate background palette")
+            require(rgb(NSColor(cgColor: label.superview!.layer!.backgroundColor!)) == highlight, "Candidate selection palette")
+            require(rgb(label.textColor) == selected, "Candidate selected text palette")
+            require(rgb((view.viewWithTag(2) as! NSTextField).textColor) == text, "Candidate normal text palette")
+            require(rgb(NSColor(cgColor: view.layer!.borderColor!)) == accent, "Candidate border palette")
+        }
+        func snapshot(_ name: String) {
+            guard CommandLine.arguments.count > 1 else { return }
+            let view = panel.contentView!
+            view.layoutSubtreeIfNeeded()
+            view.display()
+            let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
+            view.cacheDisplay(in: view.bounds, to: bitmap)
+            try! bitmap.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: CommandLine.arguments[1]).appendingPathComponent(name + ".png"))
+        }
+        AKFeatureNotifications.showFeature("simplifiedOutput", enabled: false)
+        checkPalette("000000", "7A007A", "FFFFFF", "FFFFFF", "CCCCCC")
+        snapshot("feedback-yahoo")
+        let defaultHeight = panel.frame.height
+        defaults.set("everstar", forKey: "candidateStyle")
+        AKFeatureNotifications.showFeature("simplifiedOutput", enabled: false)
+        checkPalette("4D4D4D", "00D7E6", "FFFFFF", "4D4D4D", "00D7E6")
+        snapshot("feedback-armkeykey")
+        for (key, value) in zip(appearanceKeys[1...5], ["102030", "204060", "EEEEEE", "FFFF00", "AABBCC"]) { defaults.set(value, forKey: key) }
+        defaults.set(28, forKey: "candidateFontSize")
+        defaults.set(1.6, forKey: "candidateScale")
+        AKFeatureNotifications.showFeature("simplifiedOutput", enabled: false)
+        checkPalette("102030", "204060", "EEEEEE", "FFFF00", "AABBCC")
+        require(panel.frame.height > defaultHeight && panel.frame.width <= screen.visibleFrame.width - 32, "Font and scale fit screen")
+        let label = panel.contentView!.viewWithTag(1) as! NSTextField
+        require(abs(label.font!.pointSize - 44.8) < 0.01, "Candidate font size and scale applied")
+        require(label.frame.height >= label.cell!.cellSize(forBounds: label.bounds).height.rounded(.up), "Message is not clipped at maximum size")
+        require(panels().count == 1 && !panel.isKeyWindow && NSWorkspace.shared.frontmostApplication?.processIdentifier == frontmost, "Theme refresh reuses panel without stealing focus")
+        snapshot("feedback-custom-large")
+        defaults.set("invalid", forKey: "candidateBackground")
+        AKFeatureNotifications.showFeature("associatedPhrases", enabled: true)
+        require(rgb(NSColor(cgColor: panel.contentView!.layer!.backgroundColor!)) == "4D4D4D", "Malformed custom color falls back to selected style")
+        print("PASS production feature panel: state, placement, focus, reuse, dismissal, candidate themes and custom appearance")
     }
 }
