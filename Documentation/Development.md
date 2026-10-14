@@ -99,8 +99,8 @@ Version 0.9.2/build 20 includes shortcut feedback and first-install guidance. Th
 
 The input controller reads settings on every event, ignores auto-repeat toggles and displays the current binding in its menu. Menu rows deliberately have no key equivalents: registering those would add a layout-dependent second shortcut dispatcher. Menu clicks and keyboard output toggles share feedback; the phrase toggle uses the existing commit/rebuild and dataGeneration invalidation path so other controllers reload. No global event monitor or Accessibility permission is used.
 
-## Update input-source preparation follow-up (unreleased)
+## v0.10.1 enhancement: update input-source preparation (unreleased)
 
-`UpdateInputSourcePreparation` isolates selection policy from Carbon calls so updater tests can check enabled/selectable keyboard filtering, preferred/fallback choice, preserving an existing other source, missing sources, selection failure and post-selection verification without switching the real desktop. `UpdateInstaller` reads live TIS state and switches only in the confirmed handoff path. UpdatesView explains the target/source transition before confirmation. Target version remains unassigned; immutable 0.10.0/build 21 is unchanged.
+`UpdateInputSourcePreparation` isolates selection policy from Carbon calls so updater tests can check enabled/selectable keyboard filtering, preferred/fallback choice, preserving an existing other source, missing sources, selection failure and post-selection verification without switching the real desktop. `UpdateInstaller` reads live TIS state and switches only in the confirmed handoff path. UpdatesView explains the target/source transition before confirmation. Target is 0.10.1/build 22; immutable 0.10.0/build 21 is unchanged.
 
 Validation: updater regression fixtures and complete app build passed; diff check passed. Real installed-input-method/Installer handoff, cancellation and failure UI still require manual acceptance on a test account. No active-account input-source switch, installation or logout was performed during development.
