@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.10.1 · build 22（未發佈）
+## 0.10.1 · build 22
 
 ### Enhancements
 

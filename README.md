@@ -61,19 +61,19 @@
 
 快捷鍵只在使用 ArmKeyKey 輸入時生效，須包含 Control 或 Command，可配合 Shift／Option 及英文字母、數字、標點或空白鍵。以 ANSI 實體鍵位記錄；同一組合不可分配給兩個功能。Esc 取消修改。macOS 或其他 App 佔用的組合可能無法送達輸入法。聯想詞開關與「聯想詞修飾鍵」（選詞／翻頁用途）是分開的設定。三種切換都提供右上角狀態提示，跟隨選字表的 Yahoo KeyKey／ArmKeyKey 樣式、自訂配色、字體大小及縮放；兩秒後收起，不搶輸入焦點。
 
-## v0.10.1 Enhancement（開發中）
+## v0.10.1 Enhancement
 
 「準備安裝」確認後會自動切換至已啟用的鍵盤來源，再退出 ArmKeyKey 並開啟安裝程式，毋須自行找快捷鍵。取消不會切換；切換失敗會顯示原因。安裝完成後仍須登出再登入。
 
-此改善目標為 **v0.10.1／build 22**，尚未發佈。以下網站下載仍提供正式 v0.10.0。
+**v0.10.1／build 22** 改善 App 內更新準備流程。從舊版 App 升級到本版仍會使用舊版更新流程，可能需要先手動切換；安裝本版後，往後更新即可使用自動切換。
 
 ## 最新版本與試用
 
-**0.10.0（build 21） · macOS 26 或以上 · Apple Silicon（M 系列）**
+**0.10.1（build 22） · macOS 26 或以上 · Apple Silicon（M 系列）**
 
-[**前往網站下載 PKG 安裝包**](https://jr-everstar.github.io/ArmKeyKey/#start) · [**產品網站**](https://jr-everstar.github.io/ArmKeyKey/) · [版本說明](https://github.com/jr-everstar/ArmKeyKey/releases/tag/v0.10.0-build21)
+[**前往網站下載 PKG 安裝包**](https://jr-everstar.github.io/ArmKeyKey/#start) · [**產品網站**](https://jr-everstar.github.io/ArmKeyKey/) · [版本說明](https://github.com/jr-everstar/ArmKeyKey/releases/tag/v0.10.1-build22)
 
-今次新增自訂繁簡、全／半形及聯想詞開關快捷鍵，修正選單切換提示，並加入帶 App 圖示、跟隨選字表外觀嘅通知式提示。首次安裝後嘅設定引導繼續保留。六種輸入模式繼續保留，升級唔會清除學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
+今次改善「準備安裝」：確認後自動切換輸入來源，再開啟安裝程式。自訂快捷鍵及帶 App 圖示嘅狀態提示繼續保留。首次安裝後嘅設定引導繼續保留。六種輸入模式繼續保留，升級唔會清除學習資料。App 內「軟件更新」繼續提供：可手動檢查，亦可每日自動檢查及接收提醒。下載同安裝由你決定，唔會自動取代正在使用嘅輸入法。版本改動統一放喺 [CHANGELOG](CHANGELOG.md)。公開 repo 方便大家參與開發；安裝包發佈狀態以 [GitHub Releases](https://github.com/jr-everstar/ArmKeyKey/releases) 為準。
 
 0.7.2 或更舊版本未有更新功能，需要先從[產品網站](https://jr-everstar.github.io/ArmKeyKey/#start)手動下載安裝一次。安裝前儲存工作、切換至其他輸入來源，再按 Installer 指示完成登出。
 
